@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "verify:ui": "node ../../skills/scripts/run-helm-ui-smoke.mjs ../../release/ui-smoke",
-    "verify:public": "powershell -ExecutionPolicy Bypass -File ../../release/check-public-release.ps1"
+    "verify:public": "powershell -ExecutionPolicy Bypass -File ../../release/check-public-release.ps1",
+    "release:artifacts": "powershell -ExecutionPolicy Bypass -File ../../release/build-public-artifacts.ps1"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HELM</title>
+    <title>HELM | Desktop Command Dashboard</title>
     <meta
       name="description"
       content="HELM is a local desktop command dashboard for research projects, evidence, deliverables, environment status, and Codex handoffs."
@@ -16,68 +16,86 @@
         <img src="assets/helm-icon.png" alt="" />
         <span>HELM</span>
       </a>
-      <nav>
+      <nav aria-label="Primary navigation">
+        <a href="index.html" aria-current="page">Overview</a>
         <a href="install.html">Install</a>
         <a href="privacy.html">Privacy</a>
         <a href="vela.html">VELA</a>
-        <a href="https://github.com/avefield509-lang/HELM">GitHub</a>
+        <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
 
     <main>
-      <section class="hero">
+      <section class="hero hero-lockup">
         <div class="hero-copy">
-          <p class="eyebrow">Local Desktop Command Dashboard</p>
-          <h1>See your research project state before you hand the work back to Codex.</h1>
+          <p class="eyebrow">HELM Desktop Command Dashboard</p>
+          <h1>Command your research work without moving the work into the app.</h1>
           <p class="lede">
-            HELM shows trusted project status, evidence readiness, deliverables, environment health,
-            and a clean Codex handoff without becoming a chat app or research executor.
+            HELM reads local project state, evidence traces, deliverable indexes, and environment health.
+            It gives you a clean view of what is ready, what is blocked, and what Codex should handle next.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="install.html">Get started</a>
-            <a class="button secondary" href="vela.html">How HELM works with VELA</a>
+            <a class="button primary" href="install.html">Build from source</a>
+            <a class="button secondary" href="vela.html">See the VELA link</a>
           </div>
         </div>
-        <div class="hero-art">
-          <img src="assets/vela-helm-board.png" alt="VELA and HELM visual system board" />
-        </div>
+        <figure class="hero-symbol" aria-label="HELM command mark">
+          <img src="assets/helm-icon.png" alt="" />
+          <figcaption>
+            <strong>Local, readable, deliberate.</strong>
+            <span>No chat box. No one-click research claims. No hidden scheduler.</span>
+          </figcaption>
+        </figure>
       </section>
 
-      <section class="section-grid">
-        <article>
-          <span class="card-kicker">Project State</span>
-          <h2>Know what is ready</h2>
-          <p>Compare trusted projects, identify blockers, and inspect materials without opening every folder by hand.</p>
+      <section class="brand-board-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Unified Visual System</p>
+          <h2>VELA and HELM share one language, but keep separate roles.</h2>
+        </div>
+        <img src="assets/vela-helm-language.png" alt="VELA and HELM shared design language board" />
+      </section>
+
+      <section class="role-grid">
+        <article class="role-card vela-card">
+          <img src="assets/vela-mark.png" alt="" />
+          <span class="card-kicker">VELA</span>
+          <h2>Workflow environment layer</h2>
+          <p>VELA provides compatible local context: project facts, evidence traces, validator outputs, and runtime state.</p>
         </article>
-        <article>
-          <span class="card-kicker">Evidence Trail</span>
-          <h2>Follow local facts</h2>
-          <p>Read project maps, evidence ledgers, material passports, validator reports, and deliverable indexes.</p>
+        <article class="role-card helm-card">
+          <img src="assets/helm-icon.png" alt="" />
+          <span class="card-kicker">HELM</span>
+          <h2>Desktop command dashboard</h2>
+          <p>HELM reads local state, surfaces readiness, opens safe paths, and prepares a precise handoff for Codex.</p>
         </article>
-        <article>
-          <span class="card-kicker">Codex Handoff</span>
-          <h2>Continue in the right place</h2>
-          <p>Copy a compact handoff that points Codex to the next useful step. HELM does not claim to do the research itself.</p>
-        </article>
+      </section>
+
+      <section class="screen-strip" aria-label="HELM screens">
+        <div><strong>Project</strong><span>status, blockers, materials</span></div>
+        <div><strong>Credibility</strong><span>evidence levels and sources</span></div>
+        <div><strong>Next Step</strong><span>handoff and local history</span></div>
+        <div><strong>Deliverables</strong><span>artifact and file index</span></div>
+        <div><strong>Environment</strong><span>runtime and validator health</span></div>
       </section>
 
       <section class="split">
         <div>
-          <p class="eyebrow">Boundary</p>
-          <h2>Local-first, public-safe, deliberately narrow.</h2>
+          <p class="eyebrow">Public Boundary</p>
+          <h2>A dashboard, not a research engine.</h2>
         </div>
         <ul class="checks">
-          <li>No telemetry service in this repository.</li>
-          <li>No chat box, prompt field, or hidden agent scheduler.</li>
+          <li>No hosted telemetry or cloud sync in this repository.</li>
+          <li>No prompt input, chat surface, or hidden agent scheduling.</li>
           <li>No bundled personal projects, note vaults, browser state, or reference databases.</li>
-          <li>Works without VELA by showing an empty or sample state.</li>
+          <li>Runs without VELA by showing an empty or public-safe sample state.</li>
         </ul>
       </section>
     </main>
 
     <footer>
-      <span>HELM is a local command dashboard.</span>
-      <span>VELA provides compatible workflow context when available.</span>
+      <span>HELM is the command dashboard.</span>
+      <span>VELA provides compatible local workflow context.</span>
     </footer>
   </body>
 </html>

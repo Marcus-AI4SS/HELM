@@ -10,28 +10,31 @@
     <header class="site-header">
       <a class="brand" href="index.html"><img src="assets/helm-icon.png" alt="" /><span>HELM</span></a>
       <nav>
+        <a href="index.html">Overview</a>
         <a href="install.html">Install</a>
-        <a href="privacy.html">Privacy</a>
+        <a href="privacy.html" aria-current="page">Privacy</a>
         <a href="vela.html">VELA</a>
-        <a href="https://github.com/avefield509-lang/HELM">GitHub</a>
+        <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
     <main class="content-page">
       <p class="eyebrow">Privacy</p>
-      <h1>HELM is local-first.</h1>
+      <h1>HELM reads local state and keeps the public payload clean.</h1>
       <p>
-        This repository does not include telemetry, analytics, hosted sync, or a cloud backend.
-        HELM reads local state and renders it on your machine.
+        This repository has no telemetry service, analytics SDK, hosted sync, or cloud backend.
+        HELM renders local project state on your machine and keeps public release artifacts separate from personal data.
       </p>
-      <h2>What should not be in a public release</h2>
-      <ul class="checks">
-        <li>Personal research outputs.</li>
-        <li>Browser profiles or session state.</li>
-        <li>Reference-manager databases.</li>
-        <li>Note vaults or unpublished project files.</li>
-        <li>Credentials, keys, cookies, or local service secrets.</li>
-      </ul>
-      <p>See the repository privacy policy for the exact release boundary.</p>
+      <div class="privacy-grid">
+        <article>
+          <h2>Allowed locally</h2>
+          <p>Project maps, evidence ledgers, material indexes, deliverable indexes, validator reports, and local settings.</p>
+        </article>
+        <article>
+          <h2>Excluded from public release</h2>
+          <p>Personal outputs, note vaults, browser profiles, reference databases, credentials, keys, cookies, and local paths.</p>
+        </article>
+      </div>
+      <p>Release scripts include a privacy scan before artifacts are prepared.</p>
     </main>
   </body>
 </html>

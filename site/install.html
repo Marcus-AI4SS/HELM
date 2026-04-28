@@ -10,31 +10,45 @@
     <header class="site-header">
       <a class="brand" href="index.html"><img src="assets/helm-icon.png" alt="" /><span>HELM</span></a>
       <nav>
-        <a href="install.html">Install</a>
+        <a href="index.html">Overview</a>
+        <a href="install.html" aria-current="page">Install</a>
         <a href="privacy.html">Privacy</a>
         <a href="vela.html">VELA</a>
-        <a href="https://github.com/avefield509-lang/HELM">GitHub</a>
+        <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
     <main class="content-page">
       <p class="eyebrow">Install</p>
-      <h1>Build HELM from source.</h1>
+      <h1>Build HELM from source today. Signed releases come next.</h1>
       <p>
-        Public binary artifacts are prepared through the release checklist. Until a tagged release is available,
-        use the source workflow below.
+        HELM is in public-candidate status. The source build is ready; signed Windows and macOS artifacts
+        are tracked in the release checklist before the first tagged public release.
       </p>
-      <pre><code>cd apps/desktop
-npm install
-npm run build
+
+      <section class="step-list">
+        <div>
+          <span>1</span>
+          <strong>Install dependencies</strong>
+          <pre><code>cd apps/desktop
+npm install</code></pre>
+        </div>
+        <div>
+          <span>2</span>
+          <strong>Build and check</strong>
+          <pre><code>npm run build
 cd src-tauri
 cargo check</code></pre>
-      <h2>Run release checks</h2>
-      <pre><code>powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1</code></pre>
-      <h2>First launch</h2>
-      <p>
-        HELM can start without a live environment. If no trusted projects are detected, it shows onboarding actions:
-        copy a Codex handoff, open Codex, or inspect environment status.
-      </p>
+        </div>
+        <div>
+          <span>3</span>
+          <strong>Run the public gate</strong>
+          <pre><code>powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1</code></pre>
+        </div>
+      </section>
+
+      <h2>Build local artifacts</h2>
+      <p>The artifact script records signing readiness and SHA-256 checksums. It does not pretend unsigned artifacts are signed.</p>
+      <pre><code>powershell -ExecutionPolicy Bypass -File release/build-public-artifacts.ps1</code></pre>
     </main>
   </body>
 </html>

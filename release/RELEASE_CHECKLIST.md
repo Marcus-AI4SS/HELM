@@ -10,11 +10,13 @@
 
 ## V8.7 Install Delivery
 
-- Windows artifact is generated.
-- Windows signing readiness is recorded.
-- macOS artifact or guided installer is generated.
-- macOS signing and notarization readiness are recorded.
-- Checksums are generated for release artifacts.
+- `release/build-public-artifacts.ps1` runs locally.
+- Windows artifact workflow runs and uploads a public-candidate artifact.
+- macOS artifact workflow runs and uploads a public-candidate artifact.
+- Windows signing readiness is recorded in `signing-readiness-report.json`.
+- macOS signing and notarization readiness are recorded in `signing-readiness-report.json`.
+- SHA-256 checksums are generated for release artifacts.
+- Unsigned artifacts are clearly labeled as public candidates, not final signed releases.
 
 ## V8.8 New User Testing
 
@@ -31,4 +33,3 @@
 - Artifacts and checksums are attached.
 - Release notes describe user-facing changes and known limitations.
 - GitHub Pages is deployed and points to the release.
-

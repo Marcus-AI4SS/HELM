@@ -54,7 +54,7 @@ Get-ChildItem -LiteralPath $rootPath -Recurse -File -Force | Where-Object {
     $candidatePath
   }
   $relativeProbe = $relativeProbe.Replace('\', '/')
-  -not ($relativeProbe -match '(^|/)(\.git|node_modules|dist|target|runtime-resources|ui-smoke)(/|$)')
+  -not ($relativeProbe -match '(^|/)(\.git|node_modules|dist|target|runtime-resources|ui-smoke|artifacts)(/|$)')
 } | ForEach-Object {
   $file = $_
   $fullPath = $file.FullName

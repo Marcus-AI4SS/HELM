@@ -1,25 +1,57 @@
-# HELM
+<p align="center">
+  <a href="https://marcus-ai4ss.github.io/HELM/">
+    <img src="site/assets/helm-icon.png" alt="HELM logo" width="112" />
+  </a>
+</p>
 
-HELM is a local desktop command dashboard for research work. It helps you see project status, evidence readiness, deliverables, local environment health, and the handoff that should be continued in Codex.
+<h1 align="center">HELM</h1>
 
-HELM does not run research for you. It does not provide chat, prompt input, hidden agent scheduling, citation verification, manuscript writing, or submission automation. It reads local state, shows what is known, and prepares a concise handoff so the work can continue in Codex.
+<p align="center">
+  Local desktop command dashboard for research projects, evidence, deliverables, environment health, and Codex handoffs.
+</p>
 
-## What HELM Does
+<p align="center">
+  <a href="https://github.com/Marcus-AI4SS/HELM/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Marcus-AI4SS/HELM/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://github.com/Marcus-AI4SS/HELM/actions/workflows/pages.yml"><img alt="Pages" src="https://github.com/Marcus-AI4SS/HELM/actions/workflows/pages.yml/badge.svg" /></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2563eb" /></a>
+</p>
 
-- Shows trusted local projects and their current phase, blockers, materials, deliverables, and recent activity.
-- Opens safe local folders and source files so you can inspect the evidence trail.
-- Runs local validators when the bundled environment provides them.
-- Copies a Codex handoff summary without writing back into your research project.
-- Starts without a local research environment by showing an empty or sample state.
+<p align="center">
+  <a href="https://marcus-ai4ss.github.io/HELM/">Product site</a>
+  ·
+  <a href="site/install.html">Install guide</a>
+  ·
+  <a href="PRIVACY.md">Privacy</a>
+  ·
+  <a href="release/RELEASE_CHECKLIST.md">Release checklist</a>
+</p>
+
+![VELA and HELM design language](site/assets/vela-helm-language.png)
+
+## What HELM Is
+
+HELM is a local desktop dashboard for research work. It shows what your project already knows: current phase, blockers, materials, evidence readiness, deliverables, local environment status, and the handoff that should continue in Codex.
+
+HELM is intentionally narrow. It does not provide chat, prompt input, hidden agent scheduling, one-click research execution, manuscript writing, citation verification, or submission automation.
 
 ## HELM And VELA
 
-HELM and VELA are separate projects with linked roles.
+HELM and VELA share one visual language and two separate roles.
 
-- **HELM** is the desktop command dashboard. It reads status and prepares handoffs.
-- **VELA** is the companion workflow and environment layer. It can provide project facts, evidence traces, validator outputs, and runtime context that HELM displays.
+| Project | Role | Boundary |
+| --- | --- | --- |
+| **VELA** | Workflow and environment layer | Produces local project context, evidence traces, validator outputs, and runtime state. |
+| **HELM** | Desktop command dashboard | Reads local state, visualizes readiness, opens safe paths, and prepares Codex handoffs. |
 
-They are intentionally kept in separate repositories. HELM can run by itself in public sample mode. When a VELA-compatible environment exists beside it or is configured with `HELM_VELA_SKILLS_ROOT`, HELM can read that environment as its live source.
+The projects stay in separate repositories. HELM can run by itself in public sample or empty state. When a VELA-compatible environment is available beside HELM or configured through `HELM_VELA_SKILLS_ROOT`, HELM can read it as the live source.
+
+## Core Screens
+
+- **Project**: compare trusted projects, blockers, materials, deliverables, and recent activity.
+- **Credibility**: inspect evidence source levels without overstating file-read signals.
+- **Next Step**: review the next Codex handoff and local history summaries.
+- **Deliverables**: browse generated artifacts and source files.
+- **Environment**: diagnose runtime, validators, source mode, and local settings.
 
 ## Quick Start
 
@@ -31,49 +63,39 @@ cd src-tauri
 cargo check
 ```
 
-To run the public release checks from the repository root:
+Run the public release gate from the repository root:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1
 ```
 
-## Desktop App
+## Build Desktop Artifacts
 
-The app is built with React, Vite, and Tauri v2.
-
-```powershell
-cd apps/desktop
-npm run dev
-```
-
-For a native desktop development run:
+The release artifact script records signing readiness and checksums. It can build unsigned local artifacts when no signing credentials are configured.
 
 ```powershell
-cd apps/desktop
-npm run tauri dev
+powershell -ExecutionPolicy Bypass -File release/build-public-artifacts.ps1
 ```
+
+Generated artifacts are written under `release/artifacts/` and are not committed.
+
+## Privacy Model
+
+HELM is local-first. This repository has no telemetry service, hosted backend, analytics SDK, or cloud sync layer. Public release payloads must not include personal research materials, reference-manager databases, note vaults, browser profiles, credentials, or local absolute paths.
+
+See [PRIVACY.md](PRIVACY.md).
 
 ## Repository Layout
 
 ```text
 apps/desktop/        React and Tauri desktop app
 skills/              Public-safe runtime resources used by HELM
-release/             Public release checks, privacy scan, and release checklist
+release/             Release checks, artifact scripts, privacy scan, checklists
 site/                GitHub Pages product site
-.github/workflows/   CI and Pages workflows
+.github/workflows/   CI, Pages, and artifact workflows
 ```
-
-## Privacy Model
-
-HELM is local-first. It has no telemetry service and no hosted backend in this repository. The app may read local project files when you choose a trusted project, but public release payloads must not include personal project materials, browser state, Zotero databases, Obsidian vaults, credentials, or local absolute paths.
-
-See [PRIVACY.md](PRIVACY.md) for the detailed boundary.
 
 ## Release Status
 
-This repository is prepared as a public candidate. Before a tagged release, run the public release checklist in [release/RELEASE_CHECKLIST.md](release/RELEASE_CHECKLIST.md), generate artifacts, checksums, release notes, and final review records.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+This repository is prepared as a public candidate. A tagged public release still needs signed or clearly unsigned artifacts, checksums, release notes, and clean Windows/macOS first-use test records.
 
