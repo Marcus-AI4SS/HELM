@@ -1,0 +1,5 @@
+name = "css-text-network"
+display_name = "CSS Text Network"
+description = "计算社科中的文本、网络、数字踪迹和混合方法项目。"
+managed_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp", "xiaohongshu-mcp"]
+enabled_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "paper-search-mcp"]

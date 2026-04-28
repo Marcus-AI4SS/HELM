@@ -1,0 +1,13 @@
+{
+  "allowed_skills_mcp": [
+    "citation-verifier",
+    "academic-paper-review",
+    "openalex-mcp",
+    "semantic-scholar-mcp"
+  ],
+  "disallowed_due_to_side_effects": [
+    "zotero-mcp",
+    "social-platform-mcp",
+    "chrome-devtools"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "modes": {
+    "multi_perspective_reasoning": {
+      "rank": 0,
+      "real_multi_agent": false
+    },
+    "sequential_multi_agent_execution": {
+      "rank": 1,
+      "real_multi_agent": true
+    },
+    "parallel_multi_agent_execution": {
+      "rank": 2,
+      "real_multi_agent": true
+    }
+  },
+  "allowed_template_variables": [
+    "<run_id>",
+    "<agent_id>",
+    "<target_agent_id>"
+  ],
+  "template_variable_scope": {
+    "<run_id>": [
+      "write_scope",
+      "write_scope_subset",
+      "canonical_paths",
+      "dispatch_paths",
+      "reviewer_target_files"
+    ],
+    "<agent_id>": [
+      "write_scope",
+      "write_scope_subset",
+      "canonical_paths",
+      "dispatch_paths",
+      "reviewer_target_files"
+    ],
+    "<target_agent_id>": [
+      "reviewer_target_files"
+    ]
+  },
+  "canonical_paths": {
+    "dispatch_card": ".codex/dispatch/<run_id>.yaml",
+    "context_packet": ".codex/context-packets/<run_id>/<agent_id>.md",
+    "agent_output_dir": "outputs/agent-runs/<run_id>/<agent_id>/",
+    "handoff_log": "logs/agent-handoffs/<run_id>.md",
+    "gate_log": "logs/quality-gates/<run_id>.md",
+    "project_state_current": "logs/project-state/current.json",
+    "project_state_history": "logs/project-state/history.md",
+    "producer_summary": "outputs/agent-runs/<run_id>/<agent_id>/summary.md",
+    "producer_result": "outputs/agent-runs/<run_id>/<agent_id>/result.json",
+    "review_file": "outputs/agent-runs/<run_id>/<agent_id>/review.<target_agent_id>.md",
+    "gate_file": "outputs/agent-runs/<run_id>/<agent_id>/gate.<target_agent_id>.json"
+  }
+}

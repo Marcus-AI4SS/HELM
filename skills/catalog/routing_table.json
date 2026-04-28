@@ -1,0 +1,858 @@
+{
+  "routes": [
+    {
+      "id": "stack-governance",
+      "profile": "baseline",
+      "project_scope_class": "never_default_multi_agent",
+      "keywords": [
+        "配置",
+        "skill",
+        "skills",
+        "mcp",
+        "plugin",
+        "插件",
+        "环境",
+        "治理",
+        "冲突",
+        "路由",
+        "总路由"
+      ],
+      "aliases": [
+        "stack",
+        "config",
+        "plugin",
+        "mcp",
+        "router"
+      ],
+      "skills": [
+        "research-stack-manager"
+      ],
+      "helper_skills": [
+        "skill-vetter"
+      ],
+      "plugins": [
+        "GitHub",
+        "Superpowers"
+      ],
+      "mcp": [
+        "chrome-devtools",
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "当前任务指向配置治理、组件审计或环境演化，应该先进入研究栈治理链，而不是直接进入具体研究执行链。",
+      "next_step": "先审计当前 skill、MCP 和插件状态，再提出变更方案或执行明确的环境修改。",
+      "not_selected_reason": "这不是面向具体研究内容的执行型任务。",
+      "task_type": "stack_governance",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "stack_governance"
+      ],
+      "subagent_allowed": false
+    },
+    {
+      "id": "single-paper-review",
+      "profile": "paper-review",
+      "project_scope_class": "never_default_multi_agent",
+      "keywords": [
+        "审稿",
+        "review this paper",
+        "单篇论文",
+        "单篇文章",
+        "论文评审",
+        "referee",
+        "方法评估",
+        "文章评估"
+      ],
+      "aliases": [
+        "paper review",
+        "revise and resubmit",
+        "referee report"
+      ],
+      "skills": [
+        "citation-verifier",
+        "academic-paper-review",
+        "research-docx-export"
+      ],
+      "helper_skills": [],
+      "plugins": [],
+      "mcp": [
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "任务明确聚焦单篇论文，必须避免误走多文献综述链。",
+      "next_step": "先核验论文元数据和 DOI，再进入结构化评审和必要的导出。",
+      "not_selected_reason": "当前任务不是多篇证据综合。",
+      "task_type": "paper_review",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "doi_and_metadata_verified",
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "citation_verification",
+        "paper_assessment",
+        "writing_synthesis"
+      ],
+      "subagent_allowed": false
+    },
+    {
+      "id": "environment-ops",
+      "profile": "baseline",
+      "project_scope_class": "never_default_multi_agent",
+      "keywords": [
+        "Python环境",
+        "python环境",
+        "python",
+        "虚拟环境",
+        "venv",
+        ".venv",
+        "Git配置",
+        "git配置",
+        "git",
+        "PowerShell",
+        "powershell",
+        "pwsh",
+        "终端",
+        "PATH",
+        "path",
+        "Jupyter",
+        "jupyter",
+        "agent-browser",
+        "Codex配置",
+        "codex配置",
+        "config.toml",
+        "profile切换",
+        "环境修复",
+        "环境维护"
+      ],
+      "aliases": [
+        "environment ops",
+        "python env",
+        "git setup",
+        "powershell setup",
+        "codex config",
+        "mcp profile"
+      ],
+      "skills": [
+        "research-stack-manager"
+      ],
+      "helper_skills": [
+        "local-cloud-router"
+      ],
+      "plugins": [
+        "Superpowers"
+      ],
+      "mcp": [
+        "chrome-devtools",
+        "zotero-mcp",
+        "openalex-mcp"
+      ],
+      "rationale": "任务核心是维护研究运行环境、Python/Git/PowerShell/Codex 配置或 MCP profile；应进入环境运维子路线，而不是普通研究栈治理或具体研究执行链。",
+      "next_step": "先检查当前 shell、Python 虚拟环境、Git 状态、config.toml、profile 差异和相关脚本，再执行最小必要修复并记录变更。",
+      "not_selected_reason": "当前任务不是环境维护。",
+      "task_type": "environment_ops",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "environment_maintenance"
+      ],
+      "subagent_allowed": false
+    },
+    {
+      "id": "project-retrospective",
+      "profile": "baseline",
+      "project_scope_class": "always_multi_agent",
+      "keywords": [
+        "项目收尾",
+        "收尾复盘",
+        "项目复盘",
+        "复盘",
+        "retrospective",
+        "postmortem",
+        "项目结束",
+        "总结对话流",
+        "更新skill",
+        "更新 skill",
+        "新建skill",
+        "新建 skill",
+        "同步到Obsidian",
+        "同步到 obsidian",
+        "沉淀到Obsidian",
+        "工作流沉淀"
+      ],
+      "aliases": [
+        "project retrospective",
+        "workflow evolution",
+        "skill evolution",
+        "obsidian handoff"
+      ],
+      "skills": [
+        "project-retrospective-evolver"
+      ],
+      "helper_skills": [
+        "research-stack-manager",
+        "obsidian-research-sync"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "chrome-devtools",
+        "zotero-mcp",
+        "openalex-mcp"
+      ],
+      "rationale": "任务指向项目结束后的流程复盘、技能演化判断或知识沉淀，应先由 project-retrospective-evolver 归纳工作流，再把变更提案交给 research-stack-manager，把耐久记忆交给 obsidian-research-sync。",
+      "next_step": "先总结项目目标、阶段、重复模式、摩擦点和可复用流程，再判断 no-change / update-existing-skill / create-new-skill / needs-better-routing。",
+      "not_selected_reason": "当前任务不是项目收尾复盘。",
+      "task_type": "project_retrospective",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "retrospective_recorded"
+      ],
+      "stage_scope": [
+        "project_retrospective"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "long-running-experiment-ops",
+      "profile": "cloud-batch",
+      "project_scope_class": "never_default_multi_agent",
+      "keywords": [
+        "长时实验",
+        "跑实验",
+        "监控进度",
+        "断点续跑",
+        "checkpoint",
+        "partial",
+        "worker",
+        "workers",
+        "分片",
+        "shard",
+        "面板打不开",
+        "状态文件",
+        "stale",
+        "CPU降下来了",
+        "死机",
+        "恢复实验",
+        "后台任务",
+        "计划任务"
+      ],
+      "aliases": [
+        "experiment ops",
+        "long-running job",
+        "checkpoint recovery",
+        "dashboard repair",
+        "worker control"
+      ],
+      "skills": [
+        "long-running-experiment-ops"
+      ],
+      "helper_skills": [
+        "local-cloud-router"
+      ],
+      "plugins": [],
+      "mcp": [
+        "chrome-devtools"
+      ],
+      "rationale": "任务核心是长时计算实验的运行监督、状态诊断、断点续跑或后台任务保护；应进入运行运维链，而不是直接改模型或改论文结论。",
+      "next_step": "先检查任务状态、进程树、CPU 时间差、结果/partial/shard 文件、状态 JSON 与日志，再判断等待、恢复、重启或修复 checkpoint。",
+      "not_selected_reason": "当前任务若只是理论建模或结果解释，不应使用该路线。",
+      "task_type": "runtime_ops",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "runtime_supervision"
+      ],
+      "subagent_allowed": false
+    },
+    {
+      "id": "literature-review",
+      "profile": "literature",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.literature-review",
+      "keywords": [
+        "综述",
+        "literature review",
+        "系统综述",
+        "文献综述",
+        "主题综合",
+        "annotated bibliography",
+        "证据综合",
+        "文献梳理"
+      ],
+      "aliases": [
+        "survey",
+        "evidence synthesis",
+        "review article"
+      ],
+      "skills": [
+        "cnki-research",
+        "google-scholar-research",
+        "openalex-landscape",
+        "semantic-citation-tracer",
+        "citation-verifier",
+        "zotero-sync",
+        "systematic-literature-review",
+        "research-docx-export"
+      ],
+      "helper_skills": [],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "chrome-devtools",
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp",
+        "google-scholar-mcp",
+        "cnki-mcp",
+        "paper-search-mcp"
+      ],
+      "rationale": "任务需要跨来源发现、引文扩展、正式核验和综合写作，因此应启用完整文献 profile。",
+      "next_step": "先建立候选文献池和检索边界，再做 DOI 核验与 Zotero 入库。",
+      "not_selected_reason": "当前任务并非单篇论文评审。",
+      "task_type": "literature_review",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "doi_and_metadata_verified",
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "research_design",
+        "literature_discovery",
+        "citation_verification",
+        "writing_synthesis"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "social-platform-case",
+      "profile": "social-platform",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.social-platform-case",
+      "keywords": [
+        "小红书",
+        "抖音",
+        "B站",
+        "b站",
+        "微信公众号",
+        "社媒",
+        "平台内容",
+        "笔记",
+        "评论",
+        "专辑",
+        "收藏",
+        "案例"
+      ],
+      "aliases": [
+        "social media",
+        "douyin",
+        "xiaohongshu",
+        "wechat article",
+        "bilibili"
+      ],
+      "skills": [
+        "social-platform-reader",
+        "text-analysis",
+        "network-analysis",
+        "research-docx-export"
+      ],
+      "helper_skills": [],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "chrome-devtools",
+        "social-platform-mcp",
+        "xiaohongshu-mcp",
+        "zotero-mcp",
+        "openalex-mcp"
+      ],
+      "rationale": "任务信号直接指向平台内容读取，必须先走浏览器可见证据链；若需要可复用、可留证、跨平台一致的抓取接口，则优先加用 social-platform-mcp，而不是把平台专用 MCP 当成总入口。",
+      "next_step": "先判断当前任务是一次性浏览器可见读取，还是需要标准化社媒抓取接口；然后输出社媒后端决策卡，明确说明为什么选 chrome-devtools / social-platform-mcp / xiaohongshu-mcp，以及为什么是否直接启用 agent-browser。",
+      "not_selected_reason": "当前任务核心不是正式文献发现。",
+      "task_type": "social_evidence",
+      "data_access_level": "authenticated_visible",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "data_provenance_verified",
+        "platform_ethics_checked",
+        "measurement_validity_checked",
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "research_design",
+        "data_material_acquisition",
+        "analysis_execution",
+        "writing_synthesis"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "computational-social-science",
+      "profile": "css-text-network",
+      "project_scope_class": "always_multi_agent",
+      "keywords": [
+        "计算社科",
+        "computational social science",
+        "数字踪迹",
+        "platform data",
+        "混合方法",
+        "多模态",
+        "扩散",
+        "仿真",
+        "ABM",
+        "数字平台研究"
+      ],
+      "aliases": [
+        "css",
+        "digital trace",
+        "computational",
+        "agent-based model"
+      ],
+      "skills": [
+        "research-design-studio",
+        "dataset-discovery",
+        "digital-trace-pipeline",
+        "text-analysis",
+        "network-analysis",
+        "quant-analysis",
+        "abm-simulation-lab",
+        "reproducibility-package",
+        "figure-table-studio",
+        "research-docx-export"
+      ],
+      "helper_skills": [
+        "local-cloud-router",
+        "long-running-experiment-ops"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [
+        "Hugging Face"
+      ],
+      "mcp": [
+        "chrome-devtools",
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp",
+        "paper-search-mcp"
+      ],
+      "rationale": "任务需要计算社会科学工作流，而不是单一分析技能；主路由应自动组合数据、方法和复现链。",
+      "next_step": "先明确研究设计、数据来源和计算目标，再决定本地还是云端执行。",
+      "not_selected_reason": "当前任务并不只是单一文本或网络分析。",
+      "task_type": "computational_social_science",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "data_provenance_verified",
+        "measurement_validity_checked",
+        "coding_consistency_checked",
+        "network_edge_defined",
+        "abm_parameter_justified",
+        "writing_quality_checked",
+        "figure_table_consistency_checked",
+        "final_package_frozen",
+        "reproducibility_bundle_verified"
+      ],
+      "stage_scope": [
+        "research_design",
+        "literature_discovery",
+        "data_material_acquisition",
+        "analysis_execution",
+        "writing_synthesis",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "social-science-submission-package",
+      "profile": "writing-review",
+      "project_scope_class": "always_multi_agent",
+      "keywords": [
+        "送审包",
+        "投稿包",
+        "复现包",
+        "论文定稿",
+        "中文主稿冻结",
+        "A/B稿融合",
+        "AB稿融合",
+        "审稿意见驱动",
+        "图文一致性",
+        "Stata Python 双链",
+        "双链一致性",
+        "论文送审",
+        "社会科学论文投稿",
+        "支持文档同步",
+        "引用核验文件",
+        "路径说明"
+      ],
+      "aliases": [
+        "submission package",
+        "reproducible paper package",
+        "manuscript package",
+        "revision package",
+        "stata python replication"
+      ],
+      "skills": [
+        "social-science-submission-packager",
+        "quant-analysis",
+        "figure-table-studio",
+        "citation-verifier",
+        "academic-paper-review",
+        "reviewer-response-pack",
+        "reproducibility-package",
+        "research-docx-export"
+      ],
+      "helper_skills": [
+        "local-cloud-router",
+        "long-running-experiment-ops"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "任务目标是形成可投稿的社会科学论文交付包，通常同时涉及数据、代码、文稿、图表、审稿意见、引文核验和版本冻结；应进入送审包总控链，而不是拆散到普通写作、普通定量或单篇审稿链。",
+      "next_step": "先锁定项目根目录、原始材料备份、唯一事实源、主执行链/备份复算链和公开/内部交付物边界，再进行文稿、图表、代码和支持文档同步。",
+      "not_selected_reason": "当前任务若只要求单篇审稿、单独文献综述或单张图表，不应使用该路线。",
+      "task_type": "submission_packaging",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "doi_and_metadata_verified",
+        "measurement_validity_checked",
+        "writing_quality_checked",
+        "figure_table_consistency_checked",
+        "final_package_frozen",
+        "reproducibility_bundle_verified"
+      ],
+      "stage_scope": [
+        "research_design",
+        "citation_verification",
+        "analysis_execution",
+        "writing_synthesis",
+        "review_revision",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "empirical-quant",
+      "profile": "css-text-network",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.empirical-quant",
+      "keywords": [
+        "回归",
+        "面板",
+        "统计",
+        "稳健性",
+        "quant",
+        "定量",
+        "变量",
+        "显著性",
+        "因果识别",
+        "描述统计"
+      ],
+      "aliases": [
+        "regression",
+        "panel",
+        "descriptive statistics",
+        "causal inference"
+      ],
+      "skills": [
+        "research-design-studio",
+        "quant-analysis",
+        "figure-table-studio",
+        "research-docx-export"
+      ],
+      "helper_skills": [
+        "local-cloud-router"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "定量任务应优先走研究设计与量化输出链，而不是更宽泛的综合项目链。",
+      "next_step": "先锁定单位、变量与识别目标，再运行量化分析。",
+      "not_selected_reason": "当前任务不以社媒内容读取为核心。",
+      "task_type": "quant_analysis",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "data_provenance_verified",
+        "measurement_validity_checked",
+        "writing_quality_checked",
+        "figure_table_consistency_checked",
+        "final_package_frozen",
+        "reproducibility_bundle_verified"
+      ],
+      "stage_scope": [
+        "research_design",
+        "data_material_acquisition",
+        "analysis_execution",
+        "writing_synthesis",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "text-corpus",
+      "profile": "css-text-network",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.text-corpus",
+      "keywords": [
+        "文本",
+        "语料",
+        "主题模型",
+        "embedding",
+        "编码",
+        "词典",
+        "内容分析",
+        "语义聚类",
+        "文本挖掘"
+      ],
+      "aliases": [
+        "corpus",
+        "topic model",
+        "dictionary analysis",
+        "text mining"
+      ],
+      "skills": [
+        "dataset-discovery",
+        "text-analysis",
+        "figure-table-studio",
+        "research-docx-export"
+      ],
+      "helper_skills": [
+        "local-cloud-router"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [
+        "Hugging Face"
+      ],
+      "mcp": [
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp",
+        "paper-search-mcp"
+      ],
+      "rationale": "任务核心是语料处理与文本分析，需要文本链，而不是社媒读取或单篇评审链。",
+      "next_step": "先定义语料边界和分析单位，再选择编码、词典或嵌入方法。",
+      "not_selected_reason": "当前任务不以网络结构为核心。",
+      "task_type": "text_analysis",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "data_provenance_verified",
+        "measurement_validity_checked",
+        "coding_consistency_checked",
+        "writing_quality_checked",
+        "figure_table_consistency_checked",
+        "final_package_frozen",
+        "reproducibility_bundle_verified"
+      ],
+      "stage_scope": [
+        "research_design",
+        "data_material_acquisition",
+        "analysis_execution",
+        "writing_synthesis",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "network-analysis",
+      "profile": "css-text-network",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.network-analysis",
+      "keywords": [
+        "网络分析",
+        "centrality",
+        "community",
+        "节点",
+        "边",
+        "扩散",
+        "ego network",
+        "图结构",
+        "社群发现"
+      ],
+      "aliases": [
+        "graph",
+        "network",
+        "community detection",
+        "ego network"
+      ],
+      "skills": [
+        "dataset-discovery",
+        "network-analysis",
+        "figure-table-studio",
+        "research-docx-export"
+      ],
+      "helper_skills": [
+        "local-cloud-router"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "任务主要围绕图结构和网络指标，应直接走网络分析链。",
+      "next_step": "先确认节点、边和观测窗口，再计算核心指标或社群结构。",
+      "not_selected_reason": "当前任务不是单纯文本编码。",
+      "task_type": "network_analysis",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared",
+        "data_provenance_verified",
+        "measurement_validity_checked",
+        "network_edge_defined",
+        "writing_quality_checked",
+        "figure_table_consistency_checked",
+        "final_package_frozen",
+        "reproducibility_bundle_verified"
+      ],
+      "stage_scope": [
+        "research_design",
+        "data_material_acquisition",
+        "analysis_execution",
+        "writing_synthesis",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "writing-export",
+      "profile": "writing-review",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.writing-export",
+      "keywords": [
+        "写作",
+        "word",
+        "docx",
+        "latex",
+        "回复审稿",
+        "导出",
+        "修改稿",
+        "response letter",
+        "论文写作",
+        "项目简报"
+      ],
+      "aliases": [
+        "docx",
+        "latex",
+        "response letter",
+        "manuscript"
+      ],
+      "skills": [
+        "writing-reference-capture",
+        "reviewer-response-pack",
+        "research-docx-export",
+        "latex-paper-conversion"
+      ],
+      "helper_skills": [],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "任务目标是交付文稿或审稿回复，而不是前端数据采集或文献发现；写作链默认先完成引文捕获和知识库同步。",
+      "next_step": "先捕获写作实际用到的论文并完成 Zotero/Obsidian 项目同步，再锁定输出形式和目标模板。",
+      "not_selected_reason": "当前任务不以文献搜索为首要动作。",
+      "task_type": "writing_export",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "doi_and_metadata_verified",
+        "writing_quality_checked",
+        "final_package_frozen"
+      ],
+      "stage_scope": [
+        "citation_verification",
+        "writing_synthesis",
+        "review_revision",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    {
+      "id": "general-research",
+      "profile": "baseline",
+      "project_scope_class": "conditional_multi_agent",
+      "clarification_rule": "project_scope_rules.general-research",
+      "keywords": [],
+      "aliases": [
+        "research",
+        "论文",
+        "项目",
+        "研究"
+      ],
+      "skills": [
+        "research-design-studio",
+        "citation-verifier",
+        "research-docx-export"
+      ],
+      "helper_skills": [
+        "local-cloud-router"
+      ],
+      "project_helper_skills": [
+        "research-team-orchestrator"
+      ],
+      "plugins": [],
+      "mcp": [
+        "chrome-devtools",
+        "zotero-mcp",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "rationale": "任务信号不足以进入更窄的专用链，先用稳定主链完成研究设计和信息核验。",
+      "next_step": "先明确研究问题、材料类型和第一可执行产出，再细分到更具体的叶子技能。",
+      "not_selected_reason": "该路线是保守默认值。",
+      "always_default": true,
+      "task_type": "general_research",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared"
+      ],
+      "stage_scope": [
+        "research_design"
+      ],
+      "subagent_allowed": true
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+name = "baseline"
+display_name = "Baseline"
+description = "默认稳定主链。适合一般研究、文献检索、引文核验和浏览器可见证据读取。"
+managed_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp", "xiaohongshu-mcp"]
+enabled_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp"]

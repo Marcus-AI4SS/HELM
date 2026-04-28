@@ -1,0 +1,5 @@
+name = "writing-review"
+display_name = "Writing Review"
+description = "论文写作、回复审稿意见、Word/LaTeX 导出和结构化表达。"
+managed_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp", "xiaohongshu-mcp"]
+enabled_mcp = ["zotero-mcp", "openalex-mcp", "semantic-scholar-mcp"]

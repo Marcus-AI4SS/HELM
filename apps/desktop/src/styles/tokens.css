@@ -1,0 +1,104 @@
+:root {
+  font-family:
+    "Inter",
+    "SF Pro Display",
+    "SF Pro Text",
+    "Segoe UI Variable",
+    "Segoe UI",
+    "PingFang SC",
+    "Microsoft YaHei UI",
+    sans-serif;
+  color: #0f1f3d;
+  background: #f5f8ff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --mist: #f5f8ff;
+  --sky: #e6f0ff;
+  --sail: #bfd9ff;
+  --ocean: #7fb4ff;
+  --deep: #2563eb;
+  --navy: #0f1f3d;
+  --graphite: #64748b;
+  --white: #ffffff;
+  --blue: var(--ocean);
+  --blue-strong: var(--deep);
+  --blue-soft: var(--sky);
+  --aqua: #4aa6bd;
+  --aqua-soft: #e8f7fb;
+  --green: #16835f;
+  --green-soft: #eaf8f0;
+  --amber: #a16207;
+  --amber-soft: #fff7df;
+  --red: #d92d20;
+  --red-soft: #feecec;
+  --gray: #667085;
+  --gray-soft: #f3f6fa;
+  --ink: var(--navy);
+  --muted: var(--graphite);
+  --muted-2: #647a99;
+  --canvas: var(--mist);
+  --line: rgba(15, 31, 61, 0.1);
+  --line-strong: rgba(37, 99, 235, 0.18);
+  --glass-line: rgba(255, 255, 255, 0.82);
+  --panel: rgba(255, 255, 255, 0.7);
+  --panel-strong: rgba(255, 255, 255, 0.88);
+  --sidebar: rgba(230, 240, 255, 0.72);
+  --shadow: 0 22px 52px rgba(15, 31, 61, 0.1);
+  --shadow-soft: 0 10px 26px rgba(15, 31, 61, 0.08);
+  --inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  min-height: 760px;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 248, 255, 0.94) 42%, rgba(230, 240, 255, 0.78) 100%),
+    var(--mist);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+:root[data-density="compact"] {
+  --shadow: 0 14px 34px rgba(15, 31, 61, 0.08);
+  --shadow-soft: 0 7px 18px rgba(15, 31, 61, 0.07);
+}
+
+:root[data-reduce-motion="on"] *,
+:root[data-reduce-motion="on"] *::before,
+:root[data-reduce-motion="on"] *::after {
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-reduce-motion="off"]) *,
+  :root:not([data-reduce-motion="off"]) *::before,
+  :root:not([data-reduce-motion="off"]) *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

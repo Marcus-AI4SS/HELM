@@ -1,0 +1,46 @@
+.empty-state {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 12px;
+  border: 1px dashed rgba(84, 126, 160, 0.22);
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.54);
+  box-shadow: var(--inner-highlight);
+}
+
+.empty-state strong {
+  color: var(--ink);
+}
+
+.empty-state p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.toast {
+  position: fixed;
+  top: 96px;
+  right: 24px;
+  z-index: 10;
+  max-width: 520px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: var(--radius);
+  font-weight: 760;
+  box-shadow:
+    var(--shadow),
+    var(--inner-highlight);
+  backdrop-filter: blur(22px) saturate(1.15);
+}
+
+.toast.success {
+  color: #117936;
+  background: var(--green-soft);
+}
+
+.toast.error {
+  color: #b42318;
+  background: var(--red-soft);
+}

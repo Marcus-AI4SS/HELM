@@ -1,0 +1,5 @@
+name = "cloud-batch"
+display_name = "Cloud Batch"
+description = "适合需要云端长时运行的批处理项目。"
+managed_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp", "xiaohongshu-mcp"]
+enabled_mcp = ["zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "paper-search-mcp"]

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://research-environment-local/schemas/agent_dispatch_card.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "project_type",
+    "route_id",
+    "stage",
+    "execution_mode",
+    "isolation_method",
+    "agents",
+    "agent_context_packet",
+    "allowed_skills_mcp",
+    "agent_output_path",
+    "review_agents",
+    "quality_gate",
+    "handoff_log",
+    "gate_log",
+    "conflict_resolution",
+    "merge_owner",
+    "user_veto_window"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_mode": {
+      "type": "string",
+      "enum": [
+        "multi_perspective_reasoning",
+        "sequential_multi_agent_execution",
+        "parallel_multi_agent_execution"
+      ]
+    },
+    "isolation_method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "agent_context_packet": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "agent_display_names": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "allowed_skills_mcp": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true
+      }
+    },
+    "agent_output_path": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "review_agents": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "quality_gate": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "handoff_log": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gate_log": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_state_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_state_history_log": {
+      "type": "string",
+      "minLength": 1
+    },
+    "conflict_resolution": {
+      "type": "string",
+      "minLength": 1
+    },
+    "merge_owner": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "user_veto_window": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

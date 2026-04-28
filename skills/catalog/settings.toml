@@ -1,0 +1,24 @@
+[paths]
+root = "<HELM_REPO>/skills"
+codex_home = "<USER_HOME>/.codex"
+config_path = "<USER_HOME>/.codex/config.toml"
+skills_dir = "<USER_HOME>/.codex/skills"
+cloud_dir = "<HELM_REPO>/skills/cloud"
+
+[obsidian]
+vault_path = "<OPTIONAL_OBSIDIAN_VAULT>"
+vault_subdir = "Codex Research"
+sync_export_dir = "<HELM_REPO>/skills/outputs/reports/obsidian-sync"
+
+[plugin_marketplace]
+path = "<HELM_REPO>/skills/.agents/plugins/marketplace.json"
+home_path = "<USER_HOME>/.agents/plugins/marketplace.json"
+
+[global_route_rules]
+language = "zh-CN"
+role = "world-class-doctoral-supervisor"
+require_realtime_verification = true
+formal_citation_requires_doi = true
+forbid_unverified_references = true
+forbid_ai_hallucinated_citations = true
+data_paragraph_framework = "PEEL"

@@ -1,0 +1,52 @@
+{
+  "plugins": [
+    {
+      "name": "research-autopilot",
+      "status": "active-local-globalized",
+      "category": "主插件",
+      "role": "本地总控插件，承载主 skill、GUI、profile 管理和路由表。",
+      "default_policy": "默认启用并作为本地环境核心，同时写入用户级本地 marketplace。",
+      "notes": "这是当前研究型 Codex 的真正插件层核心。"
+    },
+    {
+      "name": "hugging-face",
+      "status": "enabled-official",
+      "category": "研究增强",
+      "role": "模型、数据集、推理/训练模板增强层，适合计算社科的文本、多模态和模型比较任务。",
+      "default_policy": "默认不抢主工作流，只在相关任务中建议接入。",
+      "notes": "已预装到配置层和本地缓存层；首次使用仍可能需要账号授权。"
+    },
+    {
+      "name": "scite",
+      "status": "enabled-official",
+      "category": "研究增强",
+      "role": "提供带引用语境和支持/争议关系的研究检索增强。",
+      "default_policy": "作为文献发现增强层，不替代正式引用核验。",
+      "notes": "已预装到配置层和本地缓存层；首次使用仍可能需要账号授权。 "
+    },
+    {
+      "name": "notion",
+      "status": "candidate-official-not-selected",
+      "category": "知识协作",
+      "role": "项目看板和 SaaS 知识库。",
+      "default_policy": "默认不装，因为当前知识沉淀方向已选 Obsidian。",
+      "notes": "官方插件清单中可用，但不进入默认主链。"
+    },
+    {
+      "name": "google-drive",
+      "status": "enabled-official-optional",
+      "category": "文件协作",
+      "role": "外部文件协作与资料访问。",
+      "default_policy": "作为可选协作层预装，不进入研究主链。",
+      "notes": "已预装到配置层和本地缓存层；首次使用仍可能需要账号授权。"
+    },
+    {
+      "name": "obsidian-sidecar",
+      "status": "community-sidecar",
+      "category": "知识沉淀",
+      "role": "长期研究知识库侧车，不替代主路由。",
+      "default_policy": "通过 `obsidian-research-sync` 输出 Markdown 包或直接同步到 vault。",
+      "notes": "当前用 skill 层兼容 Obsidian，而不是依赖官方 Codex 插件。"
+    }
+  ]
+}

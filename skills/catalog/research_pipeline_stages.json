@@ -1,0 +1,287 @@
+{
+  "stages": [
+    {
+      "id": "stack_governance",
+      "order": 10,
+      "label": "栈治理",
+      "description": "用于环境、技能、插件和 MCP 的治理与修复。"
+    },
+    {
+      "id": "environment_maintenance",
+      "order": 20,
+      "label": "环境维护",
+      "description": "用于 Python、Git、PowerShell、Codex config 和 profile 的维护。"
+    },
+    {
+      "id": "research_design",
+      "order": 30,
+      "label": "研究设计",
+      "description": "定义研究问题、边界、方法逻辑和材料策略。"
+    },
+    {
+      "id": "literature_discovery",
+      "order": 40,
+      "label": "文献发现",
+      "description": "建立文献池、检索边界和综述主题结构。"
+    },
+    {
+      "id": "citation_verification",
+      "order": 50,
+      "label": "正式核验",
+      "description": "完成 DOI 与正式元数据核验。"
+    },
+    {
+      "id": "data_material_acquisition",
+      "order": 60,
+      "label": "材料获取",
+      "description": "记录材料来源、平台边界和数据访问层级。"
+    },
+    {
+      "id": "analysis_execution",
+      "order": 70,
+      "label": "分析执行",
+      "description": "执行定量、文本、网络或仿真分析。"
+    },
+    {
+      "id": "paper_assessment",
+      "order": 80,
+      "label": "论文评审",
+      "description": "形成单篇论文的结构化评审与方法判断。"
+    },
+    {
+      "id": "writing_synthesis",
+      "order": 90,
+      "label": "写作综合",
+      "description": "形成文稿、图表、案例分析或综述输出。"
+    },
+    {
+      "id": "review_revision",
+      "order": 100,
+      "label": "复核返修",
+      "description": "执行 target-specific reviewer gate 与修改。"
+    },
+    {
+      "id": "package_freeze",
+      "order": 110,
+      "label": "交付冻结",
+      "description": "冻结最终稿、复现包和投稿材料。"
+    },
+    {
+      "id": "runtime_supervision",
+      "order": 120,
+      "label": "运行监督",
+      "description": "监控长时实验、checkpoint 和 worker 状态。"
+    },
+    {
+      "id": "project_retrospective",
+      "order": 130,
+      "label": "项目复盘",
+      "description": "复盘项目、沉淀知识并提出 skill 演化建议。"
+    }
+  ],
+  "required_stage_gates": {
+    "stack_governance": [],
+    "environment_maintenance": [],
+    "research_design": [
+      "research_question_defined",
+      "method_boundary_declared"
+    ],
+    "literature_discovery": [],
+    "citation_verification": [
+      "doi_and_metadata_verified"
+    ],
+    "data_material_acquisition": [
+      "data_provenance_verified"
+    ],
+    "analysis_execution": [
+      "measurement_validity_checked"
+    ],
+    "paper_assessment": [
+      "writing_quality_checked"
+    ],
+    "writing_synthesis": [
+      "writing_quality_checked"
+    ],
+    "review_revision": [],
+    "package_freeze": [
+      "final_package_frozen"
+    ],
+    "runtime_supervision": [],
+    "project_retrospective": [
+      "retrospective_recorded"
+    ]
+  },
+  "route_stage_gate_overrides": {
+    "social-platform-case": {
+      "data_material_acquisition": [
+        "data_provenance_verified",
+        "platform_ethics_checked"
+      ]
+    },
+    "computational-social-science": {
+      "analysis_execution": [
+        "measurement_validity_checked",
+        "coding_consistency_checked",
+        "network_edge_defined",
+        "abm_parameter_justified"
+      ],
+      "writing_synthesis": [
+        "writing_quality_checked",
+        "figure_table_consistency_checked"
+      ],
+      "package_freeze": [
+        "reproducibility_bundle_verified",
+        "final_package_frozen"
+      ]
+    },
+    "social-science-submission-package": {
+      "citation_verification": [
+        "doi_and_metadata_verified"
+      ],
+      "review_revision": [
+        "writing_quality_checked",
+        "figure_table_consistency_checked"
+      ],
+      "package_freeze": [
+        "reproducibility_bundle_verified",
+        "final_package_frozen"
+      ]
+    },
+    "empirical-quant": {
+      "writing_synthesis": [
+        "writing_quality_checked",
+        "figure_table_consistency_checked"
+      ],
+      "package_freeze": [
+        "reproducibility_bundle_verified"
+      ]
+    },
+    "text-corpus": {
+      "analysis_execution": [
+        "measurement_validity_checked",
+        "coding_consistency_checked"
+      ],
+      "writing_synthesis": [
+        "writing_quality_checked",
+        "figure_table_consistency_checked"
+      ],
+      "package_freeze": [
+        "reproducibility_bundle_verified"
+      ]
+    },
+    "network-analysis": {
+      "analysis_execution": [
+        "measurement_validity_checked",
+        "network_edge_defined"
+      ],
+      "writing_synthesis": [
+        "writing_quality_checked",
+        "figure_table_consistency_checked"
+      ],
+      "package_freeze": [
+        "reproducibility_bundle_verified"
+      ]
+    },
+    "literature-review": {
+      "citation_verification": [
+        "doi_and_metadata_verified"
+      ],
+      "writing_synthesis": [
+        "writing_quality_checked"
+      ]
+    },
+    "single-paper-review": {
+      "citation_verification": [
+        "doi_and_metadata_verified"
+      ],
+      "paper_assessment": [
+        "writing_quality_checked"
+      ]
+    },
+    "writing-export": {
+      "writing_synthesis": [
+        "writing_quality_checked"
+      ],
+      "review_revision": [
+        "writing_quality_checked"
+      ]
+    }
+  },
+  "route_stage_sequences": {
+    "stack-governance": [
+      "stack_governance"
+    ],
+    "single-paper-review": [
+      "citation_verification",
+      "paper_assessment",
+      "writing_synthesis"
+    ],
+    "environment-ops": [
+      "environment_maintenance"
+    ],
+    "project-retrospective": [
+      "project_retrospective"
+    ],
+    "long-running-experiment-ops": [
+      "runtime_supervision"
+    ],
+    "literature-review": [
+      "research_design",
+      "literature_discovery",
+      "citation_verification",
+      "writing_synthesis"
+    ],
+    "social-platform-case": [
+      "research_design",
+      "data_material_acquisition",
+      "analysis_execution",
+      "writing_synthesis"
+    ],
+    "computational-social-science": [
+      "research_design",
+      "literature_discovery",
+      "data_material_acquisition",
+      "analysis_execution",
+      "writing_synthesis",
+      "package_freeze"
+    ],
+    "social-science-submission-package": [
+      "research_design",
+      "citation_verification",
+      "analysis_execution",
+      "writing_synthesis",
+      "review_revision",
+      "package_freeze"
+    ],
+    "empirical-quant": [
+      "research_design",
+      "data_material_acquisition",
+      "analysis_execution",
+      "writing_synthesis",
+      "package_freeze"
+    ],
+    "text-corpus": [
+      "research_design",
+      "data_material_acquisition",
+      "analysis_execution",
+      "writing_synthesis",
+      "package_freeze"
+    ],
+    "network-analysis": [
+      "research_design",
+      "data_material_acquisition",
+      "analysis_execution",
+      "writing_synthesis",
+      "package_freeze"
+    ],
+    "writing-export": [
+      "citation_verification",
+      "writing_synthesis",
+      "review_revision",
+      "package_freeze"
+    ],
+    "general-research": [
+      "research_design"
+    ]
+  }
+}

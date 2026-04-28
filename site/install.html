@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Install HELM</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"><img src="assets/helm-icon.png" alt="" /><span>HELM</span></a>
+      <nav>
+        <a href="install.html">Install</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="vela.html">VELA</a>
+        <a href="https://github.com/avefield509-lang/HELM">GitHub</a>
+      </nav>
+    </header>
+    <main class="content-page">
+      <p class="eyebrow">Install</p>
+      <h1>Build HELM from source.</h1>
+      <p>
+        Public binary artifacts are prepared through the release checklist. Until a tagged release is available,
+        use the source workflow below.
+      </p>
+      <pre><code>cd apps/desktop
+npm install
+npm run build
+cd src-tauri
+cargo check</code></pre>
+      <h2>Run release checks</h2>
+      <pre><code>powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1</code></pre>
+      <h2>First launch</h2>
+      <p>
+        HELM can start without a live environment. If no trusted projects are detected, it shows onboarding actions:
+        copy a Codex handoff, open Codex, or inspect environment status.
+      </p>
+    </main>
+  </body>
+</html>
+

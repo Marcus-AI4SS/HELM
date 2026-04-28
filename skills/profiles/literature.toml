@@ -1,0 +1,5 @@
+name = "literature"
+display_name = "Literature"
+description = "文献综述、文献发现、引文扩展和正式入库时使用。"
+managed_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp", "xiaohongshu-mcp"]
+enabled_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp"]

@@ -1,0 +1,23 @@
+{
+  "public_source_release": {
+    "repo_root": "<HELM_REPO>",
+    "skills_root": "skills",
+    "platform": "windows",
+    "delivery_mode": "tauri_native_exe",
+    "entry_app": "apps/desktop",
+    "build_entry": "cd apps/desktop && npm run tauri build",
+    "dist_dir": "apps/desktop/src-tauri/target/release",
+    "exe_name": "helm_local_research_board.exe",
+    "git_boundary": "<PUBLIC_HELM_REPO>",
+    "privacy_mode": "public_source"
+  },
+  "public_macos_source_build": {
+    "source_repo": "<PUBLIC_HELM_REPO>",
+    "platform": "macos_apple_silicon",
+    "delivery_mode": "tauri_source_build",
+    "build_entry": "cd apps/desktop && npm run tauri build",
+    "bundle_dir": "apps/desktop/src-tauri/target/release/bundle",
+    "git_boundary": "<PUBLIC_HELM_REPO>",
+    "privacy_mode": "public_source"
+  }
+}

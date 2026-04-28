@@ -1,0 +1,178 @@
+{
+  "levels": [
+    {
+      "id": "public_open",
+      "label": "公开开放数据",
+      "description": "开放获取、可自由下载和再利用的公开数据。"
+    },
+    {
+      "id": "public_web_visible",
+      "label": "公开网页可见内容",
+      "description": "无需登录即可在浏览器中直接看到的公开网页内容。"
+    },
+    {
+      "id": "authenticated_visible",
+      "label": "登录态可见内容",
+      "description": "需要登录，但仍属于当前用户浏览器可见范围内的内容。"
+    },
+    {
+      "id": "licensed_library",
+      "label": "授权数据库或订阅资源",
+      "description": "需要机构授权、数据库订阅或正式许可的资源。"
+    },
+    {
+      "id": "restricted_sensitive",
+      "label": "受限或敏感材料",
+      "description": "涉及敏感数据、受限访问、伦理审批或更严格权限控制的材料。"
+    }
+  ],
+  "route_defaults": {
+    "stack-governance": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open"
+      ],
+      "required_gates": []
+    },
+    "single-paper-review": {
+      "default_level": "licensed_library",
+      "allowed_levels": [
+        "public_open",
+        "licensed_library"
+      ],
+      "required_gates": [
+        "doi_and_metadata_verified"
+      ]
+    },
+    "environment-ops": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open"
+      ],
+      "required_gates": []
+    },
+    "project-retrospective": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open"
+      ],
+      "required_gates": [
+        "retrospective_recorded"
+      ]
+    },
+    "long-running-experiment-ops": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open",
+        "restricted_sensitive"
+      ],
+      "required_gates": []
+    },
+    "literature-review": {
+      "default_level": "licensed_library",
+      "allowed_levels": [
+        "public_open",
+        "licensed_library"
+      ],
+      "required_gates": [
+        "doi_and_metadata_verified"
+      ]
+    },
+    "social-platform-case": {
+      "default_level": "authenticated_visible",
+      "allowed_levels": [
+        "public_web_visible",
+        "authenticated_visible"
+      ],
+      "required_gates": [
+        "data_provenance_verified",
+        "platform_ethics_checked"
+      ]
+    },
+    "computational-social-science": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open",
+        "public_web_visible",
+        "authenticated_visible",
+        "licensed_library",
+        "restricted_sensitive"
+      ],
+      "required_gates": [
+        "data_provenance_verified"
+      ]
+    },
+    "social-science-submission-package": {
+      "default_level": "licensed_library",
+      "allowed_levels": [
+        "public_open",
+        "licensed_library",
+        "restricted_sensitive"
+      ],
+      "required_gates": [
+        "doi_and_metadata_verified",
+        "final_package_frozen"
+      ]
+    },
+    "empirical-quant": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open",
+        "licensed_library",
+        "restricted_sensitive"
+      ],
+      "required_gates": [
+        "data_provenance_verified"
+      ]
+    },
+    "text-corpus": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open",
+        "public_web_visible",
+        "authenticated_visible",
+        "licensed_library",
+        "restricted_sensitive"
+      ],
+      "required_gates": [
+        "data_provenance_verified"
+      ]
+    },
+    "network-analysis": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open",
+        "public_web_visible",
+        "authenticated_visible",
+        "licensed_library",
+        "restricted_sensitive"
+      ],
+      "required_gates": [
+        "data_provenance_verified"
+      ]
+    },
+    "writing-export": {
+      "default_level": "licensed_library",
+      "allowed_levels": [
+        "public_open",
+        "licensed_library"
+      ],
+      "required_gates": [
+        "doi_and_metadata_verified",
+        "writing_quality_checked"
+      ]
+    },
+    "general-research": {
+      "default_level": "public_open",
+      "allowed_levels": [
+        "public_open",
+        "public_web_visible",
+        "authenticated_visible",
+        "licensed_library"
+      ],
+      "required_gates": [
+        "research_question_defined"
+      ]
+    }
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "agents": [
+    {
+      "agent_id": "project-manager",
+      "display_name": "项目经理智能体",
+      "preferred_model": "gpt-5.4",
+      "role": "manager",
+      "isolation_method": "project_file_context",
+      "parallel_safe": false,
+      "integration_review_required": false,
+      "capability_tags": [
+        "project_coordination",
+        "milestone_tracking",
+        "stack_governance",
+        "retrospective_coordination"
+      ],
+      "allowed_skills_mcp": [
+        "research-stack-manager",
+        "project-retrospective-evolver"
+      ],
+      "write_scope": [
+        "outputs/agent-runs/<run_id>/<agent_id>/"
+      ],
+      "max_execution_mode": "sequential_multi_agent_execution",
+      "required_review_for": []
+    },
+    {
+      "agent_id": "literature-producer",
+      "display_name": "文献智能体",
+      "preferred_model": "gpt-5.4",
+      "role": "producer",
+      "isolation_method": "isolated_subagent_context",
+      "parallel_safe": true,
+      "integration_review_required": true,
+      "capability_tags": [
+        "literature_discovery",
+        "citation_verification",
+        "zotero_sync",
+        "evidence_synthesis"
+      ],
+      "allowed_skills_mcp": [
+        "cnki-research",
+        "google-scholar-research",
+        "openalex-landscape",
+        "semantic-citation-tracer",
+        "citation-verifier",
+        "zotero-sync",
+        "systematic-literature-review",
+        "research-docx-export",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "write_scope": [
+        "outputs/agent-runs/<run_id>/<agent_id>/"
+      ],
+      "max_execution_mode": "parallel_multi_agent_execution",
+      "required_review_for": [
+        "literature_synthesis"
+      ]
+    },
+    {
+      "agent_id": "social-platform-producer",
+      "display_name": "平台证据智能体",
+      "preferred_model": "gpt-5.4",
+      "role": "producer",
+      "isolation_method": "isolated_subagent_context",
+      "parallel_safe": true,
+      "integration_review_required": true,
+      "capability_tags": [
+        "browser_visible_capture",
+        "social_evidence_extraction",
+        "text_preprocessing",
+        "network_seed_extraction"
+      ],
+      "allowed_skills_mcp": [
+        "social-platform-reader",
+        "text-analysis",
+        "network-analysis",
+        "research-docx-export",
+        "social-platform-mcp"
+      ],
+      "write_scope": [
+        "outputs/agent-runs/<run_id>/<agent_id>/"
+      ],
+      "max_execution_mode": "parallel_multi_agent_execution",
+      "required_review_for": [
+        "case_dataset",
+        "project_map"
+      ]
+    },
+    {
+      "agent_id": "analysis-producer",
+      "display_name": "分析智能体",
+      "preferred_model": "gpt-5.4",
+      "role": "producer",
+      "isolation_method": "isolated_worktree_context",
+      "parallel_safe": true,
+      "integration_review_required": true,
+      "capability_tags": [
+        "quant_analysis",
+        "text_analysis",
+        "network_analysis",
+        "simulation",
+        "reproducibility"
+      ],
+      "allowed_skills_mcp": [
+        "research-design-studio",
+        "dataset-discovery",
+        "digital-trace-pipeline",
+        "quant-analysis",
+        "text-analysis",
+        "network-analysis",
+        "abm-simulation-lab",
+        "reproducibility-package",
+        "figure-table-studio",
+        "research-docx-export"
+      ],
+      "write_scope": [
+        "outputs/agent-runs/<run_id>/<agent_id>/"
+      ],
+      "max_execution_mode": "parallel_multi_agent_execution",
+      "required_review_for": [
+        "figures_tables",
+        "reproducibility_bundle",
+        "project_map"
+      ]
+    },
+    {
+      "agent_id": "writing-producer",
+      "display_name": "写作智能体",
+      "preferred_model": "gpt-5.4",
+      "role": "producer",
+      "isolation_method": "isolated_subagent_context",
+      "parallel_safe": false,
+      "integration_review_required": true,
+      "capability_tags": [
+        "writing_export",
+        "revision_response",
+        "reference_capture",
+        "submission_packaging"
+      ],
+      "allowed_skills_mcp": [
+        "writing-reference-capture",
+        "reviewer-response-pack",
+        "research-docx-export",
+        "latex-paper-conversion"
+      ],
+      "write_scope": [
+        "outputs/agent-runs/<run_id>/<agent_id>/"
+      ],
+      "max_execution_mode": "sequential_multi_agent_execution",
+      "required_review_for": [
+        "paper_draft",
+        "revision_package",
+        "submission_package"
+      ]
+    },
+    {
+      "agent_id": "reviewer",
+      "display_name": "审稿智能体",
+      "preferred_model": "gpt-5.4",
+      "role": "reviewer",
+      "isolation_method": "isolated_subagent_context",
+      "parallel_safe": false,
+      "integration_review_required": false,
+      "capability_tags": [
+        "review_gate",
+        "citation_audit",
+        "writing_quality_audit"
+      ],
+      "allowed_skills_mcp": [
+        "citation-verifier",
+        "academic-paper-review",
+        "openalex-mcp",
+        "semantic-scholar-mcp"
+      ],
+      "write_scope": [
+        "outputs/agent-runs/<run_id>/<agent_id>/"
+      ],
+      "max_execution_mode": "sequential_multi_agent_execution",
+      "required_review_for": []
+    }
+  ]
+}

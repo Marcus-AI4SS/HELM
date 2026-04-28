@@ -1,0 +1,31 @@
+{
+  "name": "helm-local-research-board",
+  "private": false,
+  "version": "0.4.1",
+  "type": "module",
+  "scripts": {
+    "prepare:resources": "node ../../skills/scripts/prepare-tauri-resources.mjs",
+    "dev": "vite",
+    "build": "npm run prepare:resources && tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "verify:ui": "node ../../skills/scripts/run-helm-ui-smoke.mjs ../../release/ui-smoke",
+    "verify:public": "powershell -ExecutionPolicy Bypass -File ../../release/check-public-release.ps1"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "lucide-react": "^1.11.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}

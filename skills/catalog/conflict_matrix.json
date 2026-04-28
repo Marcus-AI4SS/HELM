@@ -1,0 +1,131 @@
+{
+  "rules": [
+    {
+      "rule": "single-paper-review",
+      "winner": "academic-paper-review",
+      "losers": ["systematic-literature-review"],
+      "reason": "单篇论文评审只能走单篇审稿链。"
+    },
+    {
+      "rule": "multi-paper-review",
+      "winner": "systematic-literature-review",
+      "losers": ["academic-paper-review"],
+      "reason": "多篇综述不能误走单篇论文评审链。"
+    },
+    {
+      "rule": "autopilot-entry",
+      "winner": "research-autopilot",
+      "losers": ["project-kickoff-router", "research-project-pilot", "computational-social-science-pilot", "project-ops-manager"],
+      "reason": "项目路由必须只有一个总入口。"
+    },
+    {
+      "rule": "long-running-experiment-ops",
+      "winner": "long-running-experiment-ops",
+      "losers": ["abm-simulation-lab for runtime supervision", "local-cloud-router for checkpoint recovery", "reproducibility-package for live monitoring"],
+      "reason": "模型设计、算力选择和复现包整理不能替代长时实验运行监督；断点续跑、状态 stale、worker 调整、面板修复和死机恢复应由专用运维链处理。"
+    },
+    {
+      "rule": "environment-ops-vs-stack-governance",
+      "winner": "environment-ops route through research-stack-manager",
+      "losers": ["generic stack-governance for Python/Git/PowerShell repair", "research-autopilot direct ad hoc shell fixes"],
+      "reason": "Python、Git、PowerShell、Codex config、agent-browser 和 MCP profile 维护属于环境运维子路线；它仍由 research-stack-manager 治理，但必须先检查漂移和运行态，再做最小修复。"
+    },
+    {
+      "rule": "configuration-drift",
+      "winner": "profile/catalog/config drift check before mutation",
+      "losers": ["silent config.toml edits", "untracked skill edits", "manual MCP toggles without profile comparison"],
+      "reason": "涉及配置环境时，必须先比较 profiles、catalog、config.toml、.codex/skills 与插件源目录；发现不一致先说明，再执行明确变更。"
+    },
+    {
+      "rule": "project-retrospective-handoff",
+      "winner": "project-retrospective-evolver -> research-stack-manager / obsidian-research-sync",
+      "losers": ["research-autopilot direct skill mutation", "obsidian-research-sync as route decider", "research-stack-manager as retrospective summarizer"],
+      "reason": "项目收尾时，复盘 skill 负责归纳和判断，治理 skill 负责执行已确认变更，Obsidian skill 只负责沉淀耐久笔记，三者不能互相替代。"
+    },
+    {
+      "rule": "formal-citation",
+      "winner": "citation-verifier -> zotero-sync",
+      "losers": ["google-scholar-research", "cnki-research", "paper-search-mcp direct use"],
+      "reason": "发现层不能直接升级成正式参考文献。只有 DOI 可核验且真实性可确认的文献，才能进入正式链路。"
+    },
+    {
+      "rule": "social-reading",
+      "winner": "social-platform-reader + chrome-devtools (+ social-platform-mcp when standardized capture is needed)",
+      "losers": ["xiaohongshu-mcp direct-first", "agent-browser direct-first"],
+      "reason": "社媒研究默认浏览器优先，只读真实可见内容。"
+    },
+    {
+      "rule": "social-facade-vs-platform-backend",
+      "winner": "social-platform-mcp as generic capture facade",
+      "losers": ["xiaohongshu-mcp as generic solution"],
+      "reason": "小红书 MCP 只能作为平台专用后端，不能冒充跨平台总抓取接口；跨平台统一入口应由 social-platform-mcp 承担。"
+    },
+    {
+      "rule": "social-facade-vs-direct-agent-browser",
+      "winner": "social-platform-mcp for repeatable capture",
+      "losers": ["agent-browser direct routine use"],
+      "reason": "常规社媒抓取优先走标准化 MCP facade；agent-browser 直连保留给调试、模板开发或非标准页面。"
+    },
+    {
+      "rule": "writing-capture",
+      "winner": "writing-reference-capture -> research-docx-export",
+      "losers": ["research-docx-export direct use", "latex-paper-conversion direct use"],
+      "reason": "写作任务默认先捕获实际用到的论文，完成 DOI 核验、Zotero 入库和 Obsidian 项目同步，再进入导出链。"
+    },
+    {
+      "rule": "social-science-submission-package",
+      "winner": "social-science-submission-packager",
+      "losers": ["research-docx-export direct use", "reproducibility-package direct use", "figure-table-studio direct use", "academic-paper-review direct use"],
+      "reason": "当任务目标是形成可投稿的社会科学论文送审包时，必须先由送审包总控 skill 锁定事实源、交付边界和版本同步，再调用写作、复现、图表或审稿子技能。"
+    },
+    {
+      "rule": "academic-honesty-global",
+      "winner": "verified-doi-only",
+      "losers": ["unverified-reference", "no-doi-reference", "fabricated-citation"],
+      "reason": "总路由全局遵守学术诚实规则：无 DOI、无真实性证据、或无法实时核验的文献，不得作为正式引用出现。"
+    },
+    {
+      "rule": "project-scope-defaults",
+      "winner": "project_scope_rules.json",
+      "losers": ["ad hoc project-vs-nonproject inference", "free-text multi-agent triggers"],
+      "reason": "项目型任务是否默认进入多 agent，必须由固定 route 分层、clarification card 字段和条件升格规则决定。"
+    },
+    {
+      "rule": "force-single-agent-does-not-cancel-review",
+      "winner": "single producer + mandatory reviewer when required_review_for is hit",
+      "losers": ["force_single_agent disabling reviewer", "single-agent bypass of mandatory review"],
+      "reason": "force_single_agent 只能压缩 producer 拆分，不能取消命中必审子集后的 reviewer gate。"
+    },
+    {
+      "rule": "dispatch-within-effective-permissions",
+      "winner": "effective_allowed_skills_mcp and effective_write_scope",
+      "losers": ["dispatch-time permission expansion", "output path outside effective write scope"],
+      "reason": "dispatch card 只是运行时收缩，不得通过 allowed_skills_mcp 或 output path 静默扩权。"
+    },
+    {
+      "rule": "target-specific-review-gates",
+      "winner": "review.<target_agent_id>.md + gate.<target_agent_id>.json",
+      "losers": ["one-reviewer-per-run ambiguity", "global gate without target mapping"],
+      "reason": "一个 run 中可能有多个 producer 和多个必审产物，review gate 必须按 target 显式建模。"
+    },
+    {
+      "rule": "orchestrator-subordinate-to-autopilot",
+      "winner": "research-autopilot -> research-team-orchestrator",
+      "losers": ["research-team-orchestrator as top-level router", "direct dispatch bootstrap without route selection"],
+      "reason": "research-team-orchestrator 只负责项目型多 agent 编排与 dispatch 落盘，不能跳过总路由、clarification card 和 profile 选择。"
+    },
+    {
+      "rule": "pipeline-gates-before-stage-advance",
+      "winner": "research_pipeline_stages + quality_gates + validate_research_pipeline",
+      "losers": ["free-form stage skipping", "manual promotion without gate evidence"],
+      "reason": "项目推进不能只靠 dispatch 和 reviewer；涉及阶段切换时，必须经过 route 对应的 research pipeline stage 和 gate 检查。"
+    }
+  ],
+  "retired_skills": {
+    "project-kickoff-router": "replaced-by-research-autopilot",
+    "research-project-pilot": "replaced-by-research-autopilot",
+    "computational-social-science-pilot": "replaced-by-research-autopilot",
+    "project-ops-manager": "replaced-by-research-autopilot",
+    "knowledge-base-curator": "replaced-by-obsidian-research-sync"
+  }
+}

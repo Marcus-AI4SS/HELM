@@ -1,0 +1,5 @@
+name = "paper-review"
+display_name = "Paper Review"
+description = "单篇论文评审、方法核查和审稿意见撰写。"
+managed_mcp = ["chrome-devtools", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp", "xiaohongshu-mcp"]
+enabled_mcp = ["zotero-mcp", "openalex-mcp", "semantic-scholar-mcp"]

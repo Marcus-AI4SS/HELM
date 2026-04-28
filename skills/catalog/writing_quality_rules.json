@@ -1,0 +1,96 @@
+{
+  "report_path": "logs/quality-gates/writing-quality-report.json",
+  "peel_required_when_data_analysis": true,
+  "checks": [
+    {
+      "id": "style_calibration",
+      "label": "风格校准",
+      "blocking": true,
+      "description": "文本必须使用高语义密度的学术语言，避免口号式、模板式和空泛修辞。"
+    },
+    {
+      "id": "argument_chain_closure",
+      "label": "论证链闭环",
+      "blocking": true,
+      "description": "涉及分析结果的段落必须形成 Point -> Evidence -> Explanation -> Link 的闭环。"
+    },
+    {
+      "id": "citation_alignment",
+      "label": "引文对位",
+      "blocking": true,
+      "description": "关键经验判断、理论归纳和事实性断言必须与已核验文献、图表或材料证据对位。"
+    },
+    {
+      "id": "empty_phrase_scan",
+      "label": "空洞表述扫描",
+      "blocking": true,
+      "description": "应扫描并清除低信息密度、AI 味明显或不具学术贡献的空洞表述。"
+    }
+  ],
+  "banned_phrases": [
+    "总而言之",
+    "双刃剑",
+    "多维度视角"
+  ],
+  "recommended_watch_phrases": [
+    "赋能",
+    "全方位",
+    "系统性提升",
+    "值得注意的是",
+    "不可忽视的是"
+  ],
+  "route_focus": {
+    "writing-export": {
+      "required_checks": [
+        "style_calibration",
+        "argument_chain_closure",
+        "citation_alignment",
+        "empty_phrase_scan"
+      ],
+      "target_deliverables": [
+        "paper_draft",
+        "revision_package",
+        "submission_package",
+        "docx_export",
+        "latex_export"
+      ]
+    },
+    "social-science-submission-package": {
+      "required_checks": [
+        "style_calibration",
+        "argument_chain_closure",
+        "citation_alignment",
+        "empty_phrase_scan"
+      ],
+      "target_deliverables": [
+        "paper_draft",
+        "revision_package",
+        "submission_package",
+        "figures_tables"
+      ]
+    },
+    "literature-review": {
+      "required_checks": [
+        "style_calibration",
+        "citation_alignment",
+        "empty_phrase_scan"
+      ],
+      "target_deliverables": [
+        "annotated_bibliography",
+        "literature_synthesis",
+        "docx_export"
+      ]
+    },
+    "single-paper-review": {
+      "required_checks": [
+        "style_calibration",
+        "argument_chain_closure",
+        "citation_alignment",
+        "empty_phrase_scan"
+      ],
+      "target_deliverables": [
+        "docx_export"
+      ]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "adapter_name": "multi-agent-harness-adapter",
+  "status": "reserved_interface_only",
+  "active_runtime": false,
+  "future_targets": [
+    "deepagents",
+    "langgraph-harness"
+  ],
+  "activation_policy": "Only activate when Codex native subagent execution is insufficient for checkpointing, resume, or stronger isolation; do not replace the current Codex main runtime.",
+  "reads": {
+    "required": [
+      ".codex/dispatch/<run_id>.yaml",
+      ".codex/context-packets/<run_id>/<agent_id>.md",
+      "logs/agent-handoffs/<run_id>.md",
+      "logs/quality-gates/<run_id>.md",
+      "logs/project-state/current.json",
+      "logs/project-state/history.md",
+      "logs/quality-gates/pipeline-status.json",
+      "logs/quality-gates/writing-quality-report.json"
+    ],
+    "optional": [
+      "material-passport.yaml",
+      "evidence-ledger.yaml",
+      "research-map.md",
+      "findings-memory.md"
+    ]
+  },
+  "reserved_writes": {
+    "adapter_manifest": ".codex/harness/<run_id>/adapter-manifest.json",
+    "agent_checkpoint": ".codex/harness/<run_id>/checkpoints/<agent_id>.json",
+    "agent_resume_packet": ".codex/harness/<run_id>/resume/<agent_id>.md",
+    "handoff_packet": ".codex/harness/<run_id>/handoffs/<target_agent_id>.json",
+    "session_trace": ".codex/harness/<run_id>/session-trace.jsonl",
+    "adapter_status_log": "logs/harness-adapter/<run_id>.md"
+  },
+  "must_not_mutate": [
+    ".codex/dispatch/<run_id>.yaml",
+    ".codex/context-packets/<run_id>/<agent_id>.md",
+    "outputs/agent-runs/<run_id>/<agent_id>/",
+    "logs/agent-handoffs/<run_id>.md",
+    "logs/quality-gates/<run_id>.md",
+    "logs/project-state/current.json",
+    "logs/project-state/history.md",
+    "logs/quality-gates/pipeline-status.json",
+    "logs/quality-gates/writing-quality-report.json",
+    "material-passport.yaml",
+    "evidence-ledger.yaml",
+    "research-map.md",
+    "findings-memory.md"
+  ],
+  "bridge_rules": [
+    "Adapter may read canonical dispatch and context packets but must not overwrite them.",
+    "Adapter writes only reserved harness files until a later bridge step promotes outputs.",
+    "Adapter checkpoints are runtime state, not canonical research outputs.",
+    "Merge owner or project-manager remains responsible for promoting adapter outputs into canonical handoff or gate artifacts."
+  ],
+  "checkpoint_contract": {
+    "required_fields": [
+      "run_id",
+      "agent_id",
+      "status",
+      "last_completed_step",
+      "input_snapshot",
+      "output_snapshot",
+      "updated_at"
+    ],
+    "allowed_status": [
+      "pending",
+      "running",
+      "paused",
+      "failed",
+      "completed"
+    ]
+  }
+}

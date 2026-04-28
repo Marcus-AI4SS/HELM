@@ -1,0 +1,7 @@
+name = "social-platform"
+display_name = "Social Platform"
+description = "小红书、抖音、B站、微信公众号等平台研究，浏览器优先。"
+managed_mcp = ["chrome-devtools", "social-platform-mcp", "xiaohongshu-mcp", "zotero-mcp", "openalex-mcp", "semantic-scholar-mcp", "google-scholar-mcp", "cnki-mcp", "paper-search-mcp"]
+enabled_mcp = ["chrome-devtools", "social-platform-mcp", "zotero-mcp", "openalex-mcp"]
+browser_default_order = ["chrome-devtools", "social-platform-mcp", "agent-browser", "xiaohongshu-mcp"]
+browser_automation_cli = "agent-browser"

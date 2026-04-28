@@ -1,0 +1,169 @@
+{
+  "generated_at": "2026-04-24",
+  "source_scope": "Thread-level design review and implementation history in the current Codex research environment project.",
+  "policy": {
+    "default_rule": "Do not replace Codex as the main runtime. Absorb stable structures, governance rules, templates, and review contracts into the local stack.",
+    "adoption_labels": [
+      "adopted_as_standard",
+      "adapted_as_pattern",
+      "retained_as_plugin_and_methodology",
+      "optional_watch_layer"
+    ]
+  },
+  "systems": [
+    {
+      "name": "agentsmd/agents.md",
+      "repo_url": "https://github.com/agentsmd/agents.md",
+      "category": "agent-governance-spec",
+      "adoption_label": "adopted_as_standard",
+      "current_status": "absorbed",
+      "absorbed_into_local_stack": [
+        "skills/AGENTS.md root rule chain",
+        "project-level AGENTS.md inheritance",
+        "project rules can only tighten, not expand permissions"
+      ],
+      "not_adopted_by_default": [],
+      "watch_items": [],
+      "notes": "This repo became the normative source for root-to-project AGENTS governance."
+    },
+    {
+      "name": "Imbad0202/academic-research-skills",
+      "repo_url": "https://github.com/Imbad0202/academic-research-skills",
+      "category": "research-pipeline-and-quality-gates",
+      "adoption_label": "adapted_as_pattern",
+      "current_status": "partially-absorbed",
+      "absorbed_into_local_stack": [
+        "task_type / data_access_level / quality_gate_required / stage_scope / subagent_allowed metadata",
+        "research pipeline stages",
+        "quality gates",
+        "data access matrix"
+      ],
+      "not_adopted_by_default": [
+        "original skill bundle as-is",
+        "non-local runtime assumptions"
+      ],
+      "watch_items": [
+        "future metadata refinements for route-level governance"
+      ],
+      "notes": "Used as the main structural reference for metadata thickening and stage-level governance."
+    },
+    {
+      "name": "langchain-ai/deepagents",
+      "repo_url": "https://github.com/langchain-ai/deepagents",
+      "category": "multi-agent-harness-runtime",
+      "adoption_label": "optional_watch_layer",
+      "current_status": "reserved-interface-only",
+      "absorbed_into_local_stack": [
+        "future harness adapter contract",
+        "checkpoint and resume interface reservation",
+        "adapter-only boundary under Codex main runtime"
+      ],
+      "not_adopted_by_default": [
+        "runtime replacement",
+        "direct takeover of dispatch, gate, or project-state files"
+      ],
+      "watch_items": [
+        "stronger checkpointing",
+        "resume control",
+        "isolated harness execution when Codex-native execution is insufficient"
+      ],
+      "notes": "Kept as a future adapter target, not as a peer main system."
+    },
+    {
+      "name": "wan-huiyan/subagent-driven-development",
+      "repo_url": "https://github.com/wan-huiyan/subagent-driven-development",
+      "category": "subagent-execution-discipline",
+      "adoption_label": "adapted_as_pattern",
+      "current_status": "partially-absorbed",
+      "absorbed_into_local_stack": [
+        "review-first discipline for multi-agent outputs",
+        "integration-review concept",
+        "agent registry fields for isolation and integration review"
+      ],
+      "not_adopted_by_default": [
+        "full runtime/worktree orchestration layer"
+      ],
+      "watch_items": [
+        "future stronger worktree isolation if local coding swarms become common"
+      ],
+      "notes": "Used to thicken subagent execution boundaries, not to replace current routing."
+    },
+    {
+      "name": "obra/superpowers",
+      "repo_url": "https://github.com/obra/superpowers",
+      "category": "plugin-and-methodology",
+      "adoption_label": "retained_as_plugin_and_methodology",
+      "current_status": "active",
+      "absorbed_into_local_stack": [
+        "plugin kept enabled",
+        "planning and delivery discipline retained as engineering methodology"
+      ],
+      "not_adopted_by_default": [],
+      "watch_items": [
+        "future deeper integration for spec-review and delivery routines"
+      ],
+      "notes": "This is the only external system here that remains both a live plugin and a method source."
+    },
+    {
+      "name": "VoltAgent/awesome-codex-subagents",
+      "repo_url": "https://github.com/VoltAgent/awesome-codex-subagents",
+      "category": "subagent-role-library",
+      "adoption_label": "adapted_as_pattern",
+      "current_status": "partially-absorbed",
+      "absorbed_into_local_stack": [
+        "display_name layer",
+        "preferred_model / isolation_method / parallel_safe / integration_review_required / capability_tags in subagent registry"
+      ],
+      "not_adopted_by_default": [
+        "bulk installation of external subagents"
+      ],
+      "watch_items": [
+        "future role-library expansion if the research team model grows"
+      ],
+      "notes": "Role-library logic was absorbed without importing a large external agent bundle."
+    },
+    {
+      "name": "Leey21/awesome-ai-research-writing",
+      "repo_url": "https://github.com/Leey21/awesome-ai-research-writing",
+      "category": "writing-quality-patterns",
+      "adoption_label": "adapted_as_pattern",
+      "current_status": "partially-absorbed",
+      "absorbed_into_local_stack": [
+        "writing quality gate",
+        "style calibration",
+        "argument chain closure",
+        "citation alignment",
+        "empty phrase scan"
+      ],
+      "not_adopted_by_default": [
+        "generic prompt bundle copied verbatim"
+      ],
+      "watch_items": [
+        "future richer style-check helpers for submission-stage writing"
+      ],
+      "notes": "Used as the main external reference for the writing-quality layer."
+    },
+    {
+      "name": "ResearAI/DeepScientist",
+      "repo_url": "https://github.com/ResearAI/DeepScientist",
+      "category": "research-project-structure",
+      "adoption_label": "adapted_as_pattern",
+      "current_status": "partially-absorbed",
+      "absorbed_into_local_stack": [
+        "one-project scaffold direction",
+        "research-map.md",
+        "findings-memory.md",
+        "material-passport.yaml",
+        "evidence-ledger.yaml"
+      ],
+      "not_adopted_by_default": [
+        "separate main runtime",
+        "parallel project OS outside Codex"
+      ],
+      "watch_items": [
+        "future quest-style project templates if a heavier long-form research mode is needed"
+      ],
+      "notes": "Its strongest contribution is project structure, not runtime replacement."
+    }
+  ]
+}

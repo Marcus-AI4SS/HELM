@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://research-environment-local/schemas/project_agent_definition.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "agent_id",
+    "role",
+    "enabled",
+    "allowed_skills_mcp_subset",
+    "write_scope_subset",
+    "max_execution_mode",
+    "required_inputs",
+    "expected_outputs",
+    "review_gate"
+  ],
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preferred_model": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "isolation_method": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "shared_thread_context",
+        "project_file_context",
+        "isolated_subagent_context",
+        "isolated_worktree_context",
+        null
+      ]
+    },
+    "parallel_safe": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "integration_review_required": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "capability_tags_subset": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "allowed_skills_mcp_subset": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "write_scope_subset": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "max_execution_mode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "multi_perspective_reasoning",
+        "sequential_multi_agent_execution",
+        "parallel_multi_agent_execution",
+        null
+      ]
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "expected_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "review_gate": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

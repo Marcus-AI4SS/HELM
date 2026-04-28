@@ -1,0 +1,516 @@
+{
+  "skills": {
+    "research-autopilot": {
+      "category": "总控",
+      "role": "entry",
+      "status": "active",
+      "entry": true,
+      "task_type": "orchestration",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "research_design",
+        "literature_discovery",
+        "citation_verification",
+        "data_material_acquisition",
+        "analysis_execution",
+        "paper_assessment",
+        "writing_synthesis",
+        "review_revision",
+        "package_freeze",
+        "project_retrospective"
+      ],
+      "subagent_allowed": false
+    },
+    "project-retrospective-evolver": {
+      "category": "总控",
+      "role": "entry",
+      "status": "active",
+      "entry": true,
+      "task_type": "project_retrospective",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "retrospective_recorded"
+      ],
+      "stage_scope": [
+        "project_retrospective"
+      ],
+      "subagent_allowed": true
+    },
+    "research-stack-manager": {
+      "category": "总控",
+      "role": "entry",
+      "status": "active",
+      "entry": true,
+      "task_type": "stack_governance",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "stack_governance",
+        "environment_maintenance"
+      ],
+      "subagent_allowed": false
+    },
+    "research-team-orchestrator": {
+      "category": "总控",
+      "role": "controller",
+      "status": "active",
+      "entry": false,
+      "task_type": "orchestration",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "research_design",
+        "literature_discovery",
+        "citation_verification",
+        "data_material_acquisition",
+        "analysis_execution",
+        "writing_synthesis",
+        "review_revision",
+        "package_freeze",
+        "project_retrospective"
+      ],
+      "subagent_allowed": false
+    },
+    "academic-paper-review": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "paper_review",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "doi_and_metadata_verified",
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "paper_assessment"
+      ],
+      "subagent_allowed": true
+    },
+    "systematic-literature-review": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "literature_review",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "writing_synthesis"
+      ],
+      "subagent_allowed": true
+    },
+    "citation-verifier": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "citation_integrity",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "doi_and_metadata_verified"
+      ],
+      "stage_scope": [
+        "citation_verification"
+      ],
+      "subagent_allowed": true
+    },
+    "cnki-research": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "literature_discovery",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "literature_discovery"
+      ],
+      "subagent_allowed": true
+    },
+    "google-scholar-research": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "literature_discovery",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "literature_discovery"
+      ],
+      "subagent_allowed": true
+    },
+    "openalex-landscape": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "literature_discovery",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "literature_discovery"
+      ],
+      "subagent_allowed": true
+    },
+    "semantic-citation-tracer": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "literature_discovery",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "literature_discovery"
+      ],
+      "subagent_allowed": true
+    },
+    "zotero-sync": {
+      "category": "文献与审稿",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "citation_integrity",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "doi_and_metadata_verified"
+      ],
+      "stage_scope": [
+        "citation_verification",
+        "writing_synthesis"
+      ],
+      "subagent_allowed": true
+    },
+    "quant-analysis": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "quant_analysis",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "measurement_validity_checked"
+      ],
+      "stage_scope": [
+        "analysis_execution"
+      ],
+      "subagent_allowed": true
+    },
+    "text-analysis": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "text_analysis",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "measurement_validity_checked",
+        "coding_consistency_checked"
+      ],
+      "stage_scope": [
+        "analysis_execution"
+      ],
+      "subagent_allowed": true
+    },
+    "network-analysis": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "network_analysis",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "measurement_validity_checked",
+        "network_edge_defined"
+      ],
+      "stage_scope": [
+        "analysis_execution"
+      ],
+      "subagent_allowed": true
+    },
+    "research-design-studio": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "research_design",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "research_question_defined",
+        "method_boundary_declared"
+      ],
+      "stage_scope": [
+        "research_design"
+      ],
+      "subagent_allowed": true
+    },
+    "dataset-discovery": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "dataset_discovery",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "data_provenance_verified"
+      ],
+      "stage_scope": [
+        "data_material_acquisition"
+      ],
+      "subagent_allowed": true
+    },
+    "digital-trace-pipeline": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "digital_trace_capture",
+      "data_access_level": "authenticated_visible",
+      "quality_gate_required": [
+        "data_provenance_verified",
+        "platform_ethics_checked"
+      ],
+      "stage_scope": [
+        "data_material_acquisition"
+      ],
+      "subagent_allowed": true
+    },
+    "abm-simulation-lab": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "simulation",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "abm_parameter_justified"
+      ],
+      "stage_scope": [
+        "analysis_execution"
+      ],
+      "subagent_allowed": true
+    },
+    "reproducibility-package": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "reproducibility",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "reproducibility_bundle_verified"
+      ],
+      "stage_scope": [
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    "long-running-experiment-ops": {
+      "category": "计算社科与分析",
+      "role": "helper",
+      "status": "active",
+      "entry": false,
+      "task_type": "runtime_ops",
+      "data_access_level": "restricted_sensitive",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "runtime_supervision"
+      ],
+      "subagent_allowed": false
+    },
+    "figure-table-studio": {
+      "category": "计算社科与分析",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "figure_table",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "figure_table_consistency_checked"
+      ],
+      "stage_scope": [
+        "writing_synthesis",
+        "review_revision"
+      ],
+      "subagent_allowed": true
+    },
+    "social-platform-reader": {
+      "category": "社媒与案例",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "social_evidence",
+      "data_access_level": "authenticated_visible",
+      "quality_gate_required": [
+        "data_provenance_verified",
+        "platform_ethics_checked"
+      ],
+      "stage_scope": [
+        "data_material_acquisition"
+      ],
+      "subagent_allowed": true
+    },
+    "research-docx-export": {
+      "category": "写作与导出",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "writing_export",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "writing_synthesis",
+        "review_revision",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    "writing-reference-capture": {
+      "category": "写作与导出",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "writing_capture",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "doi_and_metadata_verified"
+      ],
+      "stage_scope": [
+        "citation_verification",
+        "writing_synthesis"
+      ],
+      "subagent_allowed": true
+    },
+    "reviewer-response-pack": {
+      "category": "写作与导出",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "response_revision",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "review_revision"
+      ],
+      "subagent_allowed": true
+    },
+    "social-science-submission-packager": {
+      "category": "写作与导出",
+      "role": "controller",
+      "status": "active",
+      "entry": false,
+      "task_type": "submission_packaging",
+      "data_access_level": "restricted_sensitive",
+      "quality_gate_required": [
+        "figure_table_consistency_checked",
+        "reproducibility_bundle_verified",
+        "final_package_frozen"
+      ],
+      "stage_scope": [
+        "writing_synthesis",
+        "review_revision",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    "latex-paper-conversion": {
+      "category": "写作与导出",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "writing_export",
+      "data_access_level": "licensed_library",
+      "quality_gate_required": [
+        "writing_quality_checked"
+      ],
+      "stage_scope": [
+        "writing_synthesis"
+      ],
+      "subagent_allowed": true
+    },
+    "obsidian-research-sync": {
+      "category": "知识沉淀",
+      "role": "leaf",
+      "status": "active",
+      "entry": false,
+      "task_type": "knowledge_sync",
+      "data_access_level": "public_open",
+      "quality_gate_required": [
+        "retrospective_recorded"
+      ],
+      "stage_scope": [
+        "writing_synthesis",
+        "project_retrospective",
+        "package_freeze"
+      ],
+      "subagent_allowed": true
+    },
+    "local-cloud-router": {
+      "category": "内部 helper",
+      "role": "helper",
+      "status": "active",
+      "entry": false,
+      "task_type": "cloud_routing",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "environment_maintenance",
+        "analysis_execution",
+        "runtime_supervision"
+      ],
+      "subagent_allowed": false
+    },
+    "skill-vetter": {
+      "category": "内部 helper",
+      "role": "helper",
+      "status": "active",
+      "entry": false,
+      "task_type": "skill_vetting",
+      "data_access_level": "public_open",
+      "quality_gate_required": [],
+      "stage_scope": [
+        "stack_governance"
+      ],
+      "subagent_allowed": false
+    },
+    "project-kickoff-router": {
+      "category": "已退役",
+      "role": "retired",
+      "status": "retired",
+      "entry": false
+    },
+    "research-project-pilot": {
+      "category": "已退役",
+      "role": "retired",
+      "status": "retired",
+      "entry": false
+    },
+    "computational-social-science-pilot": {
+      "category": "已退役",
+      "role": "retired",
+      "status": "retired",
+      "entry": false
+    },
+    "project-ops-manager": {
+      "category": "已退役",
+      "role": "retired",
+      "status": "retired",
+      "entry": false
+    },
+    "knowledge-base-curator": {
+      "category": "已退役",
+      "role": "retired",
+      "status": "retired",
+      "entry": false
+    }
+  }
+}

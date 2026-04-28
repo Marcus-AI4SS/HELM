@@ -1,0 +1,236 @@
+{
+  "allowed_decisions": [
+    "pending",
+    "pass",
+    "revise",
+    "block",
+    "not_applicable"
+  ],
+  "gates": [
+    {
+      "id": "research_question_defined",
+      "label": "研究问题已定义",
+      "blocking": true,
+      "description": "研究问题、核心对象、因果或解释目标已经明确，避免项目在无问题定义状态下进入下游执行。",
+      "stage_ids": [
+        "research_design"
+      ],
+      "route_ids": [
+        "literature-review",
+        "social-platform-case",
+        "computational-social-science",
+        "social-science-submission-package",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis",
+        "general-research"
+      ]
+    },
+    {
+      "id": "method_boundary_declared",
+      "label": "方法边界已声明",
+      "blocking": true,
+      "description": "研究设计已明确边界、识别逻辑、材料范围与不做什么，避免无边界扩张。",
+      "stage_ids": [
+        "research_design"
+      ],
+      "route_ids": [
+        "literature-review",
+        "social-platform-case",
+        "computational-social-science",
+        "social-science-submission-package",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis",
+        "general-research"
+      ]
+    },
+    {
+      "id": "doi_and_metadata_verified",
+      "label": "DOI 与元数据核验通过",
+      "blocking": true,
+      "description": "正式引用必须完成 DOI、作者、年份、标题与正式来源核验。",
+      "stage_ids": [
+        "citation_verification"
+      ],
+      "route_ids": [
+        "single-paper-review",
+        "literature-review",
+        "computational-social-science",
+        "social-science-submission-package",
+        "writing-export"
+      ]
+    },
+    {
+      "id": "data_provenance_verified",
+      "label": "数据来源与材料来源已核实",
+      "blocking": true,
+      "description": "数据或平台材料的获取来源、时间、方式和可追溯性已记录。",
+      "stage_ids": [
+        "data_material_acquisition"
+      ],
+      "route_ids": [
+        "social-platform-case",
+        "computational-social-science",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis"
+      ]
+    },
+    {
+      "id": "platform_ethics_checked",
+      "label": "平台伦理与权限边界已检查",
+      "blocking": true,
+      "description": "平台内容读取、登录态可见内容、评论采集或敏感数字踪迹任务已完成伦理与权限边界检查。",
+      "stage_ids": [
+        "data_material_acquisition"
+      ],
+      "route_ids": [
+        "social-platform-case",
+        "computational-social-science",
+        "text-corpus"
+      ]
+    },
+    {
+      "id": "measurement_validity_checked",
+      "label": "测量效度已检查",
+      "blocking": true,
+      "description": "变量、指标、编码规则或代理测量已说明其有效性与局限。",
+      "stage_ids": [
+        "analysis_execution"
+      ],
+      "route_ids": [
+        "computational-social-science",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis"
+      ]
+    },
+    {
+      "id": "coding_consistency_checked",
+      "label": "编码一致性已检查",
+      "blocking": true,
+      "description": "质性编码、文本标签、人工校验或多轮归纳标准已记录并检查一致性。",
+      "stage_ids": [
+        "analysis_execution"
+      ],
+      "route_ids": [
+        "computational-social-science",
+        "text-corpus"
+      ]
+    },
+    {
+      "id": "network_edge_defined",
+      "label": "网络边定义已明确",
+      "blocking": true,
+      "description": "网络研究中的节点、边、时间窗口和边形成机制已经明示。",
+      "stage_ids": [
+        "analysis_execution"
+      ],
+      "route_ids": [
+        "computational-social-science",
+        "network-analysis"
+      ]
+    },
+    {
+      "id": "abm_parameter_justified",
+      "label": "ABM 参数与规则已说明",
+      "blocking": true,
+      "description": "代理人规则、参数区间、初始化条件和敏感性设计已有明确依据。",
+      "stage_ids": [
+        "analysis_execution"
+      ],
+      "route_ids": [
+        "computational-social-science"
+      ]
+    },
+    {
+      "id": "figure_table_consistency_checked",
+      "label": "图表与正文一致性已检查",
+      "blocking": true,
+      "description": "图、表、正文叙述、结果解释和版本号已经一致。",
+      "stage_ids": [
+        "writing_synthesis",
+        "review_revision"
+      ],
+      "route_ids": [
+        "computational-social-science",
+        "social-science-submission-package",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis"
+      ]
+    },
+    {
+      "id": "writing_quality_checked",
+      "label": "写作质量已检查",
+      "blocking": true,
+      "description": "已检查逻辑完整性、空洞表述、引文对位和表达密度。",
+      "required_report": "logs/quality-gates/writing-quality-report.json",
+      "required_checks": [
+        "style_calibration",
+        "argument_chain_closure",
+        "citation_alignment",
+        "empty_phrase_scan"
+      ],
+      "helper_rules": "catalog/writing_quality_rules.json",
+      "stage_ids": [
+        "paper_assessment",
+        "writing_synthesis",
+        "review_revision"
+      ],
+      "route_ids": [
+        "single-paper-review",
+        "literature-review",
+        "computational-social-science",
+        "social-science-submission-package",
+        "writing-export"
+      ]
+    },
+    {
+      "id": "reproducibility_bundle_verified",
+      "label": "复现包已核实",
+      "blocking": true,
+      "description": "脚本、输入输出、环境说明与 rerun 路径已经足以复跑关键结果。",
+      "stage_ids": [
+        "package_freeze"
+      ],
+      "route_ids": [
+        "computational-social-science",
+        "social-science-submission-package",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis"
+      ]
+    },
+    {
+      "id": "final_package_frozen",
+      "label": "最终交付包已冻结",
+      "blocking": true,
+      "description": "最终送审稿、图表、引用、附录和支持材料已进入冻结状态。",
+      "stage_ids": [
+        "package_freeze"
+      ],
+      "route_ids": [
+        "social-science-submission-package",
+        "writing-export",
+        "computational-social-science",
+        "empirical-quant",
+        "text-corpus",
+        "network-analysis"
+      ]
+    },
+    {
+      "id": "retrospective_recorded",
+      "label": "项目复盘已记录",
+      "blocking": true,
+      "description": "项目结束后的复盘、演化建议和知识沉淀入口已经记录。",
+      "stage_ids": [
+        "project_retrospective"
+      ],
+      "route_ids": [
+        "project-retrospective"
+      ]
+    }
+  ]
+}
