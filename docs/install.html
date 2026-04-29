@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Install HELM</title>
+    <meta name="description" content="Build and validate HELM from source.">
+    <link rel="stylesheet" href="./assets/site.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="topbar">
+        <div class="brand"><span class="brand-mark"></span><span>HELM</span></div>
+        <div class="lang-switch"><a href="./">Overview</a><a href="./imports.html">Imports</a></div>
+      </div>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Install</div>
+          <h1><span class="sans">Build from source today. Signed releases come later.</span></h1>
+          <p>HELM is a public candidate. Source build checks are available now; signed Windows and macOS artifacts are tracked in the release checklist.</p>
+        </div>
+      </section>
+      <section class="section grid-3">
+        <article class="card"><h3>1. Dependencies</h3><pre><code>cd apps/desktop
+npm install</code></pre></article>
+        <article class="card"><h3>2. Frontend</h3><pre><code>npm run build</code></pre></article>
+        <article class="card"><h3>3. Tauri</h3><pre><code>cd src-tauri
+cargo check</code></pre></article>
+      </section>
+      <section class="section">
+        <div class="section-head"><h2>Release Gate</h2><p>The public gate checks privacy boundaries and release readiness.</p></div>
+        <pre><code>powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1</code></pre>
+      </section>
+    </main>
+  </body>
+</html>
