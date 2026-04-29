@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -51,6 +51,18 @@ def rounded_gradient(size: int, radius: int) -> Image.Image:
     out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     out.alpha_composite(gradient)
     out.putalpha(mask)
+    return out
+
+
+def apply_rounded_corners(image: Image.Image, radius_ratio: float = 0.18) -> Image.Image:
+    image = image.convert("RGBA")
+    width, height = image.size
+    radius = round(min(width, height) * radius_ratio)
+    mask = Image.new("L", image.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, width - 1, height - 1), radius=radius, fill=255)
+    alpha = ImageChops.multiply(image.getchannel("A"), mask)
+    out = image.copy()
+    out.putalpha(alpha)
     return out
 
 
@@ -142,7 +154,7 @@ def build_icon(size: int = 4096) -> Image.Image:
     resized = source.resize((size, size), Image.Resampling.LANCZOS)
     if size > source.width:
         resized = resized.filter(ImageFilter.UnsharpMask(radius=1.2, percent=85, threshold=3))
-    return resized
+    return apply_rounded_corners(resized)
 
 
 def save_png(image: Image.Image, path: Path, size: int) -> None:
