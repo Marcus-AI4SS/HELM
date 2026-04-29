@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { pageByKey } from "../navigation";
 import type { PageKey } from "../types";
 import { runWindowAction } from "../windowRuntime";
-import helmMark from "../assets/brand/helm-local-board-icon-master.png";
+import helmMark from "../assets/brand/helm-command-mark.png";
 import { SegmentedNav } from "./SegmentedNav";
 import { WindowControls } from "./WindowControls";
 

@@ -476,7 +476,7 @@ async function main() {
           !row.diagnosticPanelMissing &&
           row.keyboardFocusFailures.length === 0 &&
           row.clipped.length === 0 &&
-          row.brandSrc.includes("helm-local-board-icon-master"),
+          row.brandSrc.includes("helm-command-mark"),
       ) && interactionResults.length === 1 && interactionResults.every(
         (row) => row.settingsButtonOpened && row.densityApplied && row.reduceMotionApplied && row.settingsPersisted && row.clearHistoryButtonVisible,
       ),
@@ -504,7 +504,7 @@ async function main() {
         diagnosticPanelFailures: results.filter((row) => row.diagnosticPanelMissing).length,
         keyboardFocusFailures: results.reduce((count, row) => count + row.keyboardFocusFailures.length, 0),
         clippedCount: results.reduce((count, row) => count + row.clipped.length, 0),
-        badLogoPages: results.filter((row) => !row.brandSrc.includes("helm-local-board-icon-master")).length,
+        badLogoPages: results.filter((row) => !row.brandSrc.includes("helm-command-mark")).length,
       },
     };
     const reportPath = path.join(outputDir, "ui-smoke-report.json");

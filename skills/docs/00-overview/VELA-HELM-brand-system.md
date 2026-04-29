@@ -60,7 +60,8 @@
 ## 核心资产
 
 - VELA 工作流主标：`skills/assets/brand/vela-workflow-mark.png`
-- HELM 看板图标母版：`skills/assets/brand/helm-local-board-icon-master.png`
+- HELM 看板图标源图：`skills/assets/brand/helm-command-mark-source.png`
+- HELM 看板图标高清母版：`skills/assets/brand/helm-command-mark-4096.png`
 - 双品牌同屏品牌板：`skills/assets/brand/vela-helm-brand-board.png`
 - 参考板目录：`skills/assets/brand/reference/`
   - `vela-brand-board-reference.png`
@@ -68,7 +69,7 @@
   - `vela-helm-relationship-board-reference.png`
   - `vela-helm-design-language-reference.png`
 
-生成方式：ChatGPT-image2。图像不含文字，供后续代码和设计稿排版使用。
+生成方式：`skills/scripts/build-helm-brand-assets.py` 从 `helm-command-mark-source.png` 派生 HELM 图标、HELM 品牌板和 VELA/HELM 关系板；VELA 主标继续沿用既有 `vela-workflow-mark.png`。
 
 ## 文案校正
 
