@@ -26,8 +26,6 @@
   <a href="release/RELEASE_CHECKLIST.md">Release checklist</a>
 </p>
 
-![VELA and HELM design language](site/assets/vela-helm-language.png)
-
 ## What HELM Is
 
 HELM is a local desktop dashboard for research work. It shows what your project already knows: current phase, blockers, materials, evidence readiness, deliverables, local environment status, and the handoff that should continue in Codex.
@@ -36,7 +34,7 @@ HELM is intentionally narrow. It does not provide chat, prompt input, hidden age
 
 ## HELM And VELA
 
-HELM and VELA share one visual language and two separate roles.
+HELM and VELA are separate tools that can work together.
 
 | Project | Role | Boundary |
 | --- | --- | --- |
@@ -98,4 +96,3 @@ site/                GitHub Pages product site
 ## Release Status
 
 This repository is prepared as a public candidate. A tagged public release still needs signed or clearly unsigned artifacts, checksums, release notes, and clean Windows/macOS first-use test records.
-
