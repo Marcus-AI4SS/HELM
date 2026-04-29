@@ -185,7 +185,8 @@ article,
 .split,
 .content-page,
 .diagram,
-.screen-strip {
+.screen-strip,
+.quick-start-panel {
   border: 1px solid var(--line);
   background: var(--panel);
   box-shadow: 0 20px 60px rgba(15, 31, 61, 0.07);
@@ -224,6 +225,63 @@ article,
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin: 18px 0;
+}
+
+.quick-start-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: 26px;
+  align-items: start;
+  margin: 18px 0;
+  padding: 30px;
+  border-radius: 26px;
+}
+
+.quick-start-panel p {
+  margin-bottom: 0;
+}
+
+.start-steps,
+.install-paths {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.start-steps li,
+.install-paths article {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.start-steps strong,
+.install-paths h2 {
+  color: var(--ink);
+}
+
+.start-steps span {
+  color: var(--graphite);
+  line-height: 1.55;
+}
+
+.install-paths {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 28px 0;
+}
+
+.install-paths h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.install-paths p {
+  margin: 0;
 }
 
 .role-card {
@@ -406,11 +464,16 @@ footer {
   }
 
   .hero,
+  .quick-start-panel,
   .role-grid,
   .split,
   .privacy-grid,
   .diagram,
   .screen-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .install-paths {
     grid-template-columns: 1fr;
   }
 

@@ -32,6 +32,17 @@ HELM is a local desktop dashboard for research work. It shows what your project 
 
 HELM is intentionally narrow. It does not provide chat, prompt input, hidden agent scheduling, one-click research execution, manuscript writing, citation verification, or submission automation.
 
+## New User Path
+
+If you are opening HELM for the first time, use it in this order:
+
+1. Install or build HELM, then open the desktop app.
+2. Check the **Project** page. If HELM shows no trusted project, copy the project intake template.
+3. Paste that template into Codex and ask Codex to connect your project folder.
+4. Return to HELM and refresh. HELM should then show project status, evidence readiness, deliverables, environment health, and the next Codex handoff.
+
+You do not need to create projects inside HELM. Codex prepares the project context; HELM reads it locally.
+
 ## HELM And VELA
 
 HELM and VELA are separate tools that can work together.
