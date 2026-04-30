@@ -88,13 +88,13 @@ export function ProjectSelector({
 }
 
 function sourceLabel(source?: ProjectRow["import_source"]) {
-  if (source === "vela_context") return "VELA context";
-  if (source === "legacy_files") return "legacy files";
-  return "missing context";
+  if (source === "vela_context") return "VELA 项目上下文";
+  if (source === "legacy_files") return "项目说明与材料清单";
+  return "未检测到项目上下文";
 }
 
 function sourceShortLabel(source?: ProjectRow["import_source"]) {
-  if (source === "vela_context") return "VELA";
-  if (source === "legacy_files") return "legacy";
-  return "missing";
+  if (source === "vela_context") return "已接入";
+  if (source === "legacy_files") return "兼容";
+  return "未接入";
 }
