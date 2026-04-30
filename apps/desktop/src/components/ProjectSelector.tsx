@@ -51,6 +51,9 @@ export function ProjectSelector({
         onClick={() => setOpen((value) => !value)}
       >
         <strong>{selected.name || selected.path}</strong>
+        <small className={`project-source ${selected.import_source || "missing_context"}`} title={sourceLabel(selected.import_source)}>
+          {sourceShortLabel(selected.import_source)}
+        </small>
         <ChevronDown size={15} />
       </button>
       {open ? (
@@ -72,7 +75,7 @@ export function ProjectSelector({
               >
                 <span>
                   <strong>{project.name || project.path}</strong>
-                  <small>本地项目文件夹</small>
+                  <small>{sourceLabel(project.import_source)} · 本地项目文件夹</small>
                 </span>
                 {active ? <Check size={15} /> : null}
               </button>
@@ -82,4 +85,16 @@ export function ProjectSelector({
       ) : null}
     </div>
   );
+}
+
+function sourceLabel(source?: ProjectRow["import_source"]) {
+  if (source === "vela_context") return "VELA context";
+  if (source === "legacy_files") return "legacy files";
+  return "missing context";
+}
+
+function sourceShortLabel(source?: ProjectRow["import_source"]) {
+  if (source === "vela_context") return "VELA";
+  if (source === "legacy_files") return "legacy";
+  return "missing";
 }

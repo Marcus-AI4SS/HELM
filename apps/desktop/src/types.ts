@@ -25,6 +25,8 @@ export type EvidenceSource =
 
 export type Tone = "blue" | "green" | "amber" | "red" | "gray";
 
+export type VelaImportSource = "vela_context" | "legacy_files" | "missing_context";
+
 export interface EvidenceStatus {
   label: string;
   status: string;
@@ -57,6 +59,10 @@ export interface ProjectRow {
   path: string;
   exists?: boolean;
   source?: string;
+  import_source?: VelaImportSource;
+  import_schema?: string | null;
+  context_path?: string;
+  import_ready?: boolean;
   current_stage?: string;
   status?: string;
   missing_count?: number;
@@ -112,15 +118,28 @@ export interface AppActionResult {
 }
 
 export interface CodexHandoff {
+  schema_version?: "helm.codex.handoff.v1";
+  producer?: "HELM";
+  consumer?: "VELA";
   handoff_version: string;
   generated_at: string;
   product_boundary: string;
   project: {
+    id?: string;
     name: string;
     root: string;
     exists: boolean;
     trusted_config_detected: boolean;
+    context_schema?: string | null;
+    import_source?: VelaImportSource;
   };
+  recommended_action?: string;
+  relevant_files?: string[];
+  constraints?: string[];
+  validation_context?: Record<string, unknown>;
+  human_review_required?: boolean;
+  handoff_path?: string;
+  handoff_write_error?: string;
   local_evidence: {
     truth_sources: EvidenceStatus[];
     reports: EvidenceStatus[];
@@ -145,6 +164,8 @@ export interface ProjectPageData {
     exists: boolean;
     current_stage: string;
     status: string;
+    import_source?: VelaImportSource;
+    import_schema?: string | null;
   };
   stage_status: EvidenceStatus;
   missing_inputs: string[];
@@ -152,6 +173,7 @@ export interface ProjectPageData {
   material_entries: FileRow[];
   artifact_entries: FileRow[];
   environment_status?: EvidenceStatus;
+  vela_import_status?: EvidenceStatus;
 }
 
 export interface CredibilityPageData {

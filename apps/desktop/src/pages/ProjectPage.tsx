@@ -117,6 +117,7 @@ export function ProjectPage({
         <section className="overview-card">
           <h3>本机状态</h3>
           {data.environment_status ? <EvidenceCard item={data.environment_status} compact /> : <EmptyState title="未读取本机状态" body="请刷新本机状态。" />}
+          {data.vela_import_status ? <EvidenceCard item={data.vela_import_status} compact /> : null}
         </section>
 
       </div>
