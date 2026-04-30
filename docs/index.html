@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HELM · Local Research Board</title>
-    <meta name="description" content="HELM is a local research board for project status, evidence, deliverables, environment health, and Codex handoffs.">
+    <title>HELM · Hub for Evidence, Logs & Monitoring</title>
+    <meta name="description" content="HELM is the Hub for Evidence, Logs &amp; Monitoring: a local command board for research projects.">
     <link rel="stylesheet" href="./assets/site.css">
   </head>
   <body>
@@ -20,40 +20,59 @@
       <section class="hero">
         <div>
           <img class="hero-mark" src="https://raw.githubusercontent.com/Marcus-AI4SS/HELM/main/site/assets/helm-icon.png" alt="HELM command mark">
-          <div class="eyebrow">Local Research Board</div>
+          <div class="eyebrow">Hub for Evidence, Logs & Monitoring</div>
           <h1>HELM</h1>
-          <p>Use HELM as a local dashboard for project status, evidence, deliverables, environment health, and the next Codex handoff. It can run alone, and it can read VELA project context when a VELA environment is available.</p>
+          <p>HELM is the local command board for research projects. It shows status, evidence readiness, existing files, local checks, and the note you should take back to Codex.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="./tutorial.html">First-run guide</a>
             <a class="button button-primary" href="./install.html">Build HELM</a>
-            <a class="button" href="./imports.html">Import VELA</a>
-            <a class="button" href="https://github.com/Marcus-AI4SS/VELA-Versioned-Evidence-Lifecycle-Architecture">VELA repo</a>
+            <a class="button" href="./imports.html">Connect VELA</a>
+            <a class="button" href="https://github.com/Marcus-AI4SS/VELA">VELA repo</a>
             <a class="button" href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="section-head">
-          <h2>What HELM Gives You</h2>
-          <p>A readable local board over research state without turning the app into a hidden research engine.</p>
+      <section class="section identity-strip">
+        <div>
+          <div class="eyebrow">Shared product language</div>
+          <h2>VELA and HELM are one workflow pair with two separate jobs.</h2>
         </div>
-        <div class="grid-4">
-          <article class="card"><h3>Project Status</h3><p>Show phase, blockers, recent activity, and active project files without moving the project into the app.</p></article>
-          <article class="card"><h3>Evidence Readiness</h3><p>Display evidence levels and source counts without overstating file reads as verified facts.</p></article>
-          <article class="card"><h3>Deliverables</h3><p>Index reports, notes, figures, tables, and handoff outputs that already exist on disk.</p></article>
-          <article class="card"><h3>Codex Handoffs</h3><p>Prepare bounded continuation packets that name task, files, constraints, output, gaps, and review standard.</p></article>
+        <div class="brand-pair">
+          <article class="role-card">
+            <strong>VELA</strong>
+            <span>Versatile Experiment Lab &amp; Automation</span>
+            <p>Prepares portable project structure and bounded Codex work.</p>
+          </article>
+          <article class="role-card active">
+            <strong>HELM</strong>
+            <span>Hub for Evidence, Logs &amp; Monitoring</span>
+            <p>Reads local state and turns it into a clear dashboard.</p>
+          </article>
         </div>
       </section>
 
       <section class="section">
         <div class="section-head">
-          <h2>Two Independent Brands, One Shared Contract</h2>
-          <p>VELA can be installed without HELM. HELM can run without VELA. Together they exchange explicit local files rather than hidden app state.</p>
+          <h2>What HELM Helps You See</h2>
+          <p>HELM keeps the project visible without turning the app into a hidden research engine.</p>
+        </div>
+        <div class="grid-4">
+          <article class="card"><h3>Project Status</h3><p>See the active project, stage, blockers, recent activity, and whether the folder can be read.</p></article>
+          <article class="card"><h3>Evidence Readiness</h3><p>Check what has been read, what is missing, and what still needs Codex review.</p></article>
+          <article class="card"><h3>Files And Outputs</h3><p>Open existing reports, notes, figures, tables, and local check records from one place.</p></article>
+          <article class="card"><h3>Codex Notes</h3><p>Copy a bounded next-step note for Codex without asking HELM to execute the work.</p></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>How HELM And VELA Work Together</h2>
+          <p>VELA can be used without HELM. HELM can run without VELA. Together they exchange explicit local files rather than hidden app state.</p>
         </div>
         <div class="grid-2">
-          <article class="card"><h3>VELA to HELM</h3><p>HELM imports <code>vela.project.context.v1</code> to read project paths, status, evidence counts, deliverables, health, and handoff readiness.</p></article>
-          <article class="card"><h3>HELM to VELA</h3><p>VELA imports <code>helm.codex.handoff.v1</code> as a bounded Codex handoff packet under the project <code>handoffs/</code> layer.</p></article>
+          <article class="card"><h3>VELA → HELM</h3><p>VELA writes project context. HELM reads <code>vela.project.context.v1</code> to show paths, status, evidence counts, files, blockers, and local checks.</p></article>
+          <article class="card"><h3>HELM → Codex / VELA</h3><p>HELM prepares <code>helm.codex.handoff.v1</code> as a copyable Codex note. VELA stores it only after an explicit user save or export.</p></article>
         </div>
       </section>
 
@@ -62,12 +81,12 @@
           <h2>Start Here</h2>
         </div>
         <div class="grid-3">
-          <article class="card"><h3>1. Build</h3><p>Install desktop dependencies, run the frontend build, and run the Tauri Rust check.</p></article>
-          <article class="card"><h3>2. Start With The Guide</h3><p>Use the first-run guide when you do not know which page or button to use.</p></article>
-          <article class="card"><h3>3. Hand Off</h3><p>Use the Give to Codex view to prepare a continuation note without executing work automatically.</p></article>
+          <article class="card"><h3>1. Install Or Build</h3><p>Build HELM locally today; packaged public releases will use the same source boundary.</p></article>
+          <article class="card"><h3>2. Open The Guide</h3><p>Use the first-run guide when you do not know which page, button, or project step to use.</p></article>
+          <article class="card"><h3>3. Copy To Codex</h3><p>Use the Codex note view to continue research in Codex with files and constraints named clearly.</p></article>
         </div>
       </section>
-      <footer>HELM is the local research board. VELA is the portable workflow environment.</footer>
+      <footer>VELA = Versatile Experiment Lab &amp; Automation. HELM = Hub for Evidence, Logs &amp; Monitoring.</footer>
     </main>
   </body>
 </html>
