@@ -7,6 +7,7 @@
 <h1 align="center">HELM</h1>
 
 <p align="center">
+  <strong>Hub for Evidence, Logs &amp; Monitoring</strong><br>
   本地项目看板：把项目状态、证据准备、已有文件、本机状态和给 Codex 的说明放在一个清楚的桌面视图里。
 </p>
 
@@ -25,14 +26,14 @@
   ·
   <a href="docs/imports/vela-helm-interface.md">VELA 接口</a>
   ·
-  <a href="https://github.com/Marcus-AI4SS/VELA-Versioned-Evidence-Lifecycle-Architecture">VELA</a>
+  <a href="https://github.com/Marcus-AI4SS/VELA">VELA</a>
   ·
   <a href="PRIVACY.md">隐私</a>
 </p>
 
 ## HELM 是什么
 
-HELM 是本地项目看板。它读取你电脑上的项目状态，并把当前阶段、阻塞点、材料、证据准备度、已有文件、本机状态和给 Codex 的说明集中展示出来。
+HELM = **Hub for Evidence, Logs & Monitoring**。它是本地项目看板，读取你电脑上的项目状态，并把当前阶段、阻塞点、材料、证据准备度、已有文件、本机状态和给 Codex 的说明集中展示出来。
 
 研究推进仍回到 Codex。HELM 不提供聊天、写作、创建项目、一键研究、隐藏任务调度、引用核验或投稿自动化。它只帮助你看清“现在项目处在哪里”和“接下来该把什么交给 Codex”。
 
@@ -55,15 +56,15 @@ HELM 和 VELA 是职责分开的工具，可以协同使用，也可以分别独
 
 | 工具 | 作用 | 能否单独使用 |
 | --- | --- | --- |
-| **VELA** | 为 Codex 准备可携带的本地工作上下文 | 可以 |
-| **HELM** | 读取并展示本地项目状态、证据、文件、本机状态和给 Codex 的说明 | 可以 |
+| **VELA** = Versatile Experiment Lab & Automation | 为 Codex 准备可携带的项目结构、规则、交接模板和本地上下文 | 可以 |
+| **HELM** = Hub for Evidence, Logs & Monitoring | 读取并展示本地项目状态、证据、文件、本机状态和给 Codex 的说明 | 可以 |
 
-没有 VELA 时，HELM 可以显示空状态、公开安全示例或已配置项目状态。启用 VELA 时，HELM 可以读取 VELA 生成的项目上下文。
+没有 VELA 时，HELM 可以显示空状态、公开安全示例或已配置项目状态。启用 VELA 时，HELM 可以读取 VELA 生成的项目上下文。两者共享产品语言，但不共享隐藏内存、云同步或后台任务。
 
 两者共享两个公开接口方向：
 
 - `vela.project.context.v1`：HELM 读取 VELA 项目状态。
-- `helm.codex.handoff.v1`：VELA 读取 HELM 准备的 Codex 继续说明。
+- `helm.codex.handoff.v1`：HELM 准备给 Codex 的继续说明；VELA 只有在用户显式保存或导出时才应写入项目。
 
 接口说明见 [VELA and HELM import interface](docs/imports/vela-helm-interface.md)。
 

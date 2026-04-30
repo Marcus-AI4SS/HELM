@@ -1,8 +1,8 @@
 # HELM and VELA Import Interface
 
-HELM and VELA are separate products. HELM is the local research board. VELA is the portable Codex workflow wrapper. The integration boundary is explicit local files, not app memory, telemetry, or hidden automation.
+HELM and VELA are separate products. HELM is the Hub for Evidence, Logs & Monitoring. VELA is the Versatile Experiment Lab & Automation package for Codex. The integration boundary is explicit local files, not app memory, telemetry, or hidden automation.
 
-## Direction 1: VELA to HELM
+## Direction 1: VELA → HELM
 
 HELM imports a VELA project context packet when a project exposes `vela.project.context.v1`.
 
@@ -65,7 +65,7 @@ Minimal packet:
 
 HELM must treat missing fields as unknown, not as success.
 
-## Direction 2: HELM to VELA
+## Direction 2: HELM → Codex / VELA
 
 VELA imports a HELM handoff packet when HELM prepares a bounded continuation task for Codex.
 
