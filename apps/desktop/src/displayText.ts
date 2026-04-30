@@ -20,6 +20,10 @@ const stageLabels: Record<string, string> = {
   live_environment: "正在读取本机环境",
   legacy_app_snapshot: "使用兼容快照",
   snapshot: "使用内置示例",
+  vela_context: "VELA 项目上下文",
+  legacy_files: "读取项目说明与材料清单",
+  missing_context: "未检测到项目上下文",
+  scoping: "梳理项目范围",
 };
 
 const actionLabels: Record<string, string> = {
@@ -68,6 +72,10 @@ const fileLabels: Record<string, { title: string; description: string }> = {
     title: "历史记录",
     description: "记录项目过往状态和处理线索。",
   },
+  "context.json": {
+    title: "VELA 项目上下文",
+    description: "VELA 准备的项目状态文件，HELM 会优先读取它。",
+  },
 };
 
 const exactLabelReplacements: Record<string, string> = {
@@ -87,6 +95,12 @@ const labelReplacements: Record<string, string> = {
   "findings-memory": "阶段性发现",
   "current": "当前状态记录",
   "history": "历史记录",
+  "VELA context": "VELA 项目上下文",
+  "vela context": "VELA 项目上下文",
+  "context.json": "VELA 项目上下文",
+  "missing_context": "未检测到项目上下文",
+  "legacy_files": "读取项目说明与材料清单",
+  "vela_context": "VELA 项目上下文",
   "live 环境": "本机环境",
   "正式 snapshot": "兼容快照",
   "validator": "本地检查",
