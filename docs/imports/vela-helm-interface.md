@@ -1,6 +1,6 @@
 # HELM and VELA Import Interface
 
-HELM and VELA are separate products. HELM is the local research board. VELA is the portable workflow environment. The integration boundary is explicit local files, not app memory, telemetry, or hidden automation.
+HELM and VELA are separate products. HELM is the local research board. VELA is the portable Codex workflow wrapper. The integration boundary is explicit local files, not app memory, telemetry, or hidden automation.
 
 ## Direction 1: VELA to HELM
 
@@ -19,31 +19,47 @@ Minimal packet:
   "schema_version": "vela.project.context.v1",
   "producer": "VELA",
   "consumer": "HELM",
+  "generated_at": "2026-04-30T00:00:00Z",
   "project": {
     "id": "sample-project",
+    "name": "Sample Project",
     "title": "Sample Project",
-    "root": "."
+    "root": ".",
+    "stage": "research_design",
+    "status": "initialized"
   },
   "paths": {
-    "materials": "materials/",
-    "evidence": "evidence/",
-    "claims": "claims/",
-    "methods": "methods/",
-    "deliverables": "deliverables/",
-    "handoffs": "handoffs/"
+    "materials": "materials",
+    "evidence": "evidence",
+    "claims": "claims",
+    "methods": "methods",
+    "deliverables": "deliverables",
+    "handoffs": "handoffs",
+    "handoffs_helm": "handoffs/helm",
+    "logs": "logs"
   },
-  "status": {
-    "phase": "scoping",
-    "blocked": false,
-    "last_updated": "2026-04-29T00:00:00Z"
+  "truth_files": [
+    { "name": "research-map.md", "path": "research-map.md", "exists": true },
+    { "name": "findings-memory.md", "path": "findings-memory.md", "exists": true },
+    { "name": "material-passport.yaml", "path": "material-passport.yaml", "exists": true },
+    { "name": "evidence-ledger.yaml", "path": "evidence-ledger.yaml", "exists": true }
+  ],
+  "counts": {
+    "materials": 0,
+    "evidence": 0,
+    "claims": 0,
+    "deliverables": 0,
+    "handoffs": 1
   },
-  "evidence": {
-    "items": 0,
-    "verified": 0,
-    "pending": 0
+  "quality": {
+    "blockers": [],
+    "warnings": [],
+    "validators": []
   },
-  "deliverables": [],
-  "handoffs": []
+  "helm": {
+    "import_ready": true,
+    "handoff_dir": "handoffs/helm"
+  }
 }
 ```
 
@@ -66,16 +82,15 @@ Minimal packet:
   "schema_version": "helm.codex.handoff.v1",
   "producer": "HELM",
   "consumer": "VELA",
-  "project_id": "sample-project",
-  "created_at": "2026-04-29T00:00:00Z",
-  "codex_task": {
-    "task": "Review the evidence index and identify unsupported claims.",
-    "relevant_files": ["evidence/index.md", "claims/draft.md"],
-    "constraints": ["Do not invent citations.", "Keep private paths out of deliverables."],
-    "expected_output": "A review note with unsupported claim IDs and required evidence.",
-    "known_gaps": ["No DOI verification has been run for new sources."],
-    "review_standard": "Every claim must point to a visible evidence item."
-  }
+  "generated_at": "2026-04-30T00:00:00Z",
+  "project": { "id": "sample-project", "name": "Sample Project", "root": "." },
+  "recommended_action": "Review the evidence index and identify unsupported claims.",
+  "relevant_files": ["research-map.md", "evidence-ledger.yaml"],
+  "constraints": ["Do not invent citations.", "Keep private paths out of deliverables."],
+  "missing_inputs": ["No DOI verification has been run for new sources."],
+  "validation_context": { "source": ".vela/context.json", "schema_version": "vela.project.context.v1" },
+  "human_review_required": true,
+  "text": "Copy this bounded task back into Codex."
 }
 ```
 

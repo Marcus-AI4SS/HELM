@@ -46,6 +46,8 @@ EVIDENCE_SOURCES = {
 VALIDATOR_NAMES = {"stack", "pipeline", "contract", "registry"}
 APP_PRODUCT_VERSION = "0.9.1-usability-rc"
 HANDOFF_VERSION = "helm-local-research-board-v8.5-usability-rc"
+VELA_CONTEXT_SCHEMA_VERSION = "vela.project.context.v1"
+HELM_HANDOFF_SCHEMA_VERSION = "helm.codex.handoff.v1"
 RISKY_OPEN_EXTENSIONS = {
     ".app",
     ".bat",
@@ -130,7 +132,7 @@ def _project_root(payload: dict[str, Any]) -> str | None:
     explicit = payload.get("projectRoot") or payload.get("project_root")
     if explicit:
         candidate = str(Path(str(explicit)).expanduser())
-        if _is_trusted_project_path(candidate):
+        if _is_trusted_project_path(candidate) or _load_vela_context(candidate):
             return candidate
         return _existing_project(env.list_trusted_projects())
     return _existing_project(env.list_trusted_projects())
@@ -254,6 +256,35 @@ def _file_row(row: dict[str, Any], label: str | None = None) -> dict[str, Any]:
 def _truth_source_rows(project_root: str | None) -> list[dict[str, Any]]:
     if not project_root:
         return []
+    context = _load_vela_context(project_root)
+    if context:
+        rows = [
+            _evidence(
+                ".vela/context.json",
+                "已读取 VELA context",
+                tone="green",
+                evidence_level="file_read",
+                evidence_source="path",
+                source_path=str(_vela_context_path(project_root)),
+                detail=f"schema={context.get('schema_version')}；HELM 以该文件为首选导入状态。",
+                blocking=False,
+            )
+        ]
+        for row in context.get("truth_files", []):
+            file_row = _context_file_row(project_root, row)
+            rows.append(
+                _evidence(
+                    str(file_row.get("label") or "truth file"),
+                    str(file_row.get("status") or ""),
+                    tone="green" if file_row.get("exists") else "amber",
+                    evidence_level=str(file_row.get("evidence_level") or "missing"),
+                    evidence_source="path",
+                    source_path=str(file_row.get("path") or ""),
+                    detail="来自 VELA context 的 truth_files。",
+                    blocking=not bool(file_row.get("exists")),
+                )
+            )
+        return rows
     root = Path(project_root)
     names = [
         "research-map.md",
@@ -283,6 +314,78 @@ def _safe_list(value: Any) -> list[dict[str, Any]]:
     return value if isinstance(value, list) else []
 
 
+def _load_json_file(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _vela_context_path(project_root: str | None) -> Path | None:
+    if not project_root:
+        return None
+    return Path(project_root).expanduser() / ".vela" / "context.json"
+
+
+def _load_vela_context(project_root: str | None) -> dict[str, Any] | None:
+    path = _vela_context_path(project_root)
+    if path is None:
+        return None
+    payload = _load_json_file(path)
+    if not payload or payload.get("schema_version") != VELA_CONTEXT_SCHEMA_VERSION:
+        return None
+    return payload
+
+
+def _project_import_status(project_root: str | None) -> dict[str, Any]:
+    context_path = _vela_context_path(project_root)
+    context = _load_vela_context(project_root)
+    if context:
+        import_ready = bool((context.get("helm") or {}).get("import_ready", True))
+        return {
+            "source": "vela_context",
+            "schema_version": VELA_CONTEXT_SCHEMA_VERSION,
+            "label": "VELA context",
+            "status": "已读取 .vela/context.json" if import_ready else "VELA context 需要检查",
+            "tone": "green" if import_ready else "amber",
+            "context_path": str(context_path),
+            "handoff_dir": str((Path(project_root) / str((context.get("helm") or {}).get("handoff_dir", "handoffs/helm")))) if project_root else "",
+            "import_ready": import_ready,
+        }
+    root = Path(project_root).expanduser() if project_root else None
+    legacy_files = [root / name for name in ("research-map.md", "findings-memory.md", "material-passport.yaml", "evidence-ledger.yaml")] if root else []
+    legacy_exists = bool(legacy_files) and any(path.exists() for path in legacy_files)
+    return {
+        "source": "legacy_files" if legacy_exists else "missing_context",
+        "schema_version": None,
+        "label": "Legacy files" if legacy_exists else "Missing VELA context",
+        "status": "只读取旧事实源文件" if legacy_exists else "未发现 .vela/context.json",
+        "tone": "amber" if legacy_exists else "red",
+        "context_path": str(context_path) if context_path else "",
+        "handoff_dir": str(root / "handoffs" / "helm") if root else "",
+        "import_ready": False,
+    }
+
+
+def _context_file_row(project_root: str, row: dict[str, Any]) -> dict[str, Any]:
+    rel = str(row.get("path") or row.get("name") or "")
+    path = Path(project_root) / rel if rel else Path(project_root)
+    exists = bool(row.get("exists")) if "exists" in row else path.exists()
+    return {
+        "label": row.get("name") or Path(rel).name or "VELA file",
+        "name": row.get("name") or Path(rel).name,
+        "path": str(path),
+        "exists": exists,
+        "status": "已读取 VELA context" if exists else "context 指向的文件缺失",
+        "evidence_level": "file_read" if exists else "missing",
+        "evidence_source": "path",
+        "updated_at": row.get("updated_at"),
+    }
+
+
 def _project_summary_from_trusted_row(row: dict[str, Any]) -> dict[str, Any]:
     path = row.get("path") or row.get("project_root") or ""
     project_name = row.get("name") or (Path(path).name if path else "未命名项目")
@@ -307,6 +410,38 @@ def _project_summary_from_trusted_row(row: dict[str, Any]) -> dict[str, Any]:
     project_root = str(Path(path).expanduser())
     if not Path(project_root).exists():
         base["next_action"] = "项目路径不存在，请先确认本机目录。"
+        return base
+
+    context = _load_vela_context(project_root)
+    import_status = _project_import_status(project_root)
+    if context:
+        project = context.get("project") or {}
+        counts = context.get("counts") or {}
+        quality = context.get("quality") or {}
+        blockers = [str(item) for item in quality.get("blockers", []) if str(item).strip()]
+        warnings = [str(item) for item in quality.get("warnings", []) if str(item).strip()]
+        missing_count = len(blockers) + len(warnings)
+        base.update(
+            {
+                "name": project.get("name") or project.get("title") or project_name,
+                "exists": True,
+                "source": "vela_context",
+                "current_stage": _public_text(project.get("stage") or (context.get("status") or {}).get("phase") or "未写入"),
+                "status": _public_text(project.get("status") or (context.get("status") or {}).get("label") or "VELA context"),
+                "missing_count": missing_count,
+                "material_count": int(counts.get("materials") or 0),
+                "artifact_count": int(counts.get("deliverables") or 0),
+                "recent_activity_count": int(counts.get("handoffs") or 0),
+                "last_activity_at": context.get("generated_at"),
+                "next_action": "打开“交给 Codex”复制有边界 handoff。" if not missing_count else "先修复 VELA context 中的阻断项。",
+                "tone": "amber" if missing_count else "green",
+                "blocking": bool(missing_count),
+                "import_source": import_status["source"],
+                "import_schema": import_status["schema_version"],
+                "context_path": import_status["context_path"],
+                "import_ready": import_status["import_ready"],
+            }
+        )
         return base
 
     try:
@@ -338,6 +473,10 @@ def _project_summary_from_trusted_row(row: dict[str, Any]) -> dict[str, Any]:
                 "next_action": _public_text(dashboard.get("next_action") or ("补齐阻断项后交给 Codex" if missing_count else "让 Codex 读取事实源并继续推进。")),
                 "tone": "amber" if missing_count else "blue",
                 "blocking": bool(missing_count),
+                "import_source": import_status["source"],
+                "import_schema": import_status["schema_version"],
+                "context_path": import_status["context_path"],
+                "import_ready": import_status["import_ready"],
             }
         )
         return base
@@ -435,6 +574,8 @@ def _project_page(payload: dict[str, Any]) -> dict[str, Any]:
             "next_step_hint": "复制交接说明给 Codex，让 Codex 判断应读取哪些项目事实源。",
             "primary_actions": [],
         }
+    context = _load_vela_context(project_root)
+    import_status = _project_import_status(project_root)
     dashboard = _safe_call({"project_exists": False}, env.project_dashboard_overview, project_root)
     sources = _safe_call({"project_exists": False}, env.project_sources_overview, project_root)
     analysis = _safe_call({"project_exists": False}, env.project_analysis_overview, project_root)
@@ -452,31 +593,63 @@ def _project_page(payload: dict[str, Any]) -> dict[str, Any]:
         if str(item).strip()
     ]
     missing.extend(project_blockers)
+    if context:
+        quality = context.get("quality") or {}
+        missing = [str(item) for item in quality.get("blockers", []) if str(item).strip()]
+        missing.extend(str(item) for item in quality.get("warnings", []) if str(item).strip())
+        context_truth_rows = context.get("truth_files", [])
+        for row in context_truth_rows:
+            file_row = _context_file_row(project_root, row)
+            if not file_row.get("exists"):
+                missing.append(f"VELA context 指向的文件缺失：{row.get('path') or row.get('name')}")
     material_entries = [_file_row(row) for row in _safe_list(sources.get("canonical_files")) + _safe_list(sources.get("material_files"))]
     artifact_entries = [_file_row(row) for row in _safe_list(analysis.get("outputs")) + _safe_list(writing.get("writing_files")) + _safe_list(writing.get("reports"))]
+    if context:
+        paths = context.get("paths") or {}
+        material_entries = [_file_row({"path": str(root / str(paths.get("materials", "materials"))), "name": "materials"})]
+        artifact_entries = [_file_row({"path": str(root / str(paths.get("deliverables", "deliverables"))), "name": "deliverables"})]
+        project_info = context.get("project") or {}
+        current_stage = project_info.get("stage") or (context.get("status") or {}).get("phase") or "未写入"
+        project_status = project_info.get("status") or (context.get("status") or {}).get("label") or "VELA context"
+    else:
+        project_info = {}
+        current_stage = dashboard.get("current_stage") or "未写入"
+        project_status = dashboard.get("status") or ("文件读取" if exists else "missing")
     return {
         "project": {
-            "name": dashboard.get("project_name") or root.name,
+            "name": project_info.get("name") or project_info.get("title") or dashboard.get("project_name") or root.name,
             "root": project_root,
             "exists": exists,
-            "current_stage": _public_text(dashboard.get("current_stage") or "未写入"),
-            "status": _public_text(dashboard.get("status") or ("文件读取" if exists else "missing")),
+            "current_stage": _public_text(current_stage),
+            "status": _public_text(project_status),
+            "import_source": import_status["source"],
+            "import_schema": import_status["schema_version"],
         },
         "stage_status": _evidence(
-            "项目阶段",
-            dashboard.get("current_stage") or "未写入",
-            tone="blue" if exists else "amber",
-            evidence_level="field_scanned" if exists else "missing",
+            "VELA 导入",
+            import_status["status"],
+            tone=str(import_status["tone"]),
+            evidence_level="file_read" if context else "field_scanned" if exists else "missing",
             evidence_source="path",
-            source_path=project_root,
-            detail="阶段来自项目状态文件；缺失时只显示未写入。",
-            blocking=not exists,
+            source_path=str(import_status.get("context_path") or project_root),
+            detail="HELM 优先读取 .vela/context.json；缺失时才回退旧事实源文件。",
+            blocking=not bool(import_status.get("import_ready")) and import_status.get("source") == "missing_context",
         ),
         "missing_inputs": missing,
         "recent_codex_activity": [_status_from_row(row, fallback_level="field_scanned", source="codex_log") for row in _safe_list(dashboard.get("activity"))[:5]],
         "material_entries": material_entries[:8],
         "artifact_entries": artifact_entries[:8],
         "environment_status": _environment_source_status(),
+        "vela_import_status": _evidence(
+            "VELA context",
+            import_status["status"],
+            tone=str(import_status["tone"]),
+            evidence_level="file_read" if context else "missing",
+            evidence_source="path",
+            source_path=str(import_status.get("context_path") or ""),
+            detail=f"source={import_status['source']}; schema={import_status.get('schema_version') or 'none'}",
+            blocking=import_status["source"] == "missing_context",
+        ),
         "next_step_hint": _public_text(dashboard.get("next_action") or ("补齐阻断项后交给 Codex" if missing else "复制交接单，让 Codex 读取事实源后继续推进。")),
         "primary_actions": [
             {"label": "打开项目目录", "kind": "open_path", "target": project_root, "disabled": not exists},
@@ -548,19 +721,48 @@ def _codex_handoff(payload: dict[str, Any]) -> dict[str, Any]:
     project_page = _project_page(payload)
     credibility_page = _credibility_page(payload)
     environment_page = _environment_page(payload)
+    import_status = _project_import_status(project_root)
+    context = _load_vela_context(project_root)
     blockers = list(project_page.get("missing_inputs") or [])
     blockers.extend([item["label"] for item in credibility_page.get("judgments", []) if item.get("blocking")])
     validators = [item for item in environment_page.get("validators", []) if item.get("evidence_level") == "validator_ran"]
+    recommended_action = "补齐阻断项后交给 Codex" if blockers else "让 Codex 读取 VELA context 和事实源后继续推进"
+    relevant_files = [
+        str(item.get("source_path"))
+        for item in credibility_page.get("truth_sources", [])
+        if item.get("source_path")
+    ]
     handoff = {
+        "schema_version": HELM_HANDOFF_SCHEMA_VERSION,
+        "producer": "HELM",
+        "consumer": "VELA",
         "handoff_version": HANDOFF_VERSION,
         "generated_at": _now(),
         "product_boundary": "App 只读取本地文件、打开本地资源、运行本地 validator，并准备交给 Codex 的交接单；研究判断、写作和核验必须回到 Codex 对话并由用户确认。",
         "project": {
+            "id": ((context or {}).get("project") or {}).get("id") or Path(project_root).name if project_root else "",
             "name": project_page["project"]["name"],
             "root": project_root or "",
             "exists": bool(project_root and Path(project_root).exists()),
             "trusted_config_detected": bool(project_root),
+            "context_schema": import_status.get("schema_version"),
+            "import_source": import_status.get("source"),
         },
+        "recommended_action": recommended_action,
+        "relevant_files": relevant_files,
+        "constraints": [
+            "Do not invent citations.",
+            "Do not treat local file existence as content verification.",
+            "Do not expose private local paths in deliverables.",
+            "Do not treat HELM output as a research conclusion.",
+        ],
+        "validation_context": {
+            "source": import_status.get("source"),
+            "schema_version": import_status.get("schema_version"),
+            "context_path": import_status.get("context_path"),
+            "validators_run": validators,
+        },
+        "human_review_required": True,
         "local_evidence": {
             "truth_sources": credibility_page.get("truth_sources", []),
             "reports": project_page.get("artifact_entries", []),
@@ -574,7 +776,7 @@ def _codex_handoff(payload: dict[str, Any]) -> dict[str, Any]:
         },
         "missing_inputs": blockers,
         "safe_next_actions_for_codex": [
-            "先读取项目事实源文件和质量门报告。",
+            "先读取 .vela/context.json、项目事实源文件和质量门报告。",
             "说明将调用哪些 skill/MCP/plugin，以及每个组件的作用。",
             "对缺失证据先补台账或返回阻断，不要直接写正式结论。",
         ],
@@ -590,8 +792,11 @@ def _codex_handoff(payload: dict[str, Any]) -> dict[str, Any]:
             "请根据以下本地项目交接单继续工作。",
             f"项目路径：{handoff['project']['root'] or '未选择'}",
             f"项目名：{handoff['project']['name']}",
+            f"接口：{handoff['schema_version']}；VELA 状态：{import_status.get('source')} / {import_status.get('schema_version') or 'none'}",
             f"当前阶段：{project_page['project'].get('current_stage')}",
             "产品边界：HELM 只提供本地状态与证据线索；研究判断、写作和任务推进必须回到 Codex 对话并由用户确认。",
+            "相关文件：",
+            *(f"- {item}" for item in (relevant_files or ["未读取到相关文件；请先让 VELA 生成 .vela/context.json。"])),
             "缺失/阻断：",
             *(f"- {item}" for item in (blockers or ["暂无显式阻断；仍需读取事实源确认。"])),
             "建议交给 Codex：",
@@ -600,6 +805,15 @@ def _codex_handoff(payload: dict[str, Any]) -> dict[str, Any]:
             *(f"- {item}" for item in handoff["forbidden_claims"]),
         ]
     )
+    if project_root:
+        try:
+            handoff_dir = Path(str(import_status.get("handoff_dir") or Path(project_root) / "handoffs" / "helm"))
+            handoff_dir.mkdir(parents=True, exist_ok=True)
+            target = handoff_dir / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-codex-handoff.json"
+            target.write_text(json.dumps(handoff, ensure_ascii=False, indent=2), encoding="utf-8")
+            handoff["handoff_path"] = str(target)
+        except Exception as exc:  # noqa: BLE001
+            handoff["handoff_write_error"] = str(exc)
     return handoff
 
 
@@ -666,6 +880,7 @@ def _deliverables_page(payload: dict[str, Any]) -> dict[str, Any]:
 
 def _environment_page(payload: dict[str, Any]) -> dict[str, Any]:
     project_root = _project_root(payload)
+    import_status = _project_import_status(project_root)
     overview = env.environment_overview()
     source = overview.get("source_status", {})
     integrations = env.integrations_overview()
@@ -719,6 +934,16 @@ def _environment_page(payload: dict[str, Any]) -> dict[str, Any]:
             detail=str(source.get("detail") or ""),
         ),
         "current_project_readiness": [
+            _evidence(
+                "VELA context",
+                str(import_status["status"]),
+                tone=str(import_status["tone"]),
+                evidence_level="file_read" if import_status["source"] == "vela_context" else "missing",
+                evidence_source="path",
+                source_path=str(import_status.get("context_path") or ""),
+                detail=f"source={import_status['source']}; schema={import_status.get('schema_version') or 'none'}",
+                blocking=import_status["source"] == "missing_context",
+            ),
             _evidence(
                 "当前项目",
                 "已读取项目路径" if project_root else "未选择项目",

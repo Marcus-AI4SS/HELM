@@ -81,8 +81,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  width: min(280px, 30vw);
-  max-width: 280px;
+  width: min(360px, 38vw);
+  max-width: 360px;
   min-height: 34px;
   border: 1px solid rgba(255, 255, 255, 0.74);
   border-radius: var(--radius);
@@ -123,6 +123,28 @@
   font-weight: 820;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.project-selector-trigger .project-source {
+  flex: 0 0 auto;
+  border: 1px solid rgba(124, 180, 255, 0.42);
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: #2859b8;
+  background: rgba(231, 242, 255, 0.84);
+  font-size: 10px;
+  font-weight: 820;
+  white-space: nowrap;
+}
+
+.project-selector-trigger .project-source.legacy_files {
+  color: #8a5a00;
+  background: rgba(255, 247, 218, 0.9);
+}
+
+.project-selector-trigger .project-source.missing_context {
+  color: #9b1c1c;
+  background: rgba(255, 235, 235, 0.88);
 }
 
 .project-selector-menu {
