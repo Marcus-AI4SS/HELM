@@ -138,8 +138,6 @@ export interface CodexHandoff {
   constraints?: string[];
   validation_context?: Record<string, unknown>;
   human_review_required?: boolean;
-  handoff_path?: string;
-  handoff_write_error?: string;
   local_evidence: {
     truth_sources: EvidenceStatus[];
     reports: EvidenceStatus[];

@@ -10,6 +10,7 @@
 - Added VELA context detection in the bridge layer.
 - Added import source state: `vela_context`, `legacy_files`, `missing_context`.
 - Added `helm.codex.handoff.v1` output fields while preserving the readable Codex handoff text.
+- Kept HELM read-first: the app prepares a copyable handoff and does not silently write handoff files into the project folder.
 - Kept first-run guide, help panel, project selector, Pages tutorial, and smoke flow from the latest public HELM update.
 
 ## VELA Dependency

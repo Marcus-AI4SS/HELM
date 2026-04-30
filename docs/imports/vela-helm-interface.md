@@ -94,13 +94,13 @@ Minimal packet:
 }
 ```
 
-HELM prepares the packet. It does not execute the task automatically.
+HELM prepares the packet for the user to copy back into Codex. The public HELM app does not silently write this packet into a project folder and does not execute the task automatically.
 
 ## Shared Boundary Rules
 
 - Either product can be used alone.
 - Import packets are local files that users can inspect, copy, commit, or delete.
 - The interface does not authorize cloud sync, background execution, hidden agent scheduling, or automatic citation claims.
-- VELA owns workflow state. HELM owns local dashboard presentation and handoff preparation.
+- VELA owns workflow state. HELM owns local dashboard presentation and copyable handoff preparation.
 
 The machine-readable schema is [vela-helm-interface.schema.json](./vela-helm-interface.schema.json).
