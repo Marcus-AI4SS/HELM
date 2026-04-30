@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HELM | Desktop Command Dashboard</title>
+    <title>HELM | 本地项目看板</title>
     <meta
       name="description"
-      content="HELM is a local desktop command dashboard for research projects, evidence, deliverables, environment status, and Codex handoffs."
+      content="HELM 是本地项目看板，用来查看项目状态、证据准备、已有文件、环境健康和给 Codex 的说明。"
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -17,10 +17,11 @@
         <span>HELM</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="index.html" aria-current="page">Overview</a>
-        <a href="install.html">Install</a>
-        <a href="privacy.html">Privacy</a>
+        <a href="index.html" aria-current="page">首页</a>
+        <a href="install.html">安装</a>
+        <a href="tutorial.html">零基础教程</a>
         <a href="vela.html">VELA</a>
+        <a href="privacy.html">隐私</a>
         <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
@@ -28,22 +29,22 @@
     <main>
       <section class="hero hero-lockup">
         <div class="hero-copy">
-          <p class="eyebrow">HELM Desktop Command Dashboard</p>
-          <h1>Command your research work without moving the work into the app.</h1>
+          <p class="eyebrow">HELM 本地项目看板</p>
+          <h1>看清项目状态，再回到 Codex 推进研究。</h1>
           <p class="lede">
-            HELM reads local project state, evidence traces, deliverable indexes, and environment health.
-            It gives you a clean view of what is ready, what is blocked, and what Codex should handle next.
+            HELM 读取电脑上的项目状态、证据准备、已有文件和环境健康。
+            它不接管研究过程，只帮你判断哪里已准备好、哪里被阻塞、接下来该把什么交给 Codex。
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="install.html">Build from source</a>
-            <a class="button secondary" href="vela.html">See the VELA link</a>
+            <a class="button primary" href="tutorial.html">零基础开始</a>
+            <a class="button secondary" href="install.html">安装 HELM</a>
           </div>
         </div>
-        <figure class="hero-symbol" aria-label="HELM command mark">
+        <figure class="hero-symbol" aria-label="HELM 标识">
           <img src="assets/helm-icon.png" alt="" />
           <figcaption>
-            <strong>Local, readable, deliberate.</strong>
-            <span>No chat box. No one-click research claims. No hidden scheduler.</span>
+            <strong>HELM 只做本地看板。</strong>
+            <span>不聊天，不写作，不创建项目，不承诺一键研究。</span>
           </figcaption>
         </figure>
       </section>
@@ -52,58 +53,57 @@
         <article class="role-card vela-card">
           <img src="assets/vela-mark.png" alt="" />
           <span class="card-kicker">VELA</span>
-          <h2>Workflow environment layer</h2>
-          <p>VELA provides compatible local context: project facts, evidence traces, validator outputs, and runtime state.</p>
+          <h2>提供本地工作上下文</h2>
+          <p>VELA 可以准备项目事实、证据痕迹、校验结果和运行状态。</p>
         </article>
         <article class="role-card helm-card">
           <img src="assets/helm-icon.png" alt="" />
           <span class="card-kicker">HELM</span>
-          <h2>Desktop command dashboard</h2>
-          <p>HELM reads local state, surfaces readiness, opens safe paths, and prepares a precise handoff for Codex.</p>
+          <h2>读取并展示项目状态</h2>
+          <p>HELM 把这些本地状态整理成页面，并给出可复制的 Codex 继续说明。</p>
         </article>
       </section>
 
       <section class="quick-start-panel">
         <div>
-          <p class="eyebrow">First Run</p>
-          <h2>Open HELM, then let Codex connect your project.</h2>
+          <p class="eyebrow">首次使用</p>
+          <h2>没有项目时，从复制接入说明开始。</h2>
           <p>
-            HELM does not ask you to type prompts or create a project inside the app.
-            It reads local project context after Codex has prepared the facts in your project folder.
+            HELM 里不用聊天，也不用新建项目。Codex 负责连接项目文件夹并准备上下文；HELM 负责刷新后显示结果。
           </p>
         </div>
         <ol class="start-steps">
-          <li><strong>Install HELM</strong><span>Build from source today, or use a public candidate artifact when available.</span></li>
-          <li><strong>Copy the intake template</strong><span>If no project appears, use the Project page button.</span></li>
-          <li><strong>Paste it into Codex</strong><span>Codex connects the folder; HELM shows the local status after refresh.</span></li>
+          <li><strong>打开 HELM</strong><span>先看“项目”页面是否已经出现项目。</span></li>
+          <li><strong>复制接入说明</strong><span>没有项目时，复制“项目”页面给出的说明。</span></li>
+          <li><strong>交给 Codex</strong><span>Codex 连接项目后，回到 HELM 刷新并查看五个页面。</span></li>
         </ol>
       </section>
 
       <section class="screen-strip" aria-label="HELM screens">
-        <div><strong>Project</strong><span>status, blockers, materials</span></div>
-        <div><strong>Credibility</strong><span>evidence levels and sources</span></div>
-        <div><strong>Next Step</strong><span>handoff and local history</span></div>
-        <div><strong>Deliverables</strong><span>artifact and file index</span></div>
-        <div><strong>Environment</strong><span>runtime and validator health</span></div>
+        <div><strong>项目</strong><span>项目、阶段、阻塞点</span></div>
+        <div><strong>证据</strong><span>证据来源与准备度</span></div>
+        <div><strong>交给 Codex</strong><span>复制继续说明</span></div>
+        <div><strong>文件</strong><span>已有文件索引</span></div>
+        <div><strong>本机</strong><span>本机状态与检查结果</span></div>
       </section>
 
       <section class="split">
         <div>
-          <p class="eyebrow">Public Boundary</p>
-          <h2>A dashboard, not a research engine.</h2>
+          <p class="eyebrow">边界</p>
+          <h2>HELM 是看板，不是研究引擎。</h2>
         </div>
         <ul class="checks">
-          <li>No hosted telemetry or cloud sync in this repository.</li>
-          <li>No prompt input, chat surface, or hidden agent scheduling.</li>
-          <li>No bundled personal projects, note vaults, browser state, or reference databases.</li>
-          <li>Runs without VELA by showing an empty or public-safe sample state.</li>
+          <li>本仓库没有托管遥测或云同步。</li>
+          <li>HELM 不提供提示词输入、聊天窗口或隐藏任务调度。</li>
+          <li>公开包不应包含个人项目、笔记库、浏览器状态或文献数据库。</li>
+          <li>没有 VELA 时，HELM 可显示空状态或公开安全示例状态。</li>
         </ul>
       </section>
     </main>
 
     <footer>
-      <span>HELM is the command dashboard.</span>
-      <span>VELA provides compatible local workflow context.</span>
+      <span>HELM 负责展示本地项目状态。</span>
+      <span>研究推进仍回到 Codex。</span>
     </footer>
   </body>
 </html>

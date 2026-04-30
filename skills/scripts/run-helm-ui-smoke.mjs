@@ -68,13 +68,46 @@ function killProcessTree(child) {
         windowsHide: true,
         stdio: "ignore",
       });
-      killer.on("exit", () => resolve());
-      killer.on("error", () => resolve());
+      let resolved = false;
+      const finish = () => {
+        if (resolved) return;
+        resolved = true;
+        try {
+          child.kill("SIGKILL");
+        } catch {
+          // best effort after taskkill
+        }
+        try {
+          child.unref();
+        } catch {
+          // best effort after taskkill
+        }
+        clearTimeout(timer);
+        resolve();
+      };
+      const timer = setTimeout(finish, 3500);
+      killer.on("exit", finish);
+      killer.on("error", finish);
       return;
     }
     child.kill();
     resolve();
   });
+}
+
+function removePathBestEffort(targetPath, options = {}) {
+  try {
+    fs.rmSync(targetPath, {
+      force: true,
+      maxRetries: 5,
+      retryDelay: 180,
+      ...options,
+    });
+  } catch (err) {
+    if (err?.code !== "ENOENT") {
+      console.warn(`Warning: could not remove temporary path ${targetPath}: ${err.message}`);
+    }
+  }
 }
 
 async function isDevServerReady() {
@@ -204,8 +237,8 @@ async function main() {
   const chromePath = findChrome();
   if (!chromePath) throw new Error("Chrome or Edge executable not found for UI smoke test");
 
-  const userData = path.join(outputDir, "chrome-profile");
-  fs.rmSync(userData, { recursive: true, force: true });
+  const userData = path.join(outputDir, `chrome-profile-${process.pid}-${Date.now()}`);
+  removePathBestEffort(userData, { recursive: true });
   let chromeProcess = null;
   let cdp = null;
 
@@ -239,10 +272,10 @@ async function main() {
     ];
     const pages = [
       { key: "project", label: "项目" },
-      { key: "credibility", label: "可信度" },
-      { key: "next-step", label: "下一步" },
-      { key: "deliverables", label: "交付物" },
-      { key: "environment", label: "环境" },
+      { key: "credibility", label: "证据" },
+      { key: "next-step", label: "交给 Codex" },
+      { key: "deliverables", label: "文件" },
+      { key: "environment", label: "本机" },
     ];
     const scenarios = [
       { name: "standard", query: "" },
@@ -250,6 +283,8 @@ async function main() {
     ];
     const results = [];
     const interactionResults = [];
+    const onboardingResults = [];
+    const copyResults = [];
     let historySeeded = false;
 
     for (const scenario of scenarios) {
@@ -289,6 +324,121 @@ async function main() {
       }
 
       if (scenario.name === "standard" && viewport.name === "minimum-1280x760") {
+        const onboardingResult = await cdp.send("Runtime.evaluate", {
+          returnByValue: true,
+          awaitPromise: true,
+          expression: `(() => new Promise((resolve) => {
+            const textOf = (el) => (el?.textContent || '').replace(/\\s+/g, ' ').trim();
+            const visible = (el) => {
+              if (!el) return false;
+              const style = getComputedStyle(el);
+              const rect = el.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+            };
+            const all = (selector) => [...document.querySelectorAll(selector)].filter(visible);
+            const controls = (root = document) => [...root.querySelectorAll('button,[role="button"],input[type="button"],input[type="submit"],label,input')].filter(visible);
+            const buttons = (root = document) => [...root.querySelectorAll('button,[role="button"],input[type="button"],input[type="submit"]')].filter(visible);
+            const findButton = (patterns, root = document) => buttons(root).find((button) => patterns.some((pattern) => pattern.test(textOf(button) || button.getAttribute('aria-label') || button.getAttribute('title') || '')));
+            const findControl = (patterns, root = document) => controls(root).find((el) => patterns.some((pattern) => pattern.test(textOf(el) || el.getAttribute('aria-label') || el.getAttribute('title') || '')));
+            const wizardSelectors = [
+              '[data-tour-id*="onboarding"]',
+              '[data-tour-id*="tour"]',
+              '[data-testid*="onboarding"]',
+              '[data-testid*="tour"]',
+              '.onboarding-tour',
+              '.tour-panel',
+              '.tour-dialog',
+              '.welcome-guide',
+              '[role="dialog"]'
+            ];
+            const findWizard = () => all(wizardSelectors.join(',')).find((el) => /下一步|上一步|完成|不再显示|开始|新手|向导|HELM/.test(textOf(el)));
+            const click = (el) => {
+              if (!el) return false;
+              el.click();
+              return true;
+            };
+            const storageSnapshot = () => Object.fromEntries(Array.from({ length: localStorage.length }, (_, index) => {
+              const key = localStorage.key(index);
+              return [key, key ? localStorage.getItem(key) : ''];
+            }).filter(([key]) => key));
+            const storageMentionsDismiss = (before, after) => Object.entries(after).some(([key, value]) => {
+              if (before[key] === value) return false;
+              return /tour|onboarding|welcome|guide|dismiss|dont|skip|seen|不再显示/i.test(String(key) + ' ' + String(value));
+            });
+
+            const beforeStorage = storageSnapshot();
+            const initialWizard = findWizard();
+            const initialWizardVisible = Boolean(initialWizard);
+            const firstLaunchGuideVisible = initialWizardVisible || all('.onboarding-card,.project-intake-card,[data-tour-id*="first-launch"],[data-testid*="first-launch"]').length > 0;
+            const nextClicked = initialWizardVisible && click(findButton([/下一步/, /next/i], initialWizard));
+            setTimeout(() => {
+              const afterNextWizard = findWizard();
+              const backClicked = Boolean(afterNextWizard) && click(findButton([/上一步/, /back|previous/i], afterNextWizard));
+              setTimeout(() => {
+                const afterBackWizard = findWizard();
+                const skipControl = afterBackWizard ? findControl([/不再显示/, /do not show|don't show|dont show|never show/i], afterBackWizard) : null;
+                if (skipControl?.matches('input')) {
+                  skipControl.checked = true;
+                  skipControl.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                  click(skipControl);
+                }
+                const afterDismissStorage = storageSnapshot();
+                const dismissPersisted = storageMentionsDismiss(beforeStorage, afterDismissStorage);
+                const afterDismissWizard = findWizard();
+                const doneClicked = Boolean(afterDismissWizard) && click(findButton([/完成/, /知道了/, /开始使用/, /done|finish|start/i], afterDismissWizard));
+                setTimeout(() => {
+                  const helpButton = findButton([/帮助/, /help/i]) || document.querySelector('[data-tour-id="help-button"],[aria-label*="帮助"],[aria-label*="help" i]');
+                  const helpButtonVisible = visible(helpButton);
+                  const helpButtonOperable = click(helpButton);
+                  setTimeout(() => {
+                    const helpPanel = all('.help-panel,.help-drawer,[data-tour-id*="help"],[data-testid*="help"],[role="dialog"]').find((el) => /帮助|向导|新手|重新|开始|guide|tour|help/i.test(textOf(el)));
+                    const helpPanelOpened = Boolean(helpPanel);
+                    const helpPanelLeftAligned = Boolean(helpPanel && helpPanel.getBoundingClientRect().left < window.innerWidth * 0.45);
+                    const reopenButton = helpPanel
+                      ? [...helpPanel.querySelectorAll('button,[role="button"]')].find((button) => /向导|新手|重新|开始|guide|tour|onboarding/i.test(textOf(button) || button.getAttribute('aria-label') || button.getAttribute('title') || ''))
+                      : null;
+                    const helpReopenClicked = click(reopenButton);
+                    setTimeout(() => {
+                      const wizardReopenedFromHelp = helpReopenClicked && Boolean(findWizard());
+                      const settingsButton = findButton([/设置/, /settings/i]);
+                      const settingsButtonVisible = visible(settingsButton);
+                      const settingsButtonOperable = click(settingsButton);
+                      setTimeout(() => {
+                        const settingsPanelOpened = Boolean(all('.settings-panel,[data-testid*="settings"],[role="dialog"]').find((el) => /设置|settings/i.test(textOf(el))));
+                        const settingsPanel = document.querySelector('.settings-panel');
+                        const settingsPanelLeftAligned = Boolean(settingsPanel && settingsPanel.getBoundingClientRect().left < window.innerWidth * 0.45);
+                        click(document.querySelector('.settings-close,[aria-label*="关闭设置"]'));
+                        resolve({
+                          firstLaunchGuideVisible,
+                          initialWizardVisible,
+                          nextClicked,
+                          backClicked,
+                          dismissPersisted,
+                          doneClicked,
+                          helpButtonVisible,
+                          helpButtonOperable,
+                          helpPanelOpened,
+                          helpPanelLeftAligned,
+                          helpReopenClicked,
+                          wizardReopenedFromHelp,
+                          settingsButtonVisible,
+                          settingsButtonOperable,
+                          settingsPanelOpened,
+                          settingsPanelLeftAligned,
+                        });
+                      }, 160);
+                    }, 160);
+                  }, 180);
+                }, 160);
+              }, 120);
+            }, 120);
+          }))()`,
+        });
+        onboardingResults.push(onboardingResult.result.value);
+      }
+
+      if (scenario.name === "standard" && viewport.name === "minimum-1280x760") {
         await sleep(700);
         const interactionResult = await cdp.send("Runtime.evaluate", {
           returnByValue: true,
@@ -298,6 +448,7 @@ async function main() {
             if (settingsButton) settingsButton.click();
             setTimeout(() => {
               const panel = document.querySelector('.settings-panel');
+              const settingsPanelLeftAligned = Boolean(panel && panel.getBoundingClientRect().left < window.innerWidth * 0.45);
               const launch = panel?.querySelector('[data-testid="settings-launch-page"]');
               const density = panel?.querySelector('[data-testid="settings-density"]');
               const reduceMotion = panel?.querySelector('[data-testid="settings-reduce-motion"]');
@@ -325,6 +476,7 @@ async function main() {
                 if (close) close.click();
                 resolve({
                   settingsButtonOpened: Boolean(panel),
+                  settingsPanelLeftAligned,
                   densityApplied: document.documentElement.dataset.density === 'compact',
                   reduceMotionApplied: document.documentElement.dataset.reduceMotion === 'on',
                   settingsPersisted: settingsRaw.includes('"launchPage":"environment"') && settingsRaw.includes('"displayDensity":"compact"'),
@@ -335,6 +487,88 @@ async function main() {
           }))()`,
         });
         interactionResults.push(interactionResult.result.value);
+
+        const copyResult = await cdp.send("Runtime.evaluate", {
+          returnByValue: true,
+          awaitPromise: true,
+          expression: `(() => new Promise((resolve) => {
+            const copied = [];
+            const textOf = (el) => (el?.textContent || el?.getAttribute?.('aria-label') || el?.getAttribute?.('title') || '').replace(/\\s+/g, ' ').trim();
+            const visible = (el) => {
+              if (!el) return false;
+              const style = getComputedStyle(el);
+              const rect = el.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+            };
+            const buttons = () => [...document.querySelectorAll('button,[role="button"]')].filter(visible);
+            const clickButton = (patterns) => {
+              const button = buttons().find((item) => patterns.some((pattern) => pattern.test(textOf(item))));
+              if (!button) return false;
+              button.click();
+              return true;
+            };
+            const clickAnyButton = (patterns) => {
+              const button = [...document.querySelectorAll('button,[role="button"]')].find((item) => patterns.some((pattern) => pattern.test(textOf(item))));
+              if (!button) return false;
+              button.scrollIntoView({ block: 'center', inline: 'nearest' });
+              button.click();
+              return true;
+            };
+            const closeOverlays = () => {
+              document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+              window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+              [...document.querySelectorAll('.settings-close,[aria-label*="关闭"]')].filter(visible).forEach((button) => button.click());
+            };
+            const installClipboardHook = () => {
+              const clipboard = { writeText: async (value) => { copied.push(String(value)); window.__helmLastCopiedText = String(value); } };
+              try {
+                Object.defineProperty(Navigator.prototype, 'clipboard', { configurable: true, get: () => clipboard });
+                return true;
+              } catch {
+                try {
+                  Object.defineProperty(navigator, 'clipboard', { configurable: true, value: clipboard });
+                  return true;
+                } catch {
+                  return false;
+                }
+              }
+            };
+            const hookInstalled = installClipboardHook();
+            closeOverlays();
+            clickButton([/^项目$/]);
+            setTimeout(() => {
+              closeOverlays();
+              const helpOpened = clickAnyButton([/帮助/]);
+              setTimeout(() => {
+                const intakeClicked = clickAnyButton([/复制接入说明/]);
+              setTimeout(() => {
+                const intakeText = copied[copied.length - 1] || '';
+                closeOverlays();
+                clickAnyButton([/本机/]);
+                setTimeout(() => {
+                  document.querySelector('.page-surface')?.scrollTo?.(0, document.querySelector('.page-surface')?.scrollHeight || 0);
+                  window.scrollTo(0, document.body.scrollHeight);
+                  const diagnosticClicked = clickAnyButton([/复制本机诊断/]);
+                  setTimeout(() => {
+                    const diagnosticText = copied[copied.length - 1] || '';
+                    const rawProjectFilePattern = /\\b(?:research-map\\.md|findings-memory\\.md|material-passport\\.yaml|evidence-ledger\\.yaml)\\b/i;
+                    const rawModePattern = /\\b(?:demo_snapshot|legacy_app_snapshot|live_environment|source mode|runtime|on|off|project)\\b/i;
+                    resolve({
+                      hookInstalled,
+                      helpOpened,
+                      intakeClicked,
+                      diagnosticClicked,
+                      intakeTextChecked: Boolean(intakeText) && !rawProjectFilePattern.test(intakeText) && /项目说明/.test(intakeText) && /材料清单/.test(intakeText),
+                      diagnosticTextChecked: Boolean(diagnosticText) && !rawModePattern.test(diagnosticText) && /本机读取状态/.test(diagnosticText) && /设置：启动页=/.test(diagnosticText),
+                    });
+                  }, 180);
+                }, 420);
+              }, 180);
+              }, 220);
+            }, 180);
+          }))()`,
+        });
+        copyResults.push(copyResult.result.value);
       }
 
         for (const page of pages) {
@@ -349,8 +583,12 @@ async function main() {
             const grid = document.querySelector('.page-grid');
             const workspace = document.querySelector('.workspace-shell');
             const shell = document.querySelector('.app-shell');
+            const titlebar = document.querySelector('.titlebar');
+            const windowControls = document.querySelector('.window-controls');
             const surfaceRect = surface ? surface.getBoundingClientRect() : null;
             const gridRect = grid ? grid.getBoundingClientRect() : null;
+            const titlebarRect = titlebar ? titlebar.getBoundingClientRect() : null;
+            const windowControlsRect = windowControls ? windowControls.getBoundingClientRect() : null;
             const rightBlankPx = surfaceRect && gridRect ? Math.max(0, Math.round(surfaceRect.right - gridRect.right)) : null;
             const contentWidthRatio = surfaceRect && gridRect && surfaceRect.width > 0
               ? Number((gridRect.width / surfaceRect.width).toFixed(3))
@@ -383,13 +621,71 @@ async function main() {
             const blankGridRows = gridRect
               ? rows.filter((row) => row.itemCount === 1 && !row.hasSpan && row.ratio < 0.82)
               : [];
-            const selectors = '.titlebar h1,.titlebar p,.action-button,.project-selector,.segmented-nav button,.status-badge,.evidence-title-row h3,.file-card strong,.file-card small';
+            const selectors = '.titlebar h1,.titlebar p,.action-button,.project-selector-trigger,.project-selector-trigger strong,.segmented-nav button,.status-badge,.evidence-title-row h3,.file-card strong,.file-card small,.entry-summary-grid strong,.entry-summary-grid small,.plain-file-list strong,.plain-file-list span,.project-selector-menu strong,.project-selector-menu small';
             const clipped = [...document.querySelectorAll(selectors)].filter((el) => {
               const style = getComputedStyle(el);
               if (style.display === 'none' || style.visibility === 'hidden') return false;
               return el.scrollWidth - el.clientWidth > 1 || el.scrollHeight - el.clientHeight > 2;
             }).map((el) => ({ tag: el.tagName, className: String(el.className), text: (el.textContent || '').trim().slice(0, 120), sw: el.scrollWidth, cw: el.clientWidth, sh: el.scrollHeight, ch: el.clientHeight }));
             const text = document.body.innerText || '';
+            const isVisible = (el) => {
+              if (!el) return false;
+              const style = getComputedStyle(el);
+              const rect = el.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+            };
+            const textOf = (el) => (el?.textContent || '').replace(/\\s+/g, ' ').trim();
+            const hiddenFromMainFlow = (el) => Boolean(el.closest([
+              '.diagnostic-panel',
+              '.settings-panel',
+              '.settings-overlay',
+              '.toast',
+              '[aria-hidden="true"]',
+              '[hidden]',
+              'script',
+              'style',
+              'noscript',
+              'template',
+              'code',
+              'pre',
+              'svg'
+            ].join(',')));
+            const mainFlowTextNodes = [];
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+              acceptNode(node) {
+                const value = (node.nodeValue || '').replace(/\\s+/g, ' ').trim();
+                const parent = node.parentElement;
+                if (!value || !parent || hiddenFromMainFlow(parent) || !isVisible(parent)) return NodeFilter.FILTER_REJECT;
+                return NodeFilter.FILTER_ACCEPT;
+              }
+            });
+            while (walker.nextNode()) {
+              mainFlowTextNodes.push({
+                text: walker.currentNode.nodeValue.replace(/\\s+/g, ' ').trim(),
+                tag: walker.currentNode.parentElement?.tagName || '',
+                className: String(walker.currentNode.parentElement?.className || ''),
+              });
+            }
+            const bannedMainFlowTerms = [
+              { term: 'handoff', pattern: /\\bhandoff\\b/i },
+              { term: 'validator', pattern: /\\bvalidator\\b/i },
+              { term: 'runtime', pattern: /\\bruntime\\b/i },
+              { term: 'source mode', pattern: /\\bsource\\s+mode\\b/i },
+              { term: 'bridge', pattern: /\\bbridge\\b/i },
+              { term: 'schema', pattern: /\\bschema\\b/i },
+              { term: 'Project intake', pattern: /\\bProject\\s+intake\\b/i },
+              { term: 'Onboarding', pattern: /\\bOnboarding\\b/i },
+              { term: 'gate', pattern: /\\bgate\\b/i },
+              { term: '复查', pattern: /复查/ },
+              { term: '交接单', pattern: /交接单/ },
+              { term: '交付物', pattern: /交付物/ },
+              { term: 'raw identifier', pattern: /\\b[a-z][a-z0-9]+(?:_[a-z0-9]+)+\\b/i },
+              { term: 'raw project filename', pattern: /\\b(?:research-map|findings-memory|material-passport|evidence-ledger|pipeline-status|writing-quality-report)\\b/i },
+            ];
+            const mainFlowTechTerms = mainFlowTextNodes
+              .flatMap((node) => bannedMainFlowTerms
+                .filter((item) => item.pattern.test(node.text))
+                .map((item) => ({ term: item.term, text: node.text.slice(0, 160), tag: node.tag, className: node.className })));
             const historyRaw = window.localStorage.getItem('helm.handoffHistory.v1') || '';
             const historyStorageHasPrivatePath = /C:\\\\Users|C:\\/Users|\\/Users\\/|\\/home\\//.test(historyRaw);
             const historyActionCount = document.querySelectorAll('.handoff-history-card .action-button').length;
@@ -399,14 +695,27 @@ async function main() {
               'Codex' + '-Research' + '-Console',
             ];
             const privateTerms = [
-              ['private', 'friend'].join('+'),
-              ['friend', 'private'].join('-'),
-              ['friend', 'only'].join('-'),
               '私有版',
-              '朋友版',
-              '仅朋友',
+              '仅限个人',
             ];
             const windowControlCount = document.querySelectorAll('.window-control').length;
+            const windowControlsDropped = Boolean(titlebarRect && windowControlsRect && windowControlsRect.top - titlebarRect.top > 44);
+            const toolbarSettingsHelpCount = [...document.querySelectorAll('.toolbar-actions button')].filter((button) => /设置|帮助|settings|help/i.test(textOf(button) || button.getAttribute('aria-label') || '')).length;
+            const sidebarUtilityCount = document.querySelectorAll('.sidebar-footer .action-button').length;
+            const nativeToolbarProjectSelectCount = document.querySelectorAll('.toolbar-actions .project-selector select').length;
+            const projectSelectorTriggerCount = document.querySelectorAll('.toolbar-actions .project-selector-trigger').length;
+            let projectSelectorMenuOverflow = false;
+            const projectSelectorTrigger = document.querySelector('.toolbar-actions .project-selector-trigger');
+            if (isVisible(projectSelectorTrigger)) {
+              projectSelectorTrigger.click();
+              const menu = document.querySelector('.project-selector-menu');
+              if (isVisible(menu)) {
+                const menuRect = menu.getBoundingClientRect();
+                projectSelectorMenuOverflow = menuRect.left < -1 || menuRect.right > window.innerWidth + 1 || menuRect.width > window.innerWidth;
+              }
+              projectSelectorTrigger.click();
+              document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+            }
             const visibleControls = [...document.querySelectorAll('button,select')].filter((el) => {
               const style = getComputedStyle(el);
               const rect = el.getBoundingClientRect();
@@ -416,7 +725,23 @@ async function main() {
               .filter((el) => !((el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || '').trim()))
               .map((el) => ({ tag: el.tagName, className: String(el.className || ''), html: el.outerHTML.slice(0, 160) }));
             const settingsButtonCount = [...document.querySelectorAll('button')].filter((button) => button.textContent.trim().includes('设置')).length;
+            const helpButtonCount = [...document.querySelectorAll('button,[role="button"]')].filter((button) => {
+              const label = (button.textContent || button.getAttribute('aria-label') || button.getAttribute('title') || '').trim();
+              return isVisible(button) && /帮助|help/i.test(label);
+            }).length;
             const projectIntakeCount = document.querySelectorAll('.project-intake-card').length;
+            const projectPortfolio = document.querySelector('.project-portfolio-card');
+            const invalidProjectRows = projectPortfolio
+              ? [...projectPortfolio.querySelectorAll('.project-row,button')].filter((row) => {
+                  const rowText = textOf(row);
+                  return isVisible(row) && (row.disabled || /缺失|不可用|失效|未检测|公开样例|<PUBLIC_SAMPLE_PROJECT>/i.test(rowText));
+                }).map((row) => textOf(row).slice(0, 180))
+              : [];
+            const usableProjectRows = projectPortfolio
+              ? [...projectPortfolio.querySelectorAll('.project-row,button')].filter((row) => isVisible(row) && !row.disabled).length
+              : 0;
+            const beginnerGuideVisible = [...document.querySelectorAll('.onboarding-card,.project-intake-card,[data-tour-id*="onboarding"],[data-testid*="onboarding"]')]
+              .some((el) => isVisible(el) && /第一次|新手|项目接入|可信项目|复制项目接入模板|未检测到可信项目/i.test(textOf(el)));
             const diagnosticPanelCount = document.querySelectorAll('.diagnostic-panel').length;
             return {
               scenario: ${JSON.stringify(scenario.name)},
@@ -441,10 +766,21 @@ async function main() {
               brandSrc: document.querySelector('.brand-mark img')?.getAttribute('src') || '',
               inputCount: document.querySelectorAll('textarea,input[type="text"],input:not([type]),[contenteditable="true"]').length,
               windowControlCount,
+              windowControlsDropped,
+              toolbarSettingsHelpCount,
+              sidebarUtilityCount,
+              nativeToolbarProjectSelectCount,
+              projectSelectorTriggerCount,
+              projectSelectorMenuOverflow,
               settingsButtonMissing: settingsButtonCount < 1,
-              projectIntakeMissing: ${JSON.stringify(page.key)} === 'project' && projectIntakeCount < 1,
-              emptyOnboardingMissing: ${JSON.stringify(scenario.name)} === 'empty' && ${JSON.stringify(page.key)} === 'project' && !text.includes('未检测到可信项目'),
+              helpButtonMissing: helpButtonCount < 1,
+              projectIntakeMissing: ${JSON.stringify(scenario.name)} === 'empty' && ${JSON.stringify(page.key)} === 'project' && projectIntakeCount < 1,
+              invalidProjectRows,
+              invalidProjectVisible: ${JSON.stringify(page.key)} === 'project' && invalidProjectRows.length > 0,
+              usableProjectRows,
+              emptyOnboardingMissing: ${JSON.stringify(scenario.name)} === 'empty' && ${JSON.stringify(page.key)} === 'project' && !beginnerGuideVisible,
               diagnosticPanelMissing: ${JSON.stringify(page.key)} === 'environment' && diagnosticPanelCount < 1,
+              mainFlowTechTerms,
               keyboardFocusFailures,
               clipped,
             };
@@ -470,19 +806,56 @@ async function main() {
           !row.hasWideBlankColumn &&
           row.inputCount === 0 &&
           row.windowControlCount === 3 &&
+          !row.windowControlsDropped &&
+          row.toolbarSettingsHelpCount === 0 &&
+          row.sidebarUtilityCount >= 2 &&
+          row.nativeToolbarProjectSelectCount === 0 &&
+          (row.projectSelectorTriggerCount >= 1 || row.scenario === 'empty') &&
+          !row.projectSelectorMenuOverflow &&
           !row.settingsButtonMissing &&
+          !row.helpButtonMissing &&
           !row.projectIntakeMissing &&
+          !row.invalidProjectVisible &&
           !row.emptyOnboardingMissing &&
           !row.diagnosticPanelMissing &&
+          row.mainFlowTechTerms.length === 0 &&
           row.keyboardFocusFailures.length === 0 &&
           row.clipped.length === 0 &&
           row.brandSrc.includes("helm-command-mark"),
       ) && interactionResults.length === 1 && interactionResults.every(
-        (row) => row.settingsButtonOpened && row.densityApplied && row.reduceMotionApplied && row.settingsPersisted && row.clearHistoryButtonVisible,
+        (row) => row.settingsButtonOpened && row.settingsPanelLeftAligned && row.densityApplied && row.reduceMotionApplied && row.settingsPersisted && row.clearHistoryButtonVisible,
+      ) && onboardingResults.length === 1 && onboardingResults.every(
+        (row) =>
+          row.firstLaunchGuideVisible &&
+          row.initialWizardVisible &&
+          row.nextClicked &&
+          row.backClicked &&
+          row.dismissPersisted &&
+          row.doneClicked &&
+          row.helpButtonVisible &&
+          row.helpButtonOperable &&
+          row.helpPanelOpened &&
+          row.helpPanelLeftAligned &&
+          row.helpReopenClicked &&
+          row.wizardReopenedFromHelp &&
+          row.settingsButtonVisible &&
+          row.settingsButtonOperable &&
+          row.settingsPanelOpened &&
+          row.settingsPanelLeftAligned,
+      ) && copyResults.length === 1 && copyResults.every(
+        (row) =>
+          row.hookInstalled &&
+          row.helpOpened &&
+          row.intakeClicked &&
+          row.diagnosticClicked &&
+          row.intakeTextChecked &&
+          row.diagnosticTextChecked,
       ),
       generated_at: new Date().toISOString(),
       results,
       interactions: interactionResults,
+      onboarding: onboardingResults,
+      copy_checks: copyResults,
       totals: {
         overflowPages: results.filter((row) => row.hasHorizontalScrollbar).length,
         sidebarVisualPages: results.filter((row) => row.sidebarVisualCount > 0).length,
@@ -494,14 +867,44 @@ async function main() {
         blankGridRows: results.reduce((count, row) => count + (row.blankGridRows?.length || 0), 0),
         inputPages: results.filter((row) => row.inputCount > 0).length,
         windowControlFailures: results.filter((row) => row.windowControlCount !== 3).length,
+        windowControlAlignmentFailures: results.filter((row) => row.windowControlsDropped).length,
+        toolbarUtilityPlacementFailures: results.filter((row) => row.toolbarSettingsHelpCount !== 0 || row.sidebarUtilityCount < 2).length,
+        projectSelectorStyleFailures: results.filter((row) => row.nativeToolbarProjectSelectCount !== 0 || (row.projectSelectorTriggerCount < 1 && row.scenario !== 'empty') || row.projectSelectorMenuOverflow).length,
         settingsInteractionRuns: interactionResults.length,
         settingsPanelFailures: interactionResults.filter(
-          (row) => !row.settingsButtonOpened || !row.densityApplied || !row.reduceMotionApplied || !row.settingsPersisted || !row.clearHistoryButtonVisible,
+          (row) => !row.settingsButtonOpened || !row.settingsPanelLeftAligned || !row.densityApplied || !row.reduceMotionApplied || !row.settingsPersisted || !row.clearHistoryButtonVisible,
+        ).length,
+        onboardingInteractionRuns: onboardingResults.length,
+        onboardingInteractionFailures: onboardingResults.filter(
+          (row) =>
+            !row.firstLaunchGuideVisible ||
+            !row.initialWizardVisible ||
+            !row.nextClicked ||
+            !row.backClicked ||
+            !row.dismissPersisted ||
+            !row.doneClicked ||
+            !row.helpButtonVisible ||
+            !row.helpButtonOperable ||
+            !row.helpPanelOpened ||
+            !row.helpPanelLeftAligned ||
+            !row.helpReopenClicked ||
+            !row.wizardReopenedFromHelp ||
+            !row.settingsButtonVisible ||
+            !row.settingsButtonOperable ||
+            !row.settingsPanelOpened ||
+            !row.settingsPanelLeftAligned,
+        ).length,
+        copyTextCheckRuns: copyResults.length,
+        copyTextFailures: copyResults.filter(
+          (row) => !row.hookInstalled || !row.helpOpened || !row.intakeClicked || !row.diagnosticClicked || !row.intakeTextChecked || !row.diagnosticTextChecked,
         ).length,
         settingsButtonFailures: results.filter((row) => row.settingsButtonMissing).length,
+        helpButtonFailures: results.filter((row) => row.helpButtonMissing).length,
         projectIntakeFailures: results.filter((row) => row.projectIntakeMissing).length,
+        invalidProjectVisibilityFailures: results.filter((row) => row.invalidProjectVisible).length,
         emptyOnboardingFailures: results.filter((row) => row.emptyOnboardingMissing).length,
         diagnosticPanelFailures: results.filter((row) => row.diagnosticPanelMissing).length,
+        mainFlowTechTermFailures: results.reduce((count, row) => count + row.mainFlowTechTerms.length, 0),
         keyboardFocusFailures: results.reduce((count, row) => count + row.keyboardFocusFailures.length, 0),
         clippedCount: results.reduce((count, row) => count + row.clipped.length, 0),
         badLogoPages: results.filter((row) => !row.brandSrc.includes("helm-command-mark")).length,
@@ -517,9 +920,9 @@ async function main() {
     await killProcessTree(chromeProcess);
     await killProcessTree(viteProcess);
     if (fs.existsSync(path.join(outputDir, ".vite-dev.pid"))) {
-      fs.rmSync(path.join(outputDir, ".vite-dev.pid"), { force: true });
+      removePathBestEffort(path.join(outputDir, ".vite-dev.pid"));
     }
-    fs.rmSync(userData, { recursive: true, force: true });
+    removePathBestEffort(userData, { recursive: true });
   }
 }
 

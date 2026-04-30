@@ -7,7 +7,7 @@
 <h1 align="center">HELM</h1>
 
 <p align="center">
-  Local desktop command dashboard for research projects, evidence, deliverables, environment health, and Codex handoffs.
+  本地项目看板：把项目状态、证据准备、已有文件、环境健康和给 Codex 的说明放在一个清楚的桌面视图里。
 </p>
 
 <p align="center">
@@ -17,93 +17,103 @@
 </p>
 
 <p align="center">
-  <a href="https://marcus-ai4ss.github.io/HELM/">Product site</a>
+  <a href="https://marcus-ai4ss.github.io/HELM/">公开站点</a>
   ·
-  <a href="site/install.html">Install guide</a>
+  <a href="site/install.html">安装</a>
   ·
-  <a href="PRIVACY.md">Privacy</a>
+  <a href="site/tutorial.html">零基础教程</a>
   ·
-  <a href="release/RELEASE_CHECKLIST.md">Release checklist</a>
+  <a href="PRIVACY.md">隐私</a>
 </p>
 
-## What HELM Is
+## HELM 是什么
 
-HELM is a local desktop dashboard for research work. It shows what your project already knows: current phase, blockers, materials, evidence readiness, deliverables, local environment status, and the handoff that should continue in Codex.
+HELM 是本地项目看板。它读取你电脑上的项目状态，并把当前阶段、阻塞点、材料、证据准备度、已有文件、环境健康和给 Codex 的说明集中展示出来。
 
-HELM is intentionally narrow. It does not provide chat, prompt input, hidden agent scheduling, one-click research execution, manuscript writing, citation verification, or submission automation.
+研究推进仍回到 Codex。HELM 不提供聊天、写作、创建项目、一键研究、隐藏任务调度、引用核验或投稿自动化。它只帮助你看清“现在项目处在哪里”和“接下来该把什么交给 Codex”。
 
-## New User Path
+## 零基础怎么用
 
-If you are opening HELM for the first time, use it in this order:
+第一次打开 HELM，可以按这个顺序走：
 
-1. Install or build HELM, then open the desktop app.
-2. Check the **Project** page. If HELM shows no trusted project, copy the project intake template.
-3. Paste that template into Codex and ask Codex to connect your project folder.
-4. Return to HELM and refresh. HELM should then show project status, evidence readiness, deliverables, environment health, and the next Codex handoff.
+1. 打开 HELM。
+2. 如果没有项目，进入 **项目** 页面，复制接入说明。
+3. 把接入说明交给 Codex，让 Codex 连接你的项目文件夹并准备本地上下文。
+4. 回到 HELM，刷新页面。
+5. 依次查看 **项目**、**证据**、**交给 Codex**、**文件**、**本机** 五个页面。
+6. 在 **交给 Codex** 页面复制说明，回到 Codex 继续推进研究。
 
-You do not need to create projects inside HELM. Codex prepares the project context; HELM reads it locally.
+你不需要在 HELM 里创建项目。Codex 负责准备项目上下文；HELM 负责本地读取和展示。
 
-## HELM And VELA
+## HELM 与 VELA
 
-HELM and VELA are separate tools that can work together.
+HELM 和 VELA 是职责分开的工具，可以协同使用。
 
-| Project | Role | Boundary |
+| 工具 | 作用 | 边界 |
 | --- | --- | --- |
-| **VELA** | Workflow and environment layer | Produces local project context, evidence traces, validator outputs, and runtime state. |
-| **HELM** | Desktop command dashboard | Reads local state, visualizes readiness, opens safe paths, and prepares Codex handoffs. |
+| **VELA** | 提供本地工作上下文 | 生成项目事实、证据痕迹、校验结果和运行状态。 |
+| **HELM** | 展示本地项目看板 | 读取并展示状态，帮助复制给 Codex 的说明。 |
 
-The projects stay in separate repositories. HELM can run by itself in public sample or empty state. When a VELA-compatible environment is available beside HELM or configured through `HELM_VELA_SKILLS_ROOT`, HELM can read it as the live source.
+VELA 可以提供本地工作上下文，HELM 读取并展示；研究动作仍在 Codex 中继续。没有 VELA 时，HELM 也可以显示空状态或公开安全的示例状态。
 
-## Core Screens
+## 五个页面
 
-- **Project**: compare trusted projects, blockers, materials, deliverables, and recent activity.
-- **Credibility**: inspect evidence source levels without overstating file-read signals.
-- **Next Step**: review the next Codex handoff and local history summaries.
-- **Deliverables**: browse generated artifacts and source files.
-- **Environment**: diagnose runtime, validators, source mode, and local settings.
+- **项目**：看项目是否已接入、当前阶段、阻塞点、材料和最近活动。
+- **证据**：看证据来源层级和准备情况，不把“读到文件”误说成“已经证明”。
+- **交给 Codex**：复制给 Codex 的继续说明。
+- **文件**：查看已有文件索引。
+- **本机**：检查本机状态、本地检查结果和设置。
 
-## Quick Start
+## 从源码运行
 
 ```powershell
 cd apps/desktop
 npm install
 npm run build
+npm run tauri dev
+```
+
+只做构建检查时可以运行：
+
+```powershell
+cd apps/desktop
+npm run build
 cd src-tauri
 cargo check
 ```
 
-Run the public release gate from the repository root:
+从仓库根目录运行公开检查：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1
 ```
 
-## Build Desktop Artifacts
+## 构建本地安装包
 
-The release artifact script records signing readiness and checksums. It can build unsigned local artifacts when no signing credentials are configured.
+构建脚本会记录签名状态和校验和。没有签名证书时，它可以生成未签名的本地包。
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File release/build-public-artifacts.ps1
 ```
 
-Generated artifacts are written under `release/artifacts/` and are not committed.
+生成文件写入 `release/artifacts/`，不会提交到仓库。
 
-## Privacy Model
+## 隐私边界
 
-HELM is local-first. This repository has no telemetry service, hosted backend, analytics SDK, or cloud sync layer. Public release payloads must not include personal research materials, reference-manager databases, note vaults, browser profiles, credentials, or local absolute paths.
+HELM 优先使用本地数据。本仓库没有遥测服务、托管后端、分析 SDK 或云同步层。公开发布内容不得包含个人研究材料、文献管理数据库、笔记库、浏览器资料、凭据或本地绝对路径。
 
 See [PRIVACY.md](PRIVACY.md).
 
-## Repository Layout
+## 仓库结构
 
 ```text
-apps/desktop/        React and Tauri desktop app
-skills/              Public-safe runtime resources used by HELM
-release/             Release checks, artifact scripts, privacy scan, checklists
-site/                GitHub Pages product site
-.github/workflows/   CI, Pages, and artifact workflows
+apps/desktop/        桌面应用
+skills/              HELM 使用的公开安全运行资源
+release/             发布检查、构建脚本、隐私扫描
+site/                GitHub Pages 公开站点
+.github/workflows/   CI、Pages 和构建流程
 ```
 
-## Release Status
+## 发布状态
 
-This repository is prepared as a public candidate. A tagged public release still needs signed or clearly unsigned artifacts, checksums, release notes, and clean Windows/macOS first-use test records.
+当前仓库处于公开候选状态。正式标签发布仍需要安装包、校验和、发布说明，以及 Windows/macOS 首次使用测试记录。

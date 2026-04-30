@@ -412,6 +412,107 @@ pre {
   border-radius: 20px;
 }
 
+.tutorial-steps {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.tutorial-reference {
+  display: grid;
+  gap: 16px;
+  margin: 28px 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--panel-strong);
+  box-shadow: 0 18px 44px rgba(15, 31, 61, 0.06);
+}
+
+.tutorial-reference h2 {
+  margin: 0;
+}
+
+.tutorial-reference-grid,
+.tutorial-page-guide {
+  display: grid;
+  gap: 12px;
+}
+
+.tutorial-reference-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tutorial-page-guide {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.tutorial-reference-grid article,
+.tutorial-page-guide article {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.tutorial-reference-grid strong,
+.tutorial-page-guide strong {
+  color: var(--ink);
+}
+
+.tutorial-reference-grid span,
+.tutorial-page-guide span {
+  color: var(--graphite);
+  line-height: 1.58;
+}
+
+.tutorial-steps article {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 16px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.tutorial-steps article > span {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--deep);
+  font-weight: 850;
+}
+
+.tutorial-steps h2 {
+  margin-top: 0;
+}
+
+.tutorial-callout {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 18px;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 16px;
+  color: #425b82;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(230, 240, 255, 0.56)),
+    rgba(255, 255, 255, 0.72);
+}
+
+.tutorial-callout strong {
+  color: var(--deep);
+}
+
+.tutorial-callout span {
+  color: #547099;
+  line-height: 1.58;
+}
+
 .diagram {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -469,7 +570,9 @@ footer {
   .split,
   .privacy-grid,
   .diagram,
-  .screen-strip {
+  .screen-strip,
+  .tutorial-reference-grid,
+  .tutorial-page-guide {
     grid-template-columns: 1fr;
   }
 
@@ -484,6 +587,10 @@ footer {
   .role-card {
     grid-template-columns: 1fr;
     justify-items: start;
+  }
+
+  .tutorial-steps article {
+    grid-template-columns: 1fr;
   }
 
   .role-card .card-kicker,

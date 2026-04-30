@@ -1,55 +1,59 @@
-import { useMemo, useState } from "react";
 import { FolderOpen } from "lucide-react";
+import { displayActionText, displayStage } from "../displayText";
 import { ActionButton } from "../components/ActionButton";
 import { EmptyState } from "../components/EmptyState";
 import { EvidenceCard } from "../components/EvidenceCard";
-import { FilterChips, type FilterChipOption } from "../components/FilterChips";
-import { FileCard } from "../components/FileCard";
 import { OnboardingGuide } from "../components/OnboardingGuide";
+import { PlainFileList } from "../components/PlainFileList";
 import { ProjectPortfolio } from "../components/ProjectPortfolio";
 import type { FileRow, ProjectPageData, ProjectRow } from "../types";
 
-type EntryFilter = "all" | "missing" | "read" | "blocking" | "validator";
+type EntryFilter = "all" | "missing" | "read" | "blocking";
 
 export function ProjectPage({
   data,
+  hasUsableProject,
   projects = [],
   selectedProjectRoot,
   onSelectProject,
   onOpenPath,
   onOpenCodex,
   onShowEnvironment,
-  onHandoff,
+  onShowHandoff,
   onCopyProjectIntake,
 }: {
   data?: ProjectPageData;
+  hasUsableProject: boolean;
   projects?: ProjectRow[];
   selectedProjectRoot?: string | null;
   onSelectProject: (path: string) => void;
   onOpenPath: (path?: string) => void;
   onOpenCodex: () => void;
   onShowEnvironment: () => void;
-  onHandoff: () => void;
+  onShowHandoff: () => void;
   onCopyProjectIntake: () => void;
 }) {
-  const [materialFilter, setMaterialFilter] = useState<EntryFilter>("all");
-  const [artifactFilter, setArtifactFilter] = useState<EntryFilter>("all");
-  const materialEntries = useMemo(() => filterEntries(data?.material_entries ?? [], materialFilter), [data?.material_entries, materialFilter]);
-  const artifactEntries = useMemo(() => filterEntries(data?.artifact_entries ?? [], artifactFilter), [data?.artifact_entries, artifactFilter]);
   if (!data) return <EmptyState title="未读取项目" body="请选择项目或刷新本地环境。" />;
-  const materialOptions = filterOptions(data.material_entries);
-  const artifactOptions = filterOptions(data.artifact_entries);
-  const hasUsableProject = projects.some((project) => project.path && project.exists !== false);
+  const materialCounts = entryCounts(data.material_entries);
+  const artifactCounts = entryCounts(data.artifact_entries);
+  const keyMaterials = data.material_entries.slice(0, 4);
+  const keyArtifacts = data.artifact_entries.slice(0, 4);
   return (
     <div className="page-grid project-page">
       <section className="hero-panel span-2">
         <div>
-          <span className="eyebrow">Project</span>
+          <span className="eyebrow">项目状态</span>
           <h2>{data.project.name}</h2>
-          <p>阶段：{data.project.current_stage}。本页只显示本地项目身份、材料、产物和缺口。</p>
+          <p>{hasUsableProject ? `当前状态：${displayStage(data.project.current_stage)}。这里先确认项目、打开目录；需要继续推进时，去“交给 Codex”页复制说明。` : "还没有可用项目。请先复制接入说明，交给 Codex 后再回到 HELM 刷新。"}</p>
           <div className="hero-actions">
-            <ActionButton variant="primary" onClick={onHandoff}>复制交接单</ActionButton>
-            <ActionButton variant="secondary" disabled={!data.project.root} onClick={() => onOpenPath(data.project.root ?? undefined)}>
+            <ActionButton
+              variant="primary"
+              onClick={hasUsableProject ? onShowHandoff : onCopyProjectIntake}
+              data-tour-id={hasUsableProject ? "show-codex-handoff" : "copy-project-intake"}
+            >
+              {hasUsableProject ? "去交给 Codex" : "复制接入说明"}
+            </ActionButton>
+            <ActionButton variant="secondary" disabled={!hasUsableProject || !data.project.root} onClick={() => onOpenPath(data.project.root ?? undefined)}>
               <FolderOpen size={16} />
               打开项目目录
             </ActionButton>
@@ -60,88 +64,94 @@ export function ProjectPage({
 
       <ProjectPortfolio projects={projects} selectedProjectRoot={selectedProjectRoot} onSelectProject={onSelectProject} />
 
-      <OnboardingGuide
-        empty={!hasUsableProject}
-        onCopyProjectIntake={onCopyProjectIntake}
-        onOpenCodex={onOpenCodex}
-        onShowEnvironment={onShowEnvironment}
-      />
+      {!hasUsableProject ? (
+        <OnboardingGuide
+          empty
+          onCopyProjectIntake={onCopyProjectIntake}
+          onOpenCodex={onOpenCodex}
+          onShowEnvironment={onShowEnvironment}
+        />
+      ) : null}
+
+      <section className="card span-2">
+        <div className="section-header">
+          <div>
+            <h3>材料概览</h3>
+            <p>这里只看材料是否齐、是否有缺口；要打开依据和看检查结果，请去“证据”页。</p>
+          </div>
+        </div>
+        <EntrySummary counts={materialCounts} emptyTitle="还没有材料记录" emptyBody="让 Codex 接入项目后，HELM 会显示材料是否读到。" />
+        <PlainFileList files={keyMaterials} emptyTitle="没有可展示的关键材料" />
+      </section>
+
+      <section className="card span-2">
+        <div className="section-header">
+          <div>
+            <h3>文件概览</h3>
+            <p>这里只提示已有文件数量；完整打开文稿、图表和整理包，请去“文件”页。</p>
+          </div>
+        </div>
+        <EntrySummary counts={artifactCounts} emptyTitle="还没有文件记录" emptyBody="Codex 写回文稿、图表或报告后，HELM 会在这里显示数量。" />
+        <PlainFileList files={keyArtifacts} emptyTitle="没有可展示的关键文件" />
+      </section>
 
       <div className="overview-strip span-2">
         <section className="overview-card">
           <h3>缺失项</h3>
           {data.missing_inputs.length ? (
             <ul className="plain-list">
-              {data.missing_inputs.map((item) => <li key={item}>{item}</li>)}
+              {data.missing_inputs.map((item) => <li key={item}>{displayActionText(item)}</li>)}
             </ul>
           ) : (
-            <EmptyState title="没有显式缺失项" body="仍需由 Codex 读取事实源后确认下一步。" />
+            <EmptyState title="没有显式缺失项" body="仍需由 Codex 读取项目资料后确认继续说明。" />
           )}
         </section>
 
         <section className="overview-card">
           <h3>最近 Codex 写回</h3>
           <div className="stack">
-            {data.recent_codex_activity.length ? data.recent_codex_activity.map((item, index) => <EvidenceCard key={index} item={item} compact />) : <EmptyState title="暂无活动记录" body="Codex 写入 activity.jsonl 后会显示在这里。" />}
+            {data.recent_codex_activity.length ? data.recent_codex_activity.map((item, index) => <EvidenceCard key={index} item={item} compact />) : <EmptyState title="暂无活动记录" body="Codex 写回项目进展后会显示在这里。" />}
           </div>
         </section>
 
         <section className="overview-card">
-          <h3>本地环境</h3>
-          {data.environment_status ? <EvidenceCard item={data.environment_status} compact /> : <EmptyState title="未读取环境来源" body="请刷新本地环境状态。" />}
+          <h3>本机状态</h3>
+          {data.environment_status ? <EvidenceCard item={data.environment_status} compact /> : <EmptyState title="未读取本机状态" body="请刷新本机状态。" />}
         </section>
 
-        <section className="overview-card">
-          <h3>交接单摘要</h3>
-          <div className="stack">
-            <p>{data.next_step_hint || "复制交接单，让 Codex 读取事实源后继续推进。"}</p>
-            <ActionButton variant="secondary" onClick={onHandoff}>复制交接单</ActionButton>
-          </div>
-        </section>
       </div>
 
-      <section className="card span-2">
-        <div className="section-header">
-          <div>
-            <h3>材料入口</h3>
-            <p>只浏览本地文件和台账状态；缺失项不会被标成完成。</p>
-          </div>
-          <FilterChips value={materialFilter} options={materialOptions} onChange={setMaterialFilter} ariaLabel="材料筛选" />
-        </div>
-        <div className="file-grid">
-          {materialEntries.length ? materialEntries.map((file, index) => <FileCard key={`${file.path}-${index}`} file={file} onOpen={onOpenPath} />) : <EmptyState title="当前筛选没有材料" body="切回全部，或让 Codex 补齐材料台账与项目事实源。" />}
-        </div>
-      </section>
-
-      <section className="card span-2">
-        <div className="section-header">
-          <div>
-            <h3>产物入口</h3>
-            <p>显示已有文稿、图表、报告和复现痕迹，不生成新产物。</p>
-          </div>
-          <FilterChips value={artifactFilter} options={artifactOptions} onChange={setArtifactFilter} ariaLabel="产物筛选" />
-        </div>
-        <div className="file-grid">
-          {artifactEntries.length ? artifactEntries.map((file, index) => <FileCard key={`${file.path}-${index}`} file={file} onOpen={onOpenPath} />) : <EmptyState title="当前筛选没有产物" body="切回全部，或让 Codex 写回真实产物索引。" />}
-        </div>
-      </section>
     </div>
   );
 }
 
-function filterOptions(files: FileRow[]): FilterChipOption<EntryFilter>[] {
-  return [
-    { key: "all", label: "全部", count: files.length },
-    { key: "missing", label: "缺失", count: files.filter((file) => matchesFilter(file, "missing")).length },
-    { key: "read", label: "已读取", count: files.filter((file) => matchesFilter(file, "read")).length },
-    { key: "blocking", label: "阻断", count: files.filter((file) => matchesFilter(file, "blocking")).length },
-    { key: "validator", label: "validator", count: files.filter((file) => matchesFilter(file, "validator")).length },
-  ];
+function EntrySummary({
+  counts,
+  emptyTitle,
+  emptyBody,
+}: {
+  counts: Record<EntryFilter, number>;
+  emptyTitle: string;
+  emptyBody: string;
+}) {
+  if (counts.all === 0) return <EmptyState title={emptyTitle} body={emptyBody} />;
+  return (
+    <div className="entry-summary-grid" aria-label="条目概览">
+      <span><strong>{counts.all}</strong><small>全部</small></span>
+      <span><strong>{counts.read}</strong><small>已读取</small></span>
+      <span><strong>{counts.missing}</strong><small>缺失</small></span>
+      <span><strong>{counts.blocking}</strong><small>阻断</small></span>
+    </div>
+  );
 }
 
-function filterEntries(files: FileRow[], filter: EntryFilter): FileRow[] {
-  if (filter === "all") return files;
-  return files.filter((file) => matchesFilter(file, filter));
+function entryCounts(files: FileRow[]): Record<EntryFilter, number> {
+  return {
+    all: files.length,
+    missing: files.filter((file) => matchesFilter(file, "missing")).length,
+    read: files.filter((file) => matchesFilter(file, "read")).length,
+    blocking: files.filter((file) => matchesFilter(file, "blocking")).length,
+  };
 }
 
 function matchesFilter(file: FileRow, filter: EntryFilter): boolean {
@@ -149,6 +159,5 @@ function matchesFilter(file: FileRow, filter: EntryFilter): boolean {
   if (filter === "missing") return file.exists === false || file.evidence_level === "missing";
   if (filter === "read") return file.exists === true || file.evidence_level === "file_read";
   if (filter === "blocking") return file.exists === false || file.evidence_level === "missing" || /缺失|阻断|未发现|missing|block/.test(text);
-  if (filter === "validator") return file.evidence_level === "validator_ran" || file.evidence_level === "end_to_end_success" || text.includes("validator");
   return true;
 }

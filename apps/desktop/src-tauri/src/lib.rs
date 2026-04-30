@@ -202,8 +202,12 @@ fn open_path(
 }
 
 #[tauri::command]
-fn open_external_app(app: AppHandle, label: String) -> Result<Value, String> {
-    run_bridge(&app, "open_external_app", json!({ "label": label }))
+fn open_external_app(app: AppHandle, label: String, dry_run: Option<bool>) -> Result<Value, String> {
+    run_bridge(
+        &app,
+        "open_external_app",
+        json!({ "label": label, "dryRun": dry_run.unwrap_or(false) }),
+    )
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

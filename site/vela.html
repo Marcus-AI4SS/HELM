@@ -1,39 +1,40 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HELM and VELA</title>
+    <title>HELM 与 VELA</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="index.html"><img src="assets/helm-icon.png" alt="" /><span>HELM</span></a>
       <nav>
-        <a href="index.html">Overview</a>
-        <a href="install.html">Install</a>
-        <a href="privacy.html">Privacy</a>
+        <a href="index.html">首页</a>
+        <a href="install.html">安装</a>
+        <a href="tutorial.html">零基础教程</a>
         <a href="vela.html" aria-current="page">VELA</a>
+        <a href="privacy.html">隐私</a>
         <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
     <main class="content-page relationship-page">
-      <p class="eyebrow">Companion Model</p>
-      <h1>Separate tools for local research work.</h1>
+      <p class="eyebrow">职责分工</p>
+      <h1>VELA 提供上下文，HELM 负责看板展示。</h1>
       <p>
-        VELA can provide local workflow context for a research project. HELM reads that context and turns it into a clear dashboard.
-        Codex remains the place where research work continues.
+        VELA 可以提供本地工作上下文：项目事实、证据痕迹、校验结果和运行状态。
+        HELM 读取这些信息并展示给用户。研究判断、写作和后续执行仍回到 Codex。
       </p>
       <div class="diagram">
-        <div><strong>VELA</strong><span>workflow context</span></div>
-        <div class="arrow">to</div>
-        <div><strong>HELM</strong><span>desktop command dashboard</span></div>
-        <div class="arrow">to</div>
-        <div><strong>Codex</strong><span>handoff and continuation</span></div>
+        <div><strong>VELA</strong><span>本地工作上下文</span></div>
+        <div class="arrow">到</div>
+        <div><strong>HELM</strong><span>本地项目看板</span></div>
+        <div class="arrow">到</div>
+        <div><strong>Codex</strong><span>继续研究推进</span></div>
       </div>
       <p>
-        The repositories and responsibilities stay separate. HELM can run without VELA by showing an empty or public-safe sample state.
-        When a VELA-compatible environment is configured, HELM reads it as a local source and shows its state.
+        二者仓库和职责保持分开。没有 VELA 时，HELM 可以显示空状态或公开安全示例状态。
+        配置了兼容的 VELA 环境后，HELM 把它作为本地来源读取并展示。
       </p>
     </main>
   </body>

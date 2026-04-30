@@ -1,68 +1,98 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Install HELM</title>
+    <title>安装 HELM</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="index.html"><img src="assets/helm-icon.png" alt="" /><span>HELM</span></a>
       <nav>
-        <a href="index.html">Overview</a>
-        <a href="install.html" aria-current="page">Install</a>
-        <a href="privacy.html">Privacy</a>
+        <a href="index.html">首页</a>
+        <a href="install.html" aria-current="page">安装</a>
+        <a href="tutorial.html">零基础教程</a>
         <a href="vela.html">VELA</a>
+        <a href="privacy.html">隐私</a>
         <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
     <main class="content-page">
-      <p class="eyebrow">Install</p>
-      <h1>Build HELM from source today. Signed releases come next.</h1>
+      <p class="eyebrow">安装</p>
+      <h1>先从源码运行 HELM。</h1>
       <p>
-        HELM is in public-candidate status. The source build is ready; signed Windows and macOS artifacts
-        are tracked in the release checklist before the first tagged public release.
+        HELM 当前处于公开候选状态。你可以先从源码运行；正式安装包会在公开发布时附带校验信息。
       </p>
 
       <section class="install-paths">
         <article>
           <h2>Windows</h2>
-          <p>Use the public candidate installer when it is attached to a release. Until then, build locally with the commands below.</p>
+          <p>需要 Node.js、Rust 和 Windows WebView2。公开安装包发布前，请使用下面的 PowerShell 命令本地运行。</p>
         </article>
         <article>
           <h2>macOS</h2>
-          <p>Use the same HELM source repository. The app reads your own local folders; it does not need the maintainer's private environment.</p>
+          <p>需要 Node.js、Rust 和 Tauri 所需系统组件。使用同一个 HELM 源码仓库，不需要维护者环境。</p>
         </article>
         <article>
-          <h2>After opening</h2>
-          <p>If HELM has no trusted project, copy the Project page intake template and paste it into Codex with your project path.</p>
+          <h2>打开以后</h2>
+          <p>如果 HELM 没有项目，复制“项目”页面的接入说明，交给 Codex 接入项目。</p>
         </article>
       </section>
 
+      <h2>Windows PowerShell</h2>
       <section class="step-list">
         <div>
           <span>1</span>
-          <strong>Install dependencies</strong>
+          <strong>安装依赖</strong>
           <pre><code>cd apps/desktop
 npm install</code></pre>
         </div>
         <div>
           <span>2</span>
-          <strong>Build and check</strong>
+          <strong>构建、检查并启动</strong>
           <pre><code>npm run build
 cd src-tauri
-cargo check</code></pre>
+cargo check
+cd ..
+npm run tauri -- dev</code></pre>
         </div>
         <div>
           <span>3</span>
-          <strong>Run the public gate</strong>
-          <pre><code>powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1</code></pre>
+          <strong>运行公开检查</strong>
+          <pre><code>cd ..\..
+powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1</code></pre>
         </div>
       </section>
 
-      <h2>Build local artifacts</h2>
-      <p>The artifact script records signing readiness and SHA-256 checksums. It does not pretend unsigned artifacts are signed.</p>
+      <h2>macOS shell</h2>
+      <section class="step-list">
+        <div>
+          <span>1</span>
+          <strong>安装依赖</strong>
+          <pre><code>cd apps/desktop
+npm install</code></pre>
+        </div>
+        <div>
+          <span>2</span>
+          <strong>构建、检查并启动</strong>
+          <pre><code>npm run build
+cd src-tauri
+cargo check
+cd ..
+npm run tauri -- dev</code></pre>
+        </div>
+        <div>
+          <span>3</span>
+          <strong>公开检查</strong>
+          <p>公开检查脚本是 PowerShell 脚本。macOS 可在安装 `pwsh` 后从仓库根目录运行，或使用 GitHub Actions 的公开检查结果。</p>
+          <pre><code>cd ../..
+pwsh -File release/check-public-release.ps1</code></pre>
+        </div>
+      </section>
+
+      <h2>构建本地安装包</h2>
+      <p>构建脚本会记录签名状态和 SHA-256 校验和；未签名包会明确保持未签名状态。</p>
       <pre><code>powershell -ExecutionPolicy Bypass -File release/build-public-artifacts.ps1</code></pre>
     </main>
   </body>

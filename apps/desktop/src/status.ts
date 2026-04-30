@@ -2,22 +2,22 @@ import type { EvidenceLevel, EvidenceSource, EvidenceStatus, Tone } from "./type
 
 const levelLabel: Record<EvidenceLevel, string> = {
   missing: "缺失",
-  file_read: "文件读取",
-  field_scanned: "字段扫描",
-  configured: "配置态",
+  file_read: "已读到文件",
+  field_scanned: "已读到信息",
+  configured: "仅检测到配置",
   openable: "可打开",
-  validator_ran: "可执行校验",
-  end_to_end_success: "端到端成功",
+  validator_ran: "已做本地检查",
+  end_to_end_success: "完整检查通过",
 };
 
 const sourceLabel: Record<EvidenceSource, string> = {
   path: "本地路径",
   config: "配置",
-  runtime: "运行时",
-  validator: "校验器",
+  runtime: "本机状态",
+  validator: "本地检查",
   manual_open: "手动打开",
   codex_log: "Codex 日志",
-  snapshot: "快照",
+  snapshot: "内置示例",
   demo: "演示数据",
 };
 
@@ -39,12 +39,12 @@ export function evidenceSourceLabel(source?: EvidenceSource): string {
 }
 
 export function preciseStatus(item: Partial<EvidenceStatus>): string {
-  if (item.evidence_level === "configured") return "配置中已启用";
+  if (item.evidence_level === "configured") return "检测到配置";
   if (item.evidence_level === "openable") return "可尝试打开";
-  if (item.evidence_level === "validator_ran") return item.returncode === 0 ? "校验通过" : "校验未通过";
+  if (item.evidence_level === "validator_ran") return item.returncode === 0 ? "检查通过" : "检查未通过";
   if (item.evidence_level === "file_read") return "已读取本地文件";
-  if (item.evidence_level === "field_scanned") return "已扫描字段";
-  if (item.evidence_level === "end_to_end_success") return "端到端成功";
+  if (item.evidence_level === "field_scanned") return "已读取信息";
+  if (item.evidence_level === "end_to_end_success") return "完整检查通过";
   return item.status || "未发现本地证据";
 }
 

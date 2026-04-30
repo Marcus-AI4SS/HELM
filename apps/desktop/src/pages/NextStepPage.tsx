@@ -1,35 +1,38 @@
 import { EmptyState } from "../components/EmptyState";
 import { EvidenceCard } from "../components/EvidenceCard";
-import { FileCard } from "../components/FileCard";
 import { HandoffHistory } from "../components/HandoffHistory";
 import { HandoffPanel } from "../components/HandoffPanel";
+import { PlainFileList } from "../components/PlainFileList";
+import { displayActionText } from "../displayText";
 import type { HandoffHistoryEntry, NextStepPageData } from "../types";
 
 export function NextStepPage({
   data,
   history,
-  onOpenPath,
   onCopyHandoff,
   onCopyHistoryEntry,
   onClearHistory,
 }: {
   data?: NextStepPageData;
   history: HandoffHistoryEntry[];
-  onOpenPath: (path?: string) => void;
   onCopyHandoff: () => void;
   onCopyHistoryEntry: (entry: HandoffHistoryEntry) => void;
   onClearHistory: () => void;
 }) {
-  if (!data) return <EmptyState title="暂时不能推荐下一步" body="没有项目状态时，不生成任务建议。" />;
+  if (!data) return <EmptyState title="暂时不能生成给 Codex 的说明" body="没有项目状态时，不给出继续说明。" />;
   return (
     <div className="page-grid next-page">
-      <section className="hero-panel">
+      <section className="hero-panel span-2">
         <div>
-          <span className="eyebrow">Next step</span>
-          <h2>{data.recommended_action}</h2>
-          <p>{data.rationale}</p>
+          <span className="eyebrow">交给 Codex</span>
+          <h2 title={data.recommended_action}>{displayActionText(data.recommended_action)}</h2>
+          <p title={data.rationale}>{displayActionText(data.rationale)}</p>
         </div>
       </section>
+
+      <div className="span-2">
+        <HandoffPanel handoff={data.handoff} onCopy={onCopyHandoff} />
+      </div>
 
       <section className="card">
         <h3>前置条件</h3>
@@ -42,23 +45,18 @@ export function NextStepPage({
         <h3>阻断项</h3>
         {data.blockers.length ? (
           <ul className="plain-list">
-            {data.blockers.map((item) => <li key={item}>{item}</li>)}
+            {data.blockers.map((item) => <li key={item}>{displayActionText(item)}</li>)}
           </ul>
         ) : (
-          <EmptyState title="没有显式阻断" body="仍需由 Codex 读取事实源后确认推进路径。" />
+          <EmptyState title="没有显式阻断" body="仍需由 Codex 读取项目资料后确认推进路径。" />
         )}
       </section>
 
-      <section className="card">
-        <h3>相关文件</h3>
-        <div className="file-grid">
-          {data.related_files.length ? data.related_files.map((file, index) => <FileCard key={index} file={file} onOpen={onOpenPath} />) : <EmptyState title="没有相关文件" body="缺文件时只生成阻断交接单。" />}
-        </div>
+      <section className="card span-2">
+        <h3>说明依据</h3>
+        <p className="muted-copy">这里只显示这份说明参考了哪些材料；需要打开材料或产物时，请去“证据”或“文件”页。</p>
+        <PlainFileList files={data.related_files} emptyTitle="没有可展示的依据文件" limit={6} />
       </section>
-
-      <div className="span-2">
-        <HandoffPanel handoff={data.handoff} onCopy={onCopyHandoff} />
-      </div>
 
       <HandoffHistory entries={history} onCopyEntry={onCopyHistoryEntry} onClearHistory={onClearHistory} />
     </div>

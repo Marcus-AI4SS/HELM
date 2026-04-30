@@ -18,6 +18,7 @@ except ImportError:  # pragma: no cover - non-Windows platforms
 
 
 SNAPSHOT_DIR_NAME = "environment-snapshot"
+WINDOWS_CODEX_APP_ID = os.environ.get("HELM_CODEX_APP_ID", "OpenAI.Codex_2p2nqsd0c76g0!App")
 
 
 def _is_valid_data_root(candidate: Path) -> bool:
@@ -1230,6 +1231,17 @@ def _codex_app_candidates() -> list[dict[str, Any]]:
     else:
         candidates = []
     rows: list[dict[str, str]] = []
+    if _is_windows() and _windows_store_codex_present():
+        rows.append(
+            {
+                "id": "codex-windows-store",
+                "label": "Codex App",
+                "path": f"shell:AppsFolder\\{WINDOWS_CODEX_APP_ID}",
+                "launchable": True,
+                "launch_mode": "windows_app_id",
+                "app_id": WINDOWS_CODEX_APP_ID,
+            }
+        )
     for path in candidates:
         if path.exists():
             rows.append(
@@ -1250,6 +1262,15 @@ def _codex_app_candidates() -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def _windows_store_codex_present() -> bool:
+    if not _is_windows():
+        return False
+    command = shutil.which("codex") or shutil.which("codex.exe") or ""
+    if "openai.codex" in command.lower():
+        return True
+    return (Path.home() / "AppData" / "Local" / "OpenAI" / "Codex").exists()
 
 
 def _extract_windows_exe_path(raw: str | None) -> str:
@@ -1368,14 +1389,16 @@ def list_platform_apps() -> list[dict[str, Any]]:
     seen_labels: set[str] = set()
     for item in candidates:
         item_path = Path(item["path"])
-        if item_path.exists() and item["label"] not in seen_labels:
+        exists = item.get("launch_mode") == "windows_app_id" or item_path.exists()
+        if exists and item["label"] not in seen_labels:
             launchable = item.get("launchable", True)
             rows.append(
                 {
                     "id": item["id"],
                     "label": item["label"],
-                    "path": str(item_path),
+                    "path": str(item["path"]) if item.get("launch_mode") == "windows_app_id" else str(item_path),
                     "launchable": bool(launchable) if not isinstance(launchable, str) else launchable.lower() == "true",
+                    **({"launch_mode": item["launch_mode"], "app_id": item.get("app_id", "")} if item.get("launch_mode") else {}),
                 }
             )
             seen_labels.add(item["label"])
@@ -1394,6 +1417,10 @@ def open_platform_app(label: str) -> bool:
             return False
         path = Path(item["path"])
         if _is_windows():
+            if item.get("launch_mode") == "windows_app_id":
+                creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                subprocess.Popen(["explorer.exe", str(item["path"])], close_fds=True, creationflags=creationflags)
+                return True
             os.startfile(str(path))
             return True
         if _is_macos():

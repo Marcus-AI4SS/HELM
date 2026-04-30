@@ -1,52 +1,83 @@
-# HELM V8.5 User Guide
+# HELM 零基础使用说明
 
-HELM is a local research dashboard. It reads project status, evidence files, deliverables, validator reports, and environment state. Codex remains the only research execution entrypoint.
+HELM 是本地项目看板。它帮你查看项目是否已接入、材料和证据是否读到、已有文件在哪里、本机条件是否影响继续推进。
 
-## First Run
+HELM 不负责聊天、写作、创建项目或自动研究。真正推进研究时，仍然回到 Codex。
 
-1. Open HELM.
-2. Stay on `项目`.
-3. If HELM shows no trusted project, click `复制项目接入模板`.
-4. Paste the template into Codex.
-5. Replace `<PROJECT_PATH>` with the real project root.
-6. Ask Codex to mark the project trusted in the local project configuration, then read or complete the HELM truth sources.
-7. Return to HELM and click `刷新`.
+## 第一次打开
 
-HELM does not create projects or register paths. The app only reads files that already exist in the trusted local workflow.
+1. 打开 HELM。
+2. 先看左侧的 `项目` 页面。
+3. 如果还没有项目，点击 `复制接入说明`。
+4. 回到 Codex，把说明粘贴进去。
+5. 把真实项目文件夹路径也告诉 Codex。
+6. 等 Codex 按你的确认检查项目文件夹。
+7. 回到 HELM，点击 `刷新`。
 
-## Project Truth Sources
+HELM 不会在界面里新建项目，也不会私自登记路径。项目能否出现，取决于 Codex 是否已经在本机准备好可读取的项目资料。
 
-HELM expects Codex-managed projects to expose these local files:
+## 不知道点哪里时
 
-- `research-map.md`: project identity, research scope, stage, and next step.
-- `material-passport.yaml`: material entries, source identity, read status, and missing items.
-- `evidence-ledger.yaml`: evidence chain, validator state, and blockers.
-- `findings-memory.md`: confirmed findings and unresolved checks.
+- 还没有项目：去 `项目` 页面，点 `复制接入说明`。
+- 想换项目：用顶部 `当前项目` 下拉框，或在 `项目` 页面选择可用项目。
+- 想知道材料够不够：去 `证据` 页面。
+- 想继续交给 Codex：去 `交给 Codex` 页面，复制说明后回到 Codex。
+- 想打开文稿、图表或报告：去 `文件` 页面。
+- 怀疑电脑工具或路径有问题：去 `本机` 页面，运行本地检查或复制本机诊断。
 
-If a project does not appear in HELM after refresh, ask Codex to confirm that the project path is listed as trusted and then inspect these files.
+## 五个页面怎么看
 
-## Settings
+| 页面 | 你在这里解决什么问题 | 常用按钮 |
+| --- | --- | --- |
+| `项目` | 当前看的是哪个项目、项目到哪一步、还缺什么 | 打开项目、刷新、复制接入说明 |
+| `证据` | 材料和依据是否读到，哪些还缺 | 打开依据来源、筛选缺失项 |
+| `交给 Codex` | 不知道下一步怎么继续时，复制给 Codex 的说明 | 复制给 Codex、打开 Codex |
+| `文件` | 打开已经存在的文稿、图表、报告和整理包 | 打开文件、查看文件夹 |
+| `本机` | 检查这台电脑能否继续读取项目 | 运行本地检查、复制本机诊断、打开设置 |
 
-Open settings from the top-right toolbar or the `环境` page.
+## 常见情况
 
-- `启动页`: chooses the first page shown when HELM opens.
-- `记住上次项目`: stores or removes the last selected project root in local browser storage.
-- `显示密度`: switches between standard and compact spacing.
-- `减少动效`: follows the system setting by default, or can be forced on/off.
-- `交接历史保留`: keeps at most 0, 5, 10, or 20 local handoff summaries.
+- 项目显示有缺口：这不是错误，而是提醒你还有内容要回到 Codex 处理。
+- 有些项目不在列表里：读取不到、路径失效或还没接入的项目会从主列表隐藏，避免误点。
+- 文件打不开：先复制本机诊断交给 Codex，让 Codex 帮你排查路径、权限或文件是否还存在。
+- 看到黄色或红色状态：不要当作完成。先回到 Codex，让 Codex 处理对应缺口。
+- 不知道页面名是什么意思：点左下角 `帮助`，按“我想做什么”查入口。
 
-Settings are stored only in frontend `localStorage`. HELM does not write project files, environment repos, or hidden config files for these preferences.
+## 让项目出现在 HELM
 
-## Startup Cache
+HELM 需要 Codex 先在项目里准备四类信息：
 
-HELM stores the latest dashboard snapshot in frontend `localStorage` for faster startup. If the cache is less than 12 hours old and still matches the remembered project, HELM opens from that cache instead of reading the local environment again.
+- 项目说明：这个项目是什么，当前做到哪一步。
+- 材料清单：项目用到哪些资料，哪些已经读到，哪些缺失。
+- 证据记录：每条依据来自哪里，是否足够支撑结论。
+- 阶段性发现：已经确认了什么，还要继续核验什么。
 
-Click `刷新` when you need the latest project files, validator state, or trusted project list. Manual refresh and project switching still use the live bridge.
+你不需要手动写这些内容。更稳妥的做法是复制 HELM 的接入说明，交给 Codex 处理。
 
-## Diagnostics
+## 设置
 
-Use `环境` -> `复制诊断摘要` when HELM cannot read the local environment or a validator fails. The copied text redacts local absolute paths and keeps only status, mode, missing items, and suggested check commands.
+设置入口在左下角。设置只保存在这台电脑里，不写入项目文件，也不改变你的研究环境。
 
-## Product Boundary
+- `启动页`：下次打开 HELM 时先显示哪个页面。
+- `记住上次项目`：关闭后会移除本机保存的上次项目路径。
+- `显示密度`：标准或紧凑，适合不同窗口大小。
+- `减少动效`：跟随系统，或手动开启/关闭。
+- `本机摘要历史`：最多保留 0、5、10 或 20 条复制摘要。
 
-HELM can open local resources, run local validators, display status, and copy a Codex handoff. It must not be used as a chat surface, writing engine, citation verifier, submission tool, project creator, or agent scheduler.
+## 启动速度
+
+HELM 会保存最近一次看板摘要，用来加快下次打开速度。这个摘要只保存在这台电脑里。
+
+如果你刚刚让 Codex 更新了项目，点击 `刷新`，HELM 会重新读取本机状态。
+
+## 排查问题
+
+如果 HELM 没读到项目，进入 `本机` 页面，点击 `复制本机诊断`，再回到 Codex 粘贴。
+
+这段摘要会隐藏本机绝对路径，只保留状态、缺失项和建议检查命令。
+
+## 边界
+
+HELM 可以读取本机状态、打开本地文件、运行本地检查、复制给 Codex 的说明。
+
+HELM 不提供聊天窗口、写作引擎、引用核验、投稿工具、项目创建表单或隐藏任务调度。

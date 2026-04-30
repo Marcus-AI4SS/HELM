@@ -9,7 +9,7 @@ export function ValidatorCard({ item, onRun }: { item: EvidenceStatus; onRun: ()
       <EvidenceCard item={item} compact />
       <ActionButton variant="secondary" onClick={onRun}>
         <Wrench size={16} />
-        运行本地校验
+        运行本地检查
       </ActionButton>
     </div>
   );
