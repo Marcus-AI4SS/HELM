@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HELM · 本地科研看板</title>
+    <meta name="description" content="HELM 是展示项目状态、证据、交付物、环境健康和 Codex 交接的本地科研看板。">
+    <link rel="stylesheet" href="../assets/site.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="topbar">
+        <div class="brand"><span class="brand-mark"></span><span>HELM</span></div>
+        <div class="lang-switch">
+          <a href="../">English</a>
+          <span class="active">简体中文</span>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div>
+          <img class="hero-mark" src="https://raw.githubusercontent.com/Marcus-AI4SS/HELM/main/site/assets/helm-icon.png" alt="HELM 指向标志">
+          <div class="eyebrow">本地科研看板</div>
+          <h1>HELM</h1>
+          <p>用 HELM 查看项目状态、证据、交付物、环境健康和下一步 Codex 交接。它可以独立运行，也可以在 VELA 环境存在时读取 VELA 项目上下文。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="./tutorial.html">零基础教程</a>
+            <a class="button button-primary" href="../install.html">构建 HELM</a>
+            <a class="button" href="../imports.html">导入 VELA</a>
+            <a class="button" href="https://github.com/Marcus-AI4SS/VELA-Versioned-Evidence-Lifecycle-Architecture">VELA 仓库</a>
+            <a class="button" href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>HELM 提供什么</h2>
+          <p>在不把 app 变成隐藏研究执行器的前提下，给本地研究状态一个可读看板。</p>
+        </div>
+        <div class="grid-4">
+          <article class="card"><h3>项目状态</h3><p>展示阶段、阻塞、近期活动和活跃文件，不把项目迁入 app 内部。</p></article>
+          <article class="card"><h3>证据准备度</h3><p>展示证据等级和来源计数，不把文件读取夸大成事实核验。</p></article>
+          <article class="card"><h3>交付物</h3><p>索引磁盘上已有的报告、笔记、图表和交接输出。</p></article>
+          <article class="card"><h3>Codex 交接</h3><p>准备包含任务、文件、约束、输出、缺口和复核标准的有边界交接包。</p></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>两个独立品牌，一套共享契约</h2>
+          <p>VELA 不需要 HELM 也能安装使用。HELM 不需要 VELA 也能运行。组合使用时，两者通过显式本地文件交换状态，而不是依赖隐藏 app 状态。</p>
+        </div>
+        <div class="grid-2">
+          <article class="card"><h3>VELA 到 HELM</h3><p>HELM 导入 <code>vela.project.context.v1</code>，读取项目路径、状态、证据计数、交付物、环境健康和交接准备度。</p></article>
+          <article class="card"><h3>HELM 到 VELA</h3><p>VELA 导入 <code>helm.codex.handoff.v1</code>，作为有边界的 Codex 交接包存入项目 <code>handoffs/</code> 层。</p></article>
+        </div>
+      </section>
+      <footer>HELM 是本地科研看板。VELA 是可移植科研工作流环境。</footer>
+    </main>
+  </body>
+</html>

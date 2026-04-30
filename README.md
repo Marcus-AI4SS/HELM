@@ -1,13 +1,13 @@
 <p align="center">
   <a href="https://marcus-ai4ss.github.io/HELM/">
-    <img src="site/assets/helm-icon.png" alt="HELM logo" width="112" />
+    <img src="https://raw.githubusercontent.com/Marcus-AI4SS/HELM/main/site/assets/helm-icon.png" alt="HELM logo" width="112" />
   </a>
 </p>
 
 <h1 align="center">HELM</h1>
 
 <p align="center">
-  本地项目看板：把项目状态、证据准备、已有文件、环境健康和给 Codex 的说明放在一个清楚的桌面视图里。
+  本地项目看板：把项目状态、证据准备、已有文件、本机状态和给 Codex 的说明放在一个清楚的桌面视图里。
 </p>
 
 <p align="center">
@@ -19,16 +19,20 @@
 <p align="center">
   <a href="https://marcus-ai4ss.github.io/HELM/">公开站点</a>
   ·
-  <a href="site/install.html">安装</a>
+  <a href="docs/tutorial.html">零基础教程</a>
   ·
-  <a href="site/tutorial.html">零基础教程</a>
+  <a href="docs/install.html">安装</a>
+  ·
+  <a href="docs/imports/vela-helm-interface.md">VELA 接口</a>
+  ·
+  <a href="https://github.com/Marcus-AI4SS/VELA-Versioned-Evidence-Lifecycle-Architecture">VELA</a>
   ·
   <a href="PRIVACY.md">隐私</a>
 </p>
 
 ## HELM 是什么
 
-HELM 是本地项目看板。它读取你电脑上的项目状态，并把当前阶段、阻塞点、材料、证据准备度、已有文件、环境健康和给 Codex 的说明集中展示出来。
+HELM 是本地项目看板。它读取你电脑上的项目状态，并把当前阶段、阻塞点、材料、证据准备度、已有文件、本机状态和给 Codex 的说明集中展示出来。
 
 研究推进仍回到 Codex。HELM 不提供聊天、写作、创建项目、一键研究、隐藏任务调度、引用核验或投稿自动化。它只帮助你看清“现在项目处在哪里”和“接下来该把什么交给 Codex”。
 
@@ -47,14 +51,21 @@ HELM 是本地项目看板。它读取你电脑上的项目状态，并把当前
 
 ## HELM 与 VELA
 
-HELM 和 VELA 是职责分开的工具，可以协同使用。
+HELM 和 VELA 是职责分开的工具，可以协同使用，也可以分别独立使用。
 
-| 工具 | 作用 | 边界 |
+| 工具 | 作用 | 能否单独使用 |
 | --- | --- | --- |
-| **VELA** | 提供本地工作上下文 | 生成项目事实、证据痕迹、校验结果和运行状态。 |
-| **HELM** | 展示本地项目看板 | 读取并展示状态，帮助复制给 Codex 的说明。 |
+| **VELA** | 为 Codex 准备可携带的本地工作上下文 | 可以 |
+| **HELM** | 读取并展示本地项目状态、证据、文件、本机状态和给 Codex 的说明 | 可以 |
 
-VELA 可以提供本地工作上下文，HELM 读取并展示；研究动作仍在 Codex 中继续。没有 VELA 时，HELM 也可以显示空状态或公开安全的示例状态。
+没有 VELA 时，HELM 可以显示空状态、公开安全示例或已配置项目状态。启用 VELA 时，HELM 可以读取 VELA 生成的项目上下文。
+
+两者共享两个公开接口方向：
+
+- `vela.project.context.v1`：HELM 读取 VELA 项目状态。
+- `helm.codex.handoff.v1`：VELA 读取 HELM 准备的 Codex 继续说明。
+
+接口说明见 [VELA and HELM import interface](docs/imports/vela-helm-interface.md)。
 
 ## 五个页面
 
@@ -106,14 +117,16 @@ See [PRIVACY.md](PRIVACY.md).
 
 ## 仓库结构
 
-```text
-apps/desktop/        桌面应用
-skills/              HELM 使用的公开安全运行资源
-release/             发布检查、构建脚本、隐私扫描
-site/                GitHub Pages 公开站点
-.github/workflows/   CI、Pages 和构建流程
-```
+| 路径 | 用途 |
+| --- | --- |
+| `apps/desktop/` | React 和 Tauri 桌面应用 |
+| `docs/` | GitHub Pages 公开站点、接口说明和同步记录 |
+| `docs/imports/` | VELA 与 HELM 的导入接口 |
+| `docs/sync-log/` | 本地跨仓同步记录 |
+| `skills/` | HELM 使用的公开安全运行资源 |
+| `release/` | 发布检查、构建脚本、隐私扫描和检查清单 |
+| `site/` | 旧 Pages 源目录，保留用于兼容 |
 
 ## 发布状态
 
-当前仓库处于公开候选状态。正式标签发布仍需要安装包、校验和、发布说明，以及 Windows/macOS 首次使用测试记录。
+当前仓库处于公开候选状态。正式标签发布仍需要签名安装包、校验和、发布说明，以及 Windows/macOS 首次使用测试记录。
