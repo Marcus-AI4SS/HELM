@@ -4,7 +4,7 @@
 
 - HELM public repository: `Marcus-AI4SS/HELM`
 - VELA repository: `Marcus-AI4SS/VELA-Versioned-Evidence-Lifecycle-Architecture`
-- HELM private/self-use repository verified separately: `Marcus-AI4SS/skills-app-own`
+- HELM private/self-use repository verified separately and kept outside the public release lane.
 
 ## Boundary Decision
 
@@ -22,4 +22,4 @@ VELA and HELM remain independent products. HELM is the local research board. VEL
 
 ## Local Note
 
-The private HELM/self-use line is not the public Pages target. Public homepage and Pages work should land in `Marcus-AI4SS/HELM`, not `skills-app-own`.
+The private HELM/self-use line is not the public Pages target. Public homepage and Pages work should land in `Marcus-AI4SS/HELM`, not in any private self-use repository.

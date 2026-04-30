@@ -23,6 +23,11 @@
   backdrop-filter: blur(34px) saturate(1.28);
 }
 
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
 .sidebar-brand {
   display: flex;
   align-items: center;
@@ -77,7 +82,7 @@
 
 .titlebar {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto auto;
+  grid-template-columns: minmax(210px, 1fr) minmax(0, auto) auto;
   grid-template-areas: "drag tools controls";
   align-items: center;
   column-gap: 14px;
@@ -119,9 +124,10 @@
 .toolbar-actions {
   grid-area: tools;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-self: end;
   justify-content: flex-end;
+  align-items: center;
   gap: 7px;
   min-width: 0;
   max-width: min(980px, calc(100vw - 560px));
@@ -203,18 +209,28 @@
   }
 
   .titlebar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "drag controls"
-      "tools tools";
-    align-items: start;
-    row-gap: 8px;
-    min-height: 102px;
+    grid-template-columns: minmax(170px, 1fr) minmax(0, auto) auto;
+    grid-template-areas: "drag tools controls";
+    align-items: center;
+    min-height: 76px;
     padding: 9px 14px 9px 18px;
   }
 
+  .titlebar h1 {
+    font-size: 23px;
+  }
+
   .toolbar-actions {
-    max-width: 100%;
+    max-width: min(780px, calc(100vw - 520px));
+  }
+
+  .toolbar-actions .action-button {
+    padding-inline: 10px;
+  }
+
+  .toolbar-actions .project-selector {
+    width: min(260px, 26vw);
+    max-width: 260px;
   }
 
   .page-surface {

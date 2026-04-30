@@ -139,7 +139,7 @@
 
 .overview-strip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 14px;
   min-width: 0;
 }
@@ -227,7 +227,7 @@
 
 @media (max-width: 1460px) and (min-width: 1321px) {
   .overview-strip {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 12px;
   }
 
@@ -248,6 +248,72 @@
   overflow-wrap: anywhere;
 }
 
+.entry-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.entry-summary-grid span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid rgba(189, 217, 255, 0.72);
+  border-radius: var(--radius);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.56);
+  box-shadow: var(--inner-highlight);
+}
+
+.entry-summary-grid strong {
+  display: block;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 22px;
+  min-height: 22px;
+}
+
+.entry-summary-grid small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.plain-file-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plain-file-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  border-top: 1px solid rgba(189, 217, 255, 0.34);
+  padding-top: 8px;
+}
+
+.plain-file-list strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plain-file-list span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
 .validator-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -260,6 +326,10 @@
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.62);
   box-shadow: var(--inner-highlight);
+}
+
+.environment-page > .card:not(.span-2) {
+  align-self: start;
 }
 
 .next-page .hero-panel {
@@ -350,10 +420,6 @@
   .section-header {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .filter-chips {
-    justify-content: flex-start;
   }
 
   .project-row {

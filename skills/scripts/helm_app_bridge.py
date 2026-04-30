@@ -594,7 +594,7 @@ def _codex_handoff(payload: dict[str, Any]) -> dict[str, Any]:
             "产品边界：HELM 只提供本地状态与证据线索；研究判断、写作和任务推进必须回到 Codex 对话并由用户确认。",
             "缺失/阻断：",
             *(f"- {item}" for item in (blockers or ["暂无显式阻断；仍需读取事实源确认。"])),
-            "建议下一步：",
+            "建议交给 Codex：",
             *(f"- {item}" for item in handoff["safe_next_actions_for_codex"]),
             "禁止声称：",
             *(f"- {item}" for item in handoff["forbidden_claims"]),
@@ -856,12 +856,19 @@ def _open_path(payload: dict[str, Any]) -> dict[str, Any]:
 
 def _open_external_app(payload: dict[str, Any]) -> dict[str, Any]:
     label = str(payload.get("label") or "")
+    dry_run = bool(payload.get("dryRun") or payload.get("dry_run"))
     if not label:
         return {"ok": False, "error": "缺少 label"}
-    ok = env.open_platform_app(label)
+    app = next((item for item in env.list_platform_apps() if item.get("label") == label), None)
+    ok = bool(app)
+    if ok and not dry_run:
+        ok = env.open_platform_app(label)
     return {
         "ok": ok,
         "label": label,
+        "path": app.get("path") if app else "",
+        "launch_mode": app.get("launch_mode", "path") if app else "",
+        "dry_run": dry_run,
         "evidence_level": "openable" if ok else "missing",
         "evidence_source": "manual_open",
         "status": "可尝试打开本地入口" if ok else "未发现本地入口",

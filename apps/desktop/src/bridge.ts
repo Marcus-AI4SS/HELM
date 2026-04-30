@@ -27,7 +27,7 @@ const demoEvidence = (
   label: string,
   status: string,
   tone: EvidenceStatus["tone"] = "amber",
-  detail = "浏览器预览使用演示数据；真实状态只在 Tauri 运行时读取。"
+  detail = "浏览器预览使用演示数据；真实状态只在桌面应用中读取。"
 ): EvidenceStatus => ({
   label,
   status,
@@ -41,9 +41,9 @@ function demoHandoff(projectRoot: string, empty = false): CodexHandoff {
   const handoff: CodexHandoff = {
     handoff_version: empty ? "v8-empty-demo" : "v8-demo",
     generated_at: new Date().toISOString(),
-    product_boundary: "HELM 只读取本地状态、打开资源、运行校验并准备交接单；研究判断、写作和核验必须回到 Codex 对话并由用户确认。",
+    product_boundary: "HELM 只读取本地状态、打开资源、运行本地检查并准备给 Codex 的说明；研究判断、写作和核验必须回到 Codex 对话并由用户确认。",
     project: {
-      name: empty ? "未检测到可信项目" : "演示项目",
+      name: empty ? "未检测到可用项目" : "演示项目",
       root: empty ? "" : projectRoot,
       exists: !empty,
       trusted_config_detected: !empty,
@@ -60,18 +60,18 @@ function demoHandoff(projectRoot: string, empty = false): CodexHandoff {
       last_success_level: "field_scanned",
     },
     missing_inputs: empty
-      ? ["未检测到可信项目。", "请在 Codex 中补齐 research-map、material-passport、evidence-ledger 和 findings-memory。"]
-      : ["请在 Tauri App 中读取真实项目文件。"],
+      ? ["未检测到可用项目。", "请在 Codex 中补齐项目说明、材料清单、证据记录和阶段性发现。"]
+      : ["请在桌面应用中读取真实项目文件。"],
     safe_next_actions_for_codex: empty
-      ? ["请按 HELM 项目接入模板读取 <PROJECT_PATH>，并只写回项目事实源。"]
-      : ["读取真实项目状态后，再决定下一步。"],
+      ? ["请按 HELM 项目接入说明读取 <PROJECT_PATH>，并只写回项目资料。"]
+      : ["读取真实项目状态后，再生成给 Codex 的说明。"],
     forbidden_claims: [
       "不要把演示数据当作真实证据。",
-      "不要把配置态当作真实连通。",
+      "不要把检测到配置当作真实可用。",
       "不要在未实时核验 DOI 前写入正式引用。",
     ],
     text: empty
-      ? "HELM 未检测到可信项目。请在 Codex 中把 <PROJECT_PATH> 替换为真实路径，并补齐 HELM 事实源后再回到 HELM 刷新。"
+      ? "HELM 未检测到可用项目。请在 Codex 中把 <PROJECT_PATH> 替换为真实路径，并补齐 HELM 需要的项目资料后再回到 HELM 刷新。"
       : "请读取真实项目状态；当前浏览器预览仅为演示数据，不能作为研究依据。",
   };
   return handoff;
@@ -94,22 +94,20 @@ function mock(command: string, payload: Record<string, unknown>): unknown {
 
   const projectPage: ProjectPageData = {
     project: {
-      name: isEmptyScenario ? "未检测到可信项目" : "演示项目",
+      name: isEmptyScenario ? "未检测到可用项目" : "演示项目",
       root: isEmptyScenario ? null : projectRoot,
       exists: !isEmptyScenario,
       current_stage: isEmptyScenario ? "公开样例或空状态" : "待真实读取",
       status: isEmptyScenario ? "empty_state" : "demo_snapshot",
     },
-    stage_status: demoEvidence("项目状态", isEmptyScenario ? "未检测到可信项目" : "演示数据", "amber"),
+    stage_status: demoEvidence("项目状态", isEmptyScenario ? "未检测到可用项目" : "演示数据", "amber"),
     missing_inputs: isEmptyScenario
-      ? ["未检测到可信项目。", "请在 Codex 中按接入模板读取项目事实源。"]
+      ? ["未检测到可用项目。", "请在 Codex 中按接入说明读取项目资料。"]
       : ["真实项目文件尚未读取。"],
     recent_codex_activity: isEmptyScenario ? [] : [demoEvidence("最近活动", "演示数据", "amber")],
     material_entries: isEmptyScenario ? [] : [file("研究地图", "research-map.md"), file("证据台账", "evidence-ledger.yaml")],
     artifact_entries: isEmptyScenario ? [] : [file("写作报告", "logs/quality-gates/writing-quality-report.json")],
     environment_status: demoEvidence("本地环境", "演示快照", "amber"),
-    next_step_hint: isEmptyScenario ? "复制项目接入模板，在 Codex 中补入真实路径。" : "请在 Tauri App 中读取真实状态，再复制交接单给 Codex。",
-    primary_actions: [{ label: "交给 Codex", kind: "handoff" }],
   };
 
   const credibilityPage: CredibilityPageData = {
@@ -123,15 +121,15 @@ function mock(command: string, payload: Record<string, unknown>): unknown {
     truth_sources: [demoEvidence("证据台账", "演示数据", "amber")],
     gate_reports: [],
     source_files: [file("证据台账", "evidence-ledger.yaml")],
-    warning: "演示模式不会给出可信度分数。",
+    warning: "演示模式不会给出证据分数。",
   };
 
   const nextStepPage: NextStepPageData = {
     project_name: "演示项目",
-    recommended_action: "在 Tauri App 中读取真实项目状态",
-    rationale: "当前是浏览器预览 mock，不能作为研究状态。",
+    recommended_action: "在桌面应用中读取真实项目状态",
+    rationale: "当前是预览数据，不能作为研究状态。",
     preconditions: [demoEvidence("真实项目状态", "未读取", "amber")],
-    blockers: ["演示数据不能进入真实交接单。"],
+    blockers: ["演示数据不能进入真实项目说明。"],
     related_files: [file("研究地图", "research-map.md")],
     handoff,
   };
@@ -146,8 +144,6 @@ function mock(command: string, payload: Record<string, unknown>): unknown {
         status: demoEvidence("文稿状态", "演示数据", "amber"),
       },
     ],
-    gate_status: [demoEvidence("交付 gate", "演示数据", "amber")],
-    export_directories: [],
   };
 
   const environmentPage: EnvironmentPageData = {
@@ -158,14 +154,14 @@ function mock(command: string, payload: Record<string, unknown>): unknown {
       demoEvidence("Zotero", "演示数据", "amber"),
       demoEvidence("Obsidian", "演示数据", "amber"),
     ],
-    validators: [demoEvidence("stack validator", "未运行", "gray")],
+    validators: [demoEvidence("基础环境检查", "未运行", "gray")],
     runtime: { mode: "demo_snapshot", project_root: projectRoot },
   };
 
   const base: DashboardData = {
     product: {
       name: "HELM 本地科研看板",
-      tagline: "本地项目状态、证据台账、交付物和交接单看板",
+      tagline: "本地项目状态、证据记录、已有文件和给 Codex 的说明",
       version: "0.9.1-usability-rc",
     },
     source_status: { mode: isEmptyScenario ? "demo_empty" : "demo_snapshot", label: isEmptyScenario ? "空状态演示" : "演示快照", evidence_source: "demo" },
@@ -184,7 +180,7 @@ function mock(command: string, payload: Record<string, unknown>): unknown {
             material_count: 2,
             artifact_count: 1,
             recent_activity_count: 1,
-            next_action: "在 Tauri App 中读取真实项目状态。",
+            next_action: "在桌面应用中读取真实项目状态。",
             tone: "amber",
             blocking: true,
           },
@@ -222,7 +218,7 @@ function mock(command: string, payload: Record<string, unknown>): unknown {
     return {
       ok: false,
       returncode: 1,
-      error: "浏览器预览不运行本地 validator。",
+      error: "浏览器预览不运行本地检查。",
       evidence_level: "missing",
       evidence_source: "demo",
     };
@@ -249,6 +245,6 @@ export function openPath(path: string, projectRoot?: string | null, options: { d
   return call<AppActionResult>("open_path", { path, projectRoot, dryRun: Boolean(options.dryRun) });
 }
 
-export function openExternalApp(label: string): Promise<AppActionResult> {
-  return call<AppActionResult>("open_external_app", { label });
+export function openExternalApp(label: string, options: { dryRun?: boolean } = {}): Promise<AppActionResult> {
+  return call<AppActionResult>("open_external_app", { label, dryRun: Boolean(options.dryRun) });
 }

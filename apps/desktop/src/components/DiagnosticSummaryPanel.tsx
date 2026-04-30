@@ -14,13 +14,13 @@ export function DiagnosticSummaryPanel({
     <section className="card span-2 diagnostic-panel">
       <div className="section-header">
         <div>
-          <h3>可复制诊断摘要</h3>
-          <p>摘要只保留状态、模式、缺失项和建议检查命令；本机绝对路径会被脱敏。</p>
+          <h3>本机诊断摘要</h3>
+          <p>用于排查电脑状态；正式继续研究的说明请到“交给 Codex”页复制。</p>
         </div>
         <div className="diagnostic-actions">
           <ActionButton variant="secondary" onClick={onCopy}>
             <ClipboardCopy size={16} />
-            复制诊断摘要
+            复制本机诊断
           </ActionButton>
           <ActionButton variant="ghost" onClick={onOpenSettings}>
             <Settings size={16} />
@@ -28,7 +28,10 @@ export function DiagnosticSummaryPanel({
           </ActionButton>
         </div>
       </div>
-      <pre tabIndex={0} aria-label="HELM 诊断摘要文本">{summary}</pre>
+      <details className="diagnostic-details">
+        <summary>查看摘要内容</summary>
+        <pre tabIndex={0} aria-label="HELM 诊断摘要文本">{summary}</pre>
+      </details>
     </section>
   );
 }

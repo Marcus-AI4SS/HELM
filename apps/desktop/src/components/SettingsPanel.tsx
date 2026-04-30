@@ -81,9 +81,9 @@ export function SettingsPanel({
       >
         <div className="settings-panel-header">
           <div>
-            <span className="eyebrow">Settings</span>
+            <span className="eyebrow">设置</span>
             <h2>基础设置</h2>
-            <p>设置只保存在本机浏览器存储，不写项目文件或研究环境。</p>
+            <p>设置只保存在这台电脑上，不写项目文件，也不改你的研究环境。</p>
           </div>
           <button type="button" className="settings-close" onClick={onClose} aria-label="关闭设置">
             <X size={18} />

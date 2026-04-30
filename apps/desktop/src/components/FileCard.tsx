@@ -1,4 +1,5 @@
 import { ExternalLink, FileText } from "lucide-react";
+import { displayFileDescription, displayFileTitle } from "../displayText";
 import type { FileRow } from "../types";
 import { StatusBadge } from "./StatusBadge";
 
@@ -7,17 +8,19 @@ export function FileCard({ file, onOpen }: { file: FileRow; onOpen?: (path?: str
   const isVerified = file.evidence_level === "validator_ran" || file.evidence_level === "end_to_end_success";
   const label = isDemo ? "演示数据" : file.status || (file.exists ? "可读文件" : "缺失");
   const tone = isDemo ? "amber" : isVerified ? "green" : file.exists ? "blue" : "amber";
-  const title = file.label || file.name || "文件";
+  const title = displayFileTitle(file);
+  const description = displayFileDescription(file);
   const path = file.path || "未提供路径";
+  const canOpen = Boolean(file.path) && file.exists !== false;
   return (
-    <button type="button" className="file-card" onClick={() => onOpen?.(file.path)} disabled={!file.path}>
+    <button type="button" className="file-card" onClick={() => onOpen?.(file.path)} disabled={!canOpen}>
       <FileText size={17} />
       <span>
         <strong title={title}>{title}</strong>
-        <small title={path}>{path}</small>
+        <small title={path}>{description}</small>
       </span>
       <StatusBadge tone={tone}>{label}</StatusBadge>
-      <ExternalLink size={15} />
+      {canOpen ? <ExternalLink size={15} /> : null}
     </button>
   );
 }

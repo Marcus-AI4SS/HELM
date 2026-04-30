@@ -1,8 +1,12 @@
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FolderOpen, RefreshCw } from "lucide-react";
 import { AppShell } from "./components/AppShell";
 import { ActionButton } from "./components/ActionButton";
 import { EmptyState } from "./components/EmptyState";
+import { GuidedTour } from "./components/GuidedTour";
+import { HelpButton } from "./components/HelpButton";
+import { HelpPanel } from "./components/HelpPanel";
+import { ProjectSelector } from "./components/ProjectSelector";
 import { SettingsButton } from "./components/SettingsButton";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { Toast } from "./components/Toast";
@@ -19,6 +23,7 @@ import { EnvironmentPage } from "./pages/EnvironmentPage";
 import { NextStepPage } from "./pages/NextStepPage";
 import { ProjectPage } from "./pages/ProjectPage";
 import { PAGES } from "./navigation";
+import { displayActionText } from "./displayText";
 import type { AppActionResult, DashboardData, DiagnosticSummary, HandoffHistoryEntry, HelmUserSettings, PageKey } from "./types";
 import "./styles/tokens.css";
 import "./styles/layout.css";
@@ -32,6 +37,7 @@ const USER_SETTINGS_KEY = "helm.userSettings.v1";
 const DASHBOARD_CACHE_KEY = "helm.dashboardCache.v1";
 const DASHBOARD_CACHE_SCHEMA = 1;
 const DASHBOARD_CACHE_TTL_MS = 12 * 60 * 60 * 1000;
+const GUIDE_VERSION = "v1-usability";
 
 const DEFAULT_SETTINGS: HelmUserSettings = {
   launchPage: "project",
@@ -39,6 +45,8 @@ const DEFAULT_SETTINGS: HelmUserSettings = {
   displayDensity: "standard",
   reduceMotion: "system",
   handoffHistoryLimit: 20,
+  firstRunGuideDismissed: false,
+  lastSeenGuideVersion: "",
 };
 
 interface DashboardCache {
@@ -64,11 +72,21 @@ function App() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(() => !settings.firstRunGuideDismissed);
 
+  const projects = data?.projects ?? [];
+  const usableProjects = useMemo(() => projects.filter((project) => isUsableProject(project)), [projects]);
+  const unavailableProjectCount = Math.max(0, projects.length - usableProjects.length);
   const projectRoot = selectedProject ?? data?.selected_project_root ?? null;
   const projectKey = projectRoot ? createProjectKey(projectRoot) : null;
   const diagnosticSummary = createDiagnosticSummary(data, error, settings, projectRoot);
-  const hasUsableProject = Boolean(data?.projects?.some((project) => project.path && project.exists !== false));
+  const currentProjectCanUse = isUsableProject({
+    path: data?.project_page?.project?.root ?? projectRoot ?? undefined,
+    exists: data?.project_page?.project?.exists,
+    status: data?.project_page?.project?.status,
+    current_stage: data?.project_page?.project?.current_stage,
+  });
 
   async function refresh(projectRootOverride?: string | null, options: { silent?: boolean } = {}) {
     if (!options.silent) {
@@ -77,17 +95,9 @@ function App() {
     }
     try {
       const requestedProject = projectRootOverride ?? projectRoot;
-      let next = await getDashboard(requestedProject);
+      const next = await getDashboard(requestedProject);
       setData(next);
-      const trustedPaths = new Set((next.projects ?? []).filter((project) => project.exists !== false).map((project) => project.path));
-      const fallback = next.projects?.find((project) => project.exists !== false)?.path ?? next.selected_project_root ?? null;
-      const candidate = next.selected_project_root ?? requestedProject ?? null;
-      let resolved = candidate && trustedPaths.has(candidate) ? candidate : fallback;
-      if (requestedProject && resolved && requestedProject !== resolved && !trustedPaths.has(requestedProject)) {
-        next = await getDashboard(resolved);
-        setData(next);
-        resolved = next.selected_project_root ?? resolved;
-      }
+      const resolved = next.selected_project_root ?? requestedProject ?? null;
       setSelectedProject(resolved);
       writeStoredProject(settings.rememberLastProject ? resolved : null);
       writeDashboardCache(next, resolved);
@@ -132,7 +142,7 @@ function App() {
       const handoff = await getCodexHandoff(projectRoot);
       await copyText(handoff.text);
       recordHandoffHistory(handoff);
-      setNotice("交接单已复制。请回到 Codex 对话窗口粘贴发送。");
+      setNotice("给 Codex 的说明已复制。请回到 Codex 对话窗口粘贴发送。");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
@@ -143,23 +153,28 @@ function App() {
       setNotice("没有可打开路径。");
       return;
     }
-    showResult(await openPath(path, projectRoot), "已请求打开本地路径。");
+    try {
+      showResult(await openPath(path, projectRoot), "已请求打开本地路径。");
+    } catch (err) {
+      setError(actionErrorMessage(err, "本地路径没有打开。"));
+    }
   }
 
   async function handleRunValidator(name: string) {
-    showResult(await runValidator(name), `${name} 本地校验已返回结果。`);
-    await refresh();
+    try {
+      showResult(await runValidator(name), `${name} 本地检查已返回结果。`);
+      await refresh();
+    } catch (err) {
+      setError(actionErrorMessage(err, "本地检查没有完成。"));
+    }
   }
 
   async function handleOpenCodex() {
-    showResult(await openExternalApp("Codex App"), "已请求打开 Codex App。");
-  }
-
-  async function handleSelectProject(event: ChangeEvent<HTMLSelectElement>) {
-    const nextProject = event.target.value || null;
-    setSelectedProject(nextProject);
-    writeStoredProject(settings.rememberLastProject ? nextProject : null);
-    await refresh(nextProject);
+    try {
+      showResult(await openExternalApp("Codex App"), "已请求打开 Codex。");
+    } catch (err) {
+      setError(actionErrorMessage(err, "Codex 没有打开。"));
+    }
   }
 
   async function selectProjectRoot(nextProject: string) {
@@ -170,24 +185,25 @@ function App() {
 
   function showResult(result: AppActionResult, successText: string) {
     if (result.ok === false) {
-      setError(String(result.error ?? result.stderr ?? "操作未完成"));
+      setError(String(result.error ?? result.stderr ?? result.status ?? "操作未完成"));
       return;
     }
-    setNotice(successText);
+    setNotice(String(result.status || successText));
   }
 
   function renderPage() {
-    if (loading) return <EmptyState title="正在读取本地环境" body="正在通过 HELM 本地桥接读取状态；读取失败会显示错误，不展示成功态。" />;
+    if (loading) return <EmptyState title="正在读取本机状态" body="HELM 正在读取这台电脑上的项目状态；如果读取失败，会直接提示错误。" />;
     if (!data) {
       return (
         <EmptyState
           title="没有读取到数据"
-          body="请刷新，或检查 HELM 桥接脚本与 Python 环境。HELM 不会在读取失败时展示成功态。"
+          body="请先刷新。如果仍然没有数据，可以复制接入说明交给 Codex，或打开帮助查看第一步。"
           actions={
             <>
-              <ActionButton variant="primary" onClick={() => void copyProjectIntakeTemplate()}>复制项目接入模板</ActionButton>
+              <ActionButton variant="primary" onClick={() => void copyProjectIntakeTemplate()} data-tour-id="copy-project-intake">复制接入说明</ActionButton>
               <ActionButton variant="secondary" onClick={() => void handleOpenCodex()}>打开 Codex</ActionButton>
-              <ActionButton variant="secondary" onClick={() => setActivePage("environment")}>查看环境诊断</ActionButton>
+              <ActionButton variant="secondary" onClick={() => setActivePage("environment")}>查看本机状态</ActionButton>
+              <ActionButton variant="ghost" onClick={() => setHelpOpen(true)}>打开帮助</ActionButton>
               <ActionButton variant="ghost" onClick={() => setSettingsOpen(true)}>打开设置</ActionButton>
             </>
           }
@@ -198,13 +214,14 @@ function App() {
       return (
         <ProjectPage
           data={data.project_page}
+          hasUsableProject={currentProjectCanUse}
           projects={data.projects}
           selectedProjectRoot={projectRoot}
           onSelectProject={(path) => void selectProjectRoot(path)}
           onOpenPath={handleOpenPath}
           onOpenCodex={() => void handleOpenCodex()}
           onShowEnvironment={() => setActivePage("environment")}
-          onHandoff={copyHandoff}
+          onShowHandoff={() => setActivePage("next-step")}
           onCopyProjectIntake={() => void copyProjectIntakeTemplate()}
         />
       );
@@ -217,7 +234,6 @@ function App() {
         <NextStepPage
           data={data.next_step_page}
           history={handoffHistory.filter((item) => !projectKey || item.project_key === projectKey || item.project_root === projectRoot)}
-          onOpenPath={handleOpenPath}
           onCopyHandoff={copyHandoff}
           onCopyHistoryEntry={(entry) => void copyHandoffHistoryEntry(entry)}
           onClearHistory={clearHandoffHistory}
@@ -262,24 +278,51 @@ function App() {
   }
 
   async function copyHandoffHistoryEntry(entry: HandoffHistoryEntry) {
-    await copyText(formatHandoffHistorySummary(entry));
-    setNotice("历史交接摘要已复制。");
+    try {
+      await copyText(formatHandoffHistorySummary(entry));
+      setNotice("历史摘要已复制。");
+    } catch (err) {
+      setError(actionErrorMessage(err, "历史摘要没有复制成功。"));
+    }
   }
 
   function clearHandoffHistory() {
     setHandoffHistory([]);
     writeHandoffHistory([], settings.handoffHistoryLimit);
-    setNotice("本机交接摘要历史已清空。");
+    setNotice("本机摘要历史已清空。");
   }
 
   async function copyProjectIntakeTemplate() {
-    await copyText(formatProjectIntakeTemplate(projectRoot));
-    setNotice("项目接入模板已复制。请在 Codex 中把 <PROJECT_PATH> 替换为真实路径后发送。");
+    try {
+      await copyText(formatProjectIntakeTemplate(projectRoot));
+      setNotice("项目接入说明已复制。请在 Codex 中把 <PROJECT_PATH> 替换为真实路径后发送。");
+    } catch (err) {
+      setError(actionErrorMessage(err, "项目接入说明没有复制成功。"));
+    }
   }
 
   async function copyDiagnosticSummary() {
-    await copyText(diagnosticSummary.text);
-    setNotice("诊断摘要已复制，绝对路径已脱敏。");
+    try {
+      await copyText(diagnosticSummary.text);
+      setNotice("给 Codex 的本机摘要已复制，绝对路径已脱敏。");
+    } catch (err) {
+      setError(actionErrorMessage(err, "本机摘要没有复制成功。"));
+    }
+  }
+
+  function dismissGuidePermanently() {
+    setSettings((previous) => ({
+      ...previous,
+      firstRunGuideDismissed: true,
+      lastSeenGuideVersion: GUIDE_VERSION,
+    }));
+    setGuideOpen(false);
+  }
+
+  function restartGuide() {
+    setHelpOpen(false);
+    setActivePage("project");
+    setGuideOpen(true);
   }
 
   return (
@@ -288,34 +331,47 @@ function App() {
       onSelect={setActivePage}
       toolbar={
         <>
-          {(data?.projects?.length ?? 0) > 0 ? (
-            <label className="project-selector">
-              <span>当前项目</span>
-              <select value={projectRoot ?? ""} onChange={(event) => void handleSelectProject(event)} disabled={loading}>
-                {data?.projects.map((project) => (
-                  <option key={project.path} value={project.path} disabled={project.exists === false || !project.path}>
-                    {project.name || project.path}
-                    {project.source ? ` · ${project.source}` : ""}
-                    {project.exists === false ? " · 缺失" : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
+          {usableProjects.length > 0 ? (
+            <ProjectSelector
+              projects={usableProjects}
+              selectedProjectRoot={projectRoot}
+              disabled={loading}
+              onSelect={(path) => void selectProjectRoot(path)}
+            />
           ) : null}
-          <ActionButton variant="ghost" onClick={() => void handleOpenCodex()}>打开 Codex</ActionButton>
-          <ActionButton variant="ghost" disabled={!projectRoot} onClick={() => void handleOpenPath(projectRoot ?? undefined)}>
+          <ActionButton variant="ghost" onClick={() => void handleOpenCodex()} data-tour-id="open-codex">打开 Codex</ActionButton>
+          <ActionButton variant="ghost" disabled={!currentProjectCanUse} onClick={() => void handleOpenPath(projectRoot ?? undefined)}>
             <FolderOpen size={16} />
             打开项目
           </ActionButton>
-          <ActionButton variant="ghost" onClick={() => void refresh()}>
+          <ActionButton variant="ghost" onClick={() => void refresh()} data-tour-id="refresh-dashboard">
             <RefreshCw size={16} />
             刷新
           </ActionButton>
-          <SettingsButton onClick={() => setSettingsOpen(true)} />
-          <ActionButton variant="primary" onClick={() => (hasUsableProject ? void copyHandoff() : void copyProjectIntakeTemplate())}>
-            {hasUsableProject ? "复制交接单" : "复制项目接入模板"}
+          <ActionButton
+            variant="primary"
+            onClick={() => {
+              if (!currentProjectCanUse) {
+                void copyProjectIntakeTemplate();
+                return;
+              }
+              if (activePage === "next-step") {
+                void copyHandoff();
+                return;
+              }
+              setActivePage("next-step");
+            }}
+            data-tour-id={!currentProjectCanUse ? "copy-project-intake" : activePage === "next-step" ? "copy-codex-instruction" : "show-codex-handoff"}
+          >
+            {!currentProjectCanUse ? "复制接入说明" : activePage === "next-step" ? "复制给 Codex" : "交给 Codex"}
           </ActionButton>
         </>
+      }
+      sidebarFooter={
+        <div className="sidebar-utility-actions">
+          <SettingsButton onClick={() => setSettingsOpen(true)} />
+          <HelpButton onClick={() => setHelpOpen(true)} />
+        </div>
       }
     >
       <Toast message={notice} />
@@ -328,6 +384,32 @@ function App() {
         onChange={setSettings}
         onClose={() => setSettingsOpen(false)}
         onClearHistory={clearHandoffHistory}
+      />
+      <HelpPanel
+        open={helpOpen}
+        unavailableProjectCount={unavailableProjectCount}
+        onClose={() => setHelpOpen(false)}
+        onCopyProjectIntake={() => void copyProjectIntakeTemplate()}
+        onOpenCodex={() => void handleOpenCodex()}
+        onShowEnvironment={() => {
+          setHelpOpen(false);
+          setActivePage("environment");
+        }}
+        onRestartGuide={restartGuide}
+      />
+      <GuidedTour
+        open={guideOpen}
+        activePage={activePage}
+        onSelectPage={setActivePage}
+        onClose={() => setGuideOpen(false)}
+        onDismissPermanently={dismissGuidePermanently}
+        onDismissPreferenceChange={(dismissed) => {
+          setSettings((previous) => ({
+            ...previous,
+            firstRunGuideDismissed: dismissed,
+            lastSeenGuideVersion: dismissed ? GUIDE_VERSION : previous.lastSeenGuideVersion,
+          }));
+        }}
       />
       {renderPage()}
     </AppShell>
@@ -349,6 +431,10 @@ function readSettings(): HelmUserSettings {
       displayDensity,
       reduceMotion,
       handoffHistoryLimit,
+      firstRunGuideDismissed: typeof parsed.firstRunGuideDismissed === "boolean"
+        ? parsed.firstRunGuideDismissed
+        : DEFAULT_SETTINGS.firstRunGuideDismissed,
+      lastSeenGuideVersion: typeof parsed.lastSeenGuideVersion === "string" ? parsed.lastSeenGuideVersion : DEFAULT_SETTINGS.lastSeenGuideVersion,
     };
   } catch {
     return DEFAULT_SETTINGS;
@@ -499,18 +585,18 @@ function sanitizeDiagnosticText(value: string) {
 function formatProjectIntakeTemplate(projectRoot?: string | null) {
   const pathPlaceholder = projectRoot ? "<PROJECT_PATH>" : "<PROJECT_PATH>";
   return [
-    "HELM 项目接入请求",
+    "HELM 项目接入说明",
     "",
     `项目路径：${pathPlaceholder}`,
     "",
-    "请在 Codex 中读取该项目，并按 HELM 事实源约定检查或补齐：",
-    "0. 确认 Codex 配置中已将该项目标记为 trusted；若缺失，请让 Codex 在本机配置中登记该路径的 trusted 项。",
-    "1. research-map.md：项目身份、研究边界、当前阶段、下一步。",
-    "2. material-passport.yaml：材料入口、来源身份、读取状态、缺失项。",
-    "3. evidence-ledger.yaml：证据链、校验状态、阻断项。",
-    "4. findings-memory.md：阶段性发现和需要继续核验的结论。",
+    "请在 Codex 中读取该项目，并按 HELM 需要的项目资料检查或补齐：",
+    "0. 确认 Codex 可以读取该项目路径；若缺失，请让 Codex 在本机配置中登记该路径。",
+    "1. 项目说明：项目身份、研究边界、当前阶段、接下来要交给 Codex 的事项。",
+    "2. 材料清单：材料入口、来源身份、读取状态、缺失项。",
+    "3. 证据记录：证据链、校验状态、阻断项。",
+    "4. 阶段性发现：已经确认的发现和需要继续核验的结论。",
     "",
-    "如果刷新后项目仍未出现，请让 Codex 检查本机 trusted project 配置是否包含该项目路径。",
+    "如果刷新后项目仍未出现，请让 Codex 检查本机项目配置是否包含该路径。",
     "",
     "边界：HELM 不创建项目、不登记路径、不写研究材料；研究推进、写作、引用核验和判断都由 Codex 执行并由用户确认。",
   ].join("\n");
@@ -524,25 +610,28 @@ function createDiagnosticSummary(
 ): DiagnosticSummary {
   const missing = data?.project_page?.missing_inputs?.slice(0, 6) ?? [];
   const validators = data?.environment_page?.validators ?? [];
-  const failedValidators = validators.filter((item) => item.tone === "red" || item.blocking).map((item) => item.label);
+  const failedValidators = validators
+    .filter((item) => item.tone === "red" || item.blocking)
+    .map((item) => displayActionText(item.label));
   const sourceMode = String(data?.source_status?.mode ?? data?.runtime?.mode ?? "unknown");
+  const runtimeMode = String(data?.runtime?.mode ?? "unknown");
   const selectedProjectState = data?.project_page?.project?.exists
     ? "trusted_project_detected"
     : data
       ? "no_trusted_project_or_public_sample"
       : "dashboard_unavailable";
   const lines = [
-    "HELM 诊断摘要",
+    "HELM 本机摘要",
     `生成时间：${new Date().toISOString()}`,
-    `runtime：${data?.runtime?.mode ?? "unknown"}`,
-    `source status：${sourceMode}`,
-    `当前项目状态：${selectedProjectState}`,
+    `本机读取状态：${formatReadableSourceMode(runtimeMode)}`,
+    `数据来源：${formatReadableSourceMode(sourceMode)}`,
+    `当前项目状态：${formatDiagnosticState(selectedProjectState)}`,
     `当前项目路径：${projectRoot ? "<PROJECT_PATH>" : "未选择"}`,
-    `validator 状态：${failedValidators.length ? `需检查 ${failedValidators.join(", ")}` : "未发现阻断级 validator 状态"}`,
+    `本地检查：${failedValidators.length ? `需检查 ${failedValidators.join(", ")}` : "未发现阻断级问题"}`,
     `最近错误：${latestError ? sanitizeDiagnosticText(latestError) : "无"}`,
-    `设置：启动页=${settings.launchPage}; 记住项目=${settings.rememberLastProject ? "on" : "off"}; 显示密度=${settings.displayDensity}; 减少动效=${settings.reduceMotion}; 交接历史=${settings.handoffHistoryLimit}`,
+    `设置：启动页=${formatPageName(settings.launchPage)}；记住项目=${settings.rememberLastProject ? "开启" : "关闭"}；显示密度=${formatDisplayDensity(settings.displayDensity)}；减少动效=${formatMotionSetting(settings.reduceMotion)}；本机摘要历史=最多 ${settings.handoffHistoryLimit} 条`,
     "缺失项：",
-    ...(missing.length ? missing.map((item) => `- ${sanitizeDiagnosticText(item)}`) : ["- 未读取到显式缺失项"]),
+    ...(missing.length ? missing.map((item) => `- ${sanitizeDiagnosticText(displayActionText(item))}`) : ["- 未读取到显式缺失项"]),
     "建议检查命令：",
     "- cd apps/desktop && npm run build",
     "- python -m py_compile skills/scripts/helm_app_bridge.py skills/manager/research_env.py skills/manager/app.py",
@@ -565,22 +654,71 @@ function createProjectKey(value: string) {
 
 function formatHandoffHistorySummary(entry: HandoffHistoryEntry) {
   return [
-    "HELM 本机交接摘要",
+    "HELM 本机摘要",
     `项目：${entry.project_name}`,
     `复制时间：${formatLocalTime(entry.copied_at)}`,
-    `交接版本：${entry.handoff_version}`,
+    `说明版本：${entry.handoff_version}`,
     `阻断数：${entry.blocker_count}`,
-    `建议下一步：${entry.recommended_action}`,
+    `建议交给 Codex：${displayActionText(entry.recommended_action)}`,
     "",
     "短摘要：",
-    entry.excerpt || "无摘要",
+    displayActionText(entry.excerpt || "无摘要"),
   ].join("\n");
+}
+
+function isUsableProject(project: { path?: string; exists?: boolean; status?: string; current_stage?: string; error?: string }) {
+  if (!project.path || project.exists === false) return false;
+  const status = `${project.status || ""} ${project.current_stage || ""} ${project.error || ""}`.toLowerCase();
+  if (/untrusted|not_trusted|path_not_found|not found|not_exist|不可读取|路径不存在|未检测/.test(status)) return false;
+  return true;
+}
+
+function formatDiagnosticState(value: string) {
+  const labels: Record<string, string> = {
+    trusted_project_detected: "已接入项目",
+    no_trusted_project_or_public_sample: "未检测到可用项目或正在显示公开示例",
+    dashboard_unavailable: "未读取到看板数据",
+  };
+  return labels[value] ?? value;
+}
+
+function formatPageName(value: PageKey | string) {
+  return PAGES.find((page) => page.key === value)?.label ?? "项目";
+}
+
+function formatDisplayDensity(value: HelmUserSettings["displayDensity"]) {
+  return value === "compact" ? "紧凑" : "标准";
+}
+
+function formatMotionSetting(value: HelmUserSettings["reduceMotion"]) {
+  if (value === "on") return "已开启";
+  if (value === "off") return "已关闭";
+  return "跟随系统";
+}
+
+function formatReadableSourceMode(value: string) {
+  const labels: Record<string, string> = {
+    live_environment: "正在读取本机环境",
+    legacy_app_snapshot: "使用兼容数据",
+    demo_snapshot: "使用内置示例",
+    public_sample: "使用公开示例",
+    snapshot: "使用内置示例",
+    browser_mock: "浏览器预览",
+    unknown: "未检测到",
+  };
+  return labels[value] ?? displayActionText(value);
 }
 
 function formatLocalTime(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleString("zh-CN", { hour12: false });
+}
+
+function actionErrorMessage(err: unknown, fallback: string) {
+  if (err instanceof Error && err.message) return err.message;
+  if (typeof err === "string" && err) return err;
+  return fallback;
 }
 
 export default App;

@@ -1,31 +1,65 @@
-# HELM V8.5 Install And Diagnostic Notes
+# HELM Install And Diagnostic Notes
 
 ## Windows
 
-1. Build with `powershell -ExecutionPolicy Bypass -File skills/scripts/build-codex-manager-exe.ps1`.
-2. Refresh the Desktop shortcut with `powershell -ExecutionPolicy Bypass -File skills/scripts/create-codex-manager-shortcut.ps1`.
-3. Launch `HELM 本地科研看板`.
-4. If the app opens but shows no trusted project, use `项目` -> `复制项目接入模板`.
-5. If the app cannot read the environment, use `环境` -> `复制诊断摘要`.
+1. Install Node.js, Rust, and Microsoft Edge WebView2 Runtime.
+2. From the repository root, install and run HELM:
 
-The shortcut target should point to `skills/outputs/manager-app/dist/HELMLocalResearchBoard.exe`. Its icon should point to the HELM app icon asset.
+```powershell
+cd apps/desktop
+npm install
+npm run build
+npm run tauri -- dev
+```
 
-## macOS Guided Bundle
+3. For release checks, return to the repository root:
 
-1. Build with `powershell -ExecutionPolicy Bypass -File skills/scripts/build-codex-manager-bundle.ps1`.
-2. Use the generated guided bundle under `skills/outputs/manager-app/macos-guided/`.
-3. Follow the bundle instructions on the target Mac.
+```powershell
+cd ..\..
+powershell -ExecutionPolicy Bypass -File release/check-public-release.ps1
+```
 
-The guided bundle is expected to contain sanitized runtime resources only. It must not include personal project outputs, browser state, Zotero or Obsidian databases, or credentials.
+4. To build local artifacts from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File release/build-public-artifacts.ps1
+```
+
+## macOS
+
+1. Install Node.js, Rust, and the system prerequisites required by Tauri.
+2. From the repository root, install and run HELM:
+
+```bash
+cd apps/desktop
+npm install
+npm run build
+npm run tauri -- dev
+```
+
+3. The public release gate is a PowerShell script. On macOS, run it with `pwsh` if installed, or rely on the GitHub Actions result for the public repository:
+
+```bash
+cd ../..
+pwsh -File release/check-public-release.ps1
+```
+
+## First Launch
+
+1. Open HELM.
+2. If no project appears, use `项目` -> `复制接入说明`.
+3. Paste that instruction into Codex and provide the real project folder path.
+4. Return to HELM and click `刷新`.
+5. Use `本机` -> `复制给 Codex 排查` only when you need help diagnosing a local setup problem.
 
 ## Diagnostic Summary
 
-The diagnostic summary is meant for support and development triage. It includes:
+The diagnostic summary is meant for support and local troubleshooting. It includes:
 
-- runtime mode
-- source status
+- local read mode
+- data source status
 - current project state
-- validator state
+- local check status
 - latest visible error
 - current local settings
 - missing items
@@ -35,8 +69,21 @@ It must not include raw local absolute paths.
 
 ## Basic Checks
 
-- `cd apps/desktop && npm run build`
-- `python -m py_compile skills/scripts/helm_app_bridge.py skills/manager/research_env.py skills/manager/app.py`
-- `cd apps/desktop/src-tauri && cargo check`
-- `powershell -ExecutionPolicy Bypass -File skills/scripts/verify-codex-console-v8-release.ps1 -SkipInstall`
-- `powershell -ExecutionPolicy Bypass -File skills/scripts/verify-helm-public-candidate.ps1 -SkipReleaseCheck`
+From the repository root:
+
+```powershell
+python -m py_compile skills/scripts/helm_app_bridge.py skills/manager/research_env.py
+```
+
+From `apps/desktop`:
+
+```powershell
+npm run build
+npm run verify:ui
+```
+
+From `apps/desktop/src-tauri`:
+
+```powershell
+cargo check
+```

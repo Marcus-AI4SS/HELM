@@ -1,41 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HELM Privacy</title>
+    <title>HELM 隐私</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="index.html"><img src="assets/helm-icon.png" alt="" /><span>HELM</span></a>
       <nav>
-        <a href="index.html">Overview</a>
-        <a href="install.html">Install</a>
-        <a href="privacy.html" aria-current="page">Privacy</a>
+        <a href="index.html">首页</a>
+        <a href="install.html">安装</a>
+        <a href="tutorial.html">零基础教程</a>
         <a href="vela.html">VELA</a>
+        <a href="privacy.html" aria-current="page">隐私</a>
         <a href="https://github.com/Marcus-AI4SS/HELM">GitHub</a>
       </nav>
     </header>
     <main class="content-page">
-      <p class="eyebrow">Privacy</p>
-      <h1>HELM reads local state and keeps the public payload clean.</h1>
+      <p class="eyebrow">隐私</p>
+      <h1>HELM 读取本地状态，公开包不应包含个人材料。</h1>
       <p>
-        This repository has no telemetry service, analytics SDK, hosted sync, or cloud backend.
-        HELM renders local project state on your machine and keeps public release artifacts separate from personal data.
+        本仓库没有遥测服务、分析 SDK、托管同步或云后端。
+        HELM 在你的电脑上展示本地项目状态；公开发布内容必须与个人数据分离。
       </p>
       <div class="privacy-grid">
         <article>
-          <h2>Allowed locally</h2>
-          <p>Project maps, evidence ledgers, material indexes, deliverable indexes, validator reports, and local settings.</p>
+          <h2>可在本地读取</h2>
+          <p>项目说明、证据记录、材料索引、已有文件索引、检查报告和本地设置。</p>
         </article>
         <article>
-          <h2>Excluded from public release</h2>
-          <p>Personal outputs, note vaults, browser profiles, reference databases, credentials, keys, cookies, and local paths.</p>
+          <h2>不得进入公开包</h2>
+          <p>个人输出、笔记库、浏览器资料、文献数据库、凭据、密钥、Cookie 和本地绝对路径。</p>
         </article>
       </div>
-      <p>Release scripts include a privacy scan before artifacts are prepared.</p>
+      <p>构建公开包前，发布脚本会运行隐私扫描。</p>
     </main>
   </body>
 </html>
-

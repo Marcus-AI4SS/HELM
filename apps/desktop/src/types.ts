@@ -89,17 +89,13 @@ export interface HelmUserSettings {
   displayDensity: DisplayDensity;
   reduceMotion: ReduceMotionSetting;
   handoffHistoryLimit: number;
+  firstRunGuideDismissed: boolean;
+  lastSeenGuideVersion?: string;
 }
 
 export interface DiagnosticSummary {
   generated_at: string;
   text: string;
-}
-
-export interface OnboardingAction {
-  label: string;
-  description?: string;
-  kind: "copy_intake" | "open_codex" | "show_environment" | "open_settings" | "copy_diagnostic";
 }
 
 export interface AppActionResult {
@@ -156,8 +152,6 @@ export interface ProjectPageData {
   material_entries: FileRow[];
   artifact_entries: FileRow[];
   environment_status?: EvidenceStatus;
-  next_step_hint?: string;
-  primary_actions: PageAction[];
 }
 
 export interface CredibilityPageData {
@@ -182,8 +176,6 @@ export interface NextStepPageData {
 export interface DeliverablesPageData {
   project_name: string;
   deliverables: DeliverableGroup[];
-  gate_status: EvidenceStatus[];
-  export_directories: FileRow[];
 }
 
 export interface DeliverableGroup {
@@ -199,13 +191,6 @@ export interface EnvironmentPageData {
   local_capabilities: EvidenceStatus[];
   validators: EvidenceStatus[];
   runtime: Record<string, string>;
-}
-
-export interface PageAction {
-  label: string;
-  kind: "open_path" | "open_app" | "run_validator" | "handoff";
-  target?: string;
-  disabled?: boolean;
 }
 
 export interface DashboardData {
