@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="README.zh-CN.md">中文</a>
+  <a href="README.zh-CN.md">Chinese</a>
   ·
   <a href="https://marcus-ai4ss.github.io/HELM/">Pages</a>
   ·
