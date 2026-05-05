@@ -143,9 +143,9 @@ Files include:
 - `docs/zh/index.html`
 - selected sync logs where wording is historical
 
-Current behavior:
+Previously observed behavior:
 
-- Some public text still says `VELA = Versatile Experiment Lab & Automation`.
+- Some public text used an outdated VELA expansion instead of the current product wording.
 
 Required behavior:
 
@@ -479,7 +479,7 @@ Files:
 Replace:
 
 ```text
-VELA = Versatile Experiment Lab & Automation
+VELA = <outdated expansion>
 ```
 
 With:

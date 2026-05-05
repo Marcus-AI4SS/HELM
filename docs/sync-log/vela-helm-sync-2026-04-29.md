@@ -8,7 +8,7 @@
 
 ## Boundary Decision
 
-VELA and HELM remain independent products. HELM is the Hub for Evidence, Logs & Monitoring. VELA is the Versatile Experiment Lab & Automation package. The two repositories share visual language, page structure, and import contracts, but neither product controls the other.
+VELA and HELM remain independent products. HELM is the Hub for Evidence, Logs & Monitoring. VELA is the Versioned Evidence Lifecycle Architecture workflow wrapper. The two repositories share visual language, page structure, and import contracts, but neither product controls the other.
 
 ## Synchronized Items
 
